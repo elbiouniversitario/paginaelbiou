@@ -9,18 +9,14 @@ import { useCart } from "./CartProvider";
 
 const talles = ["XS", "S", "M", "L", "XL", "XXL"];
 const categorias: { label: string; value: CategoriaProducto | "Todos" }[] = [
-  { label: "Todos", value: "Todos" },
-  { label: "Camisetas", value: "Camisetas" },
-  { label: "Shorts", value: "Shorts" },
-  { label: "Accesorios", value: "Accesorios" },
+  { label: "Todos",       value: "Todos" },
+  { label: "Camisetas",   value: "Camisetas" },
+  { label: "Shorts",      value: "Shorts" },
+  { label: "Accesorios",  value: "Accesorios" },
 ];
 
 function formatPrecio(n: number) {
-  return new Intl.NumberFormat("es-AR", {
-    style: "currency",
-    currency: "ARS",
-    maximumFractionDigits: 0,
-  }).format(n);
+  return new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 }).format(n);
 }
 
 function ProductCard({ producto, index }: { producto: Producto; index: number }) {
@@ -41,58 +37,44 @@ function ProductCard({ producto, index }: { producto: Producto; index: number })
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay: (index % 4) * 0.1, ease: "easeOut" }}
-      className="group bg-[#0C1729] border border-[#1A2A4A] hover:border-[#FACC15]/30 transition-all duration-300 flex flex-col"
+      transition={{ duration: 0.45, delay: (index % 4) * 0.08 }}
+      className="bg-white border border-[#D8E1EF] hover:border-[#1A2F5E]/30 hover:shadow-md transition-all duration-200 flex flex-col group"
     >
-      {/* Product image */}
-      <div className="relative aspect-square bg-gradient-to-br from-[#172B5C] to-[#070D1A] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 grid-pattern opacity-50" />
+      {/* Image area */}
+      <div className="relative aspect-square bg-[#EEF3FB] flex items-center justify-center overflow-hidden">
         {producto.destacado && (
-          <div className="absolute top-3 left-3 z-10 bg-[#FACC15] text-[#070D1A] font-display font-black text-[10px] uppercase tracking-widest px-2 py-1">
+          <span className="absolute top-3 left-3 bg-[#F5C200] text-[#1A2F5E] font-display font-black text-[9px] uppercase tracking-widest px-2 py-0.5">
             Destacado
-          </div>
-        )}
-        <div className="relative z-10 flex flex-col items-center gap-2">
-          <div className="w-20 h-20 rounded-full bg-[#FACC15]/10 border border-[#FACC15]/20 flex items-center justify-center group-hover:border-[#FACC15]/50 transition-all duration-300">
-            <ShoppingBag size={28} className="text-[#FACC15]/60 group-hover:text-[#FACC15] transition-colors duration-300" />
-          </div>
-          <span className="font-display font-black text-xs uppercase tracking-widest text-[#FACC15]/40 group-hover:text-[#FACC15]/70 transition-colors">
-            EU
           </span>
+        )}
+        <div className="flex flex-col items-center gap-2 text-[#1A2F5E]/30 group-hover:text-[#1A2F5E]/50 transition-colors">
+          <ShoppingBag size={36} strokeWidth={1.5} />
+          <span className="font-display font-black text-xs uppercase tracking-widest">EU</span>
         </div>
       </div>
 
       {/* Info */}
-      <div className="p-5 flex flex-col flex-1">
-        <div className="mb-1">
-          <span className="font-display font-bold text-[10px] uppercase tracking-widest text-[#FACC15]/60">
-            {producto.categoria}
-          </span>
-        </div>
-        <h3 className="font-display font-black text-base uppercase leading-tight text-[#F0F4FF] mb-1">
-          {producto.nombre}
-        </h3>
-        <p className="font-body text-xs text-[#7B8FAD] leading-relaxed mb-4 flex-1">
-          {producto.descripcion}
-        </p>
+      <div className="p-4 flex flex-col flex-1">
+        <span className="font-display font-semibold text-[9px] uppercase tracking-widest text-[#6B7A99] mb-1">{producto.categoria}</span>
+        <h3 className="font-display font-black text-sm uppercase text-[#1A2F5E] leading-tight mb-1">{producto.nombre}</h3>
+        <p className="font-body text-xs text-[#6B7A99] leading-relaxed mb-4 flex-1">{producto.descripcion}</p>
 
-        {/* Talle selector (only for clothing) */}
         {needsTalle && (
-          <div className="mb-4">
-            <p className="font-display font-semibold text-[10px] uppercase tracking-widest text-[#7B8FAD] mb-2">
-              Talle {!talle && <span className="text-[#EF4444]">*</span>}
+          <div className="mb-3">
+            <p className="font-display font-semibold text-[9px] uppercase tracking-widest text-[#6B7A99] mb-1.5">
+              Talle {!talle && <span className="text-red-400">*</span>}
             </p>
             <div className="flex flex-wrap gap-1">
-              {talles.map((t) => (
+              {talles.map(t => (
                 <button
                   key={t}
                   onClick={() => setTalle(talle === t ? null : t)}
-                  className={`font-display font-bold text-xs px-2.5 py-1 transition-all duration-150 ${
+                  className={`font-display font-bold text-[10px] px-2 py-1 border transition-all duration-150 ${
                     talle === t
-                      ? "bg-[#FACC15] text-[#070D1A]"
-                      : "border border-[#1A2A4A] text-[#7B8FAD] hover:border-[#FACC15]/40 hover:text-[#F0F4FF]"
+                      ? "bg-[#1A2F5E] border-[#1A2F5E] text-white"
+                      : "border-[#D8E1EF] text-[#6B7A99] hover:border-[#1A2F5E] hover:text-[#1A2F5E]"
                   }`}
                 >
                   {t}
@@ -102,30 +84,20 @@ function ProductCard({ producto, index }: { producto: Producto; index: number })
           </div>
         )}
 
-        {/* Price + CTA */}
-        <div className="flex items-center justify-between gap-3 mt-auto pt-4 border-t border-[#1A2A4A]">
-          <span className="font-display font-black text-xl text-[#FACC15]">
-            {formatPrecio(producto.precio)}
-          </span>
+        <div className="flex items-center justify-between gap-2 pt-3 border-t border-[#D8E1EF]">
+          <span className="font-display font-black text-lg text-[#1A2F5E]">{formatPrecio(producto.precio)}</span>
           <button
             onClick={handleAdd}
             disabled={needsTalle && !talle}
-            className={`flex items-center gap-2 font-display font-black text-xs uppercase tracking-widest px-4 py-2.5 transition-all duration-200 ${
+            className={`flex items-center gap-1.5 font-display font-black text-[10px] uppercase tracking-widest px-3 py-2 transition-all duration-200 ${
               added
-                ? "bg-[#22C55E] text-white"
+                ? "bg-green-600 text-white"
                 : needsTalle && !talle
-                ? "bg-[#1A2A4A] text-[#7B8FAD] cursor-not-allowed"
-                : "bg-[#FACC15] hover:bg-[#FDE047] text-[#070D1A] hover:scale-105 active:scale-95"
+                ? "bg-[#F7F9FC] text-[#6B7A99] border border-[#D8E1EF] cursor-not-allowed"
+                : "bg-[#1A2F5E] hover:bg-[#152549] text-white"
             }`}
           >
-            {added ? (
-              "¡Agregado!"
-            ) : (
-              <>
-                <Plus size={12} />
-                Agregar
-              </>
-            )}
+            {added ? "¡Listo!" : <><Plus size={11} />Agregar</>}
           </button>
         </div>
       </div>
@@ -138,105 +110,58 @@ export default function Tienda() {
   const { count, toggleOpen } = useCart();
   const titleRef = useRef<HTMLDivElement>(null);
   const titleInView = useInView(titleRef, { once: true });
-
-  const productosFiltrados =
-    categoria === "Todos"
-      ? mockProductos
-      : mockProductos.filter((p) => p.categoria === categoria);
+  const filtrados = categoria === "Todos" ? mockProductos : mockProductos.filter(p => p.categoria === categoria);
 
   return (
-    <section id="tienda" className="relative py-24 lg:py-32 bg-[#0C1729] overflow-hidden">
-      <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none z-0 overflow-hidden w-full text-center"
-        aria-hidden
-      >
-        <span className="font-display font-black uppercase text-[clamp(5rem,16vw,14rem)] text-[#070D1A] leading-none whitespace-nowrap">
-          TIENDA
-        </span>
-      </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
-        {/* Header */}
-        <div ref={titleRef} className="mb-12 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+    <section id="tienda" className="py-20 lg:py-28 bg-white">
+      <div className="max-w-7xl mx-auto px-4 lg:px-8">
+        <div ref={titleRef} className="mb-10 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
           <div>
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={titleInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.6 }}
-              className="flex items-center gap-3 mb-4"
-            >
-              <div className="h-px w-10 bg-[#FACC15]" />
-              <span className="font-display font-semibold text-xs uppercase tracking-[0.3em] text-[#FACC15]">
-                Productos oficiales
-              </span>
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={titleInView ? { opacity: 1, y: 0 } : {}} className="section-tag mb-3">
+              Productos oficiales
             </motion.div>
-            <motion.h2
-              initial={{ opacity: 0, y: 30 }}
-              animate={titleInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
-              className="font-display font-black uppercase leading-none text-[clamp(3rem,8vw,7rem)] text-[#F0F4FF]"
-            >
-              Tienda{" "}
-              <span className="text-stroke-yellow">Oficial</span>
+            <motion.h2 initial={{ opacity: 0, y: 20 }} animate={titleInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6, delay: 0.1 }} className="font-display font-black uppercase text-[clamp(2.5rem,7vw,5.5rem)] leading-none text-[#1A2F5E]">
+              Tienda Oficial
             </motion.h2>
-            <motion.div
-              initial={{ scaleX: 0, originX: "left" }}
-              animate={titleInView ? { scaleX: 1 } : {}}
-              transition={{ duration: 0.7, delay: 0.3 }}
-              className="w-32 h-1.5 bg-[#FACC15] mt-6"
-            />
+            <div className="w-16 h-1 bg-[#F5C200] mt-4" />
           </div>
 
-          {/* Cart button */}
-          <motion.button
-            initial={{ opacity: 0, y: 20 }}
-            animate={titleInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.5 }}
+          <button
             onClick={toggleOpen}
-            className="relative flex items-center gap-3 border border-[#FACC15]/40 hover:border-[#FACC15] px-6 py-3 text-[#F0F4FF] hover:text-[#FACC15] transition-all duration-200 self-start"
+            className="relative self-start flex items-center gap-2 border border-[#1A2F5E] text-[#1A2F5E] hover:bg-[#1A2F5E] hover:text-white font-display font-black text-xs uppercase tracking-widest px-5 py-3 transition-colors duration-200"
           >
-            <ShoppingBag size={18} />
-            <span className="font-display font-black text-sm uppercase tracking-widest">
-              Mi carrito
-            </span>
+            <ShoppingBag size={15} />
+            Mi carrito
             {count > 0 && (
-              <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-[#FACC15] text-[#070D1A] font-display font-black text-xs flex items-center justify-center">
+              <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-[#F5C200] text-[#1A2F5E] font-display font-black text-xs flex items-center justify-center">
                 {count}
               </span>
             )}
-          </motion.button>
+          </button>
         </div>
 
-        {/* Category filter */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={titleInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="flex flex-wrap gap-2 mb-10"
-        >
+        {/* Filter */}
+        <div className="flex flex-wrap gap-2 mb-8">
           {categorias.map(({ label, value }) => (
             <button
               key={value}
               onClick={() => setCategoria(value)}
-              className={`font-display font-bold text-xs uppercase tracking-widest px-4 py-2 transition-all duration-200 ${
+              className={`font-display font-bold text-xs uppercase tracking-wider px-4 py-2 border transition-all duration-150 ${
                 categoria === value
-                  ? "bg-[#FACC15] text-[#070D1A]"
-                  : "border border-[#1A2A4A] text-[#7B8FAD] hover:border-[#FACC15]/40 hover:text-[#F0F4FF]"
+                  ? "bg-[#1A2F5E] border-[#1A2F5E] text-white"
+                  : "border-[#D8E1EF] text-[#6B7A99] hover:border-[#1A2F5E] hover:text-[#1A2F5E]"
               }`}
             >
               {label}
             </button>
           ))}
-        </motion.div>
-
-        {/* Product grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {productosFiltrados.map((p, i) => (
-            <ProductCard key={p.id} producto={p} index={i} />
-          ))}
         </div>
 
-        <p className="mt-8 text-center font-body text-xs text-[#7B8FAD]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {filtrados.map((p, i) => <ProductCard key={p.id} producto={p} index={i} />)}
+        </div>
+
+        <p className="mt-8 text-center font-body text-xs text-[#6B7A99]">
           Envíos a todo el país · Pago seguro con dLocal Go
         </p>
       </div>

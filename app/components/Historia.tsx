@@ -7,201 +7,144 @@ const hitos = [
   {
     year: "1952",
     title: "Fundación del Club",
-    description:
-      "Un grupo de estudiantes y docentes de la Universidad fundaron el club con la convicción de que el deporte y la educación van de la mano. Con pocos recursos pero mucha pasión, se jugó el primer partido oficial.",
-    side: "left",
+    description: "Un grupo de estudiantes y docentes universitarios fundaron el club con la convicción de que el deporte y la educación van de la mano. Con pocos recursos pero mucha pasión, se jugó el primer partido oficial.",
   },
   {
     year: "1961",
     title: "Primer Campeonato Regional",
-    description:
-      "Nueve años después de su fundación, el equipo conquistó su primer título regional, consolidando al club como una potencia emergente del fútbol universitario de la zona.",
-    side: "right",
+    description: "Nueve años después de su fundación, el equipo conquistó su primer título regional, consolidando al club como una potencia emergente del fútbol universitario.",
   },
   {
     year: "1978",
     title: "Estadio Propio",
-    description:
-      "Gracias al esfuerzo colectivo de socios y dirigentes, se inauguró el estadio del club. Más de 2.000 personas presenciaron el primer partido oficial en casa propia.",
-    side: "left",
+    description: "Gracias al esfuerzo colectivo de socios y dirigentes, se inauguró el estadio del club. Más de 2.000 personas presenciaron el primer partido oficial en casa propia.",
   },
   {
     year: "1995",
     title: "Ascenso a Primera División",
-    description:
-      "El momento más esperado: Elbio Universitario ascendió a la primera división regional tras una campaña histórica. El festejo duró días enteros en la ciudad.",
-    side: "right",
+    description: "El momento más esperado: Elbio Universitario ascendió a la primera división regional tras una campaña histórica. El festejo duró días enteros en la ciudad.",
   },
   {
     year: "2008",
     title: "Copa del Cincuentenario",
-    description:
-      "En el marco del 56° aniversario del club, se organizó la Copa del Cincuentenario. Elbio Universitario se coronó campeón ante los ojos de más de 5.000 hinchas.",
-    side: "left",
+    description: "En el marco del 56° aniversario, se organizó la Copa del Cincuentenario. Elbio Universitario se coronó campeón ante más de 5.000 hinchas.",
   },
   {
     year: "2024",
     title: "Nueva Era Digital",
-    description:
-      "El club da el salto al futuro: nuevo estadio renovado, plataforma digital, tienda oficial online y una base de socios que supera los 3.400 miembros activos.",
-    side: "right",
+    description: "El club da el salto al futuro: estadio renovado, plataforma digital, tienda oficial online y más de 3.400 socios activos.",
   },
 ];
 
-function HitoCard({
-  year,
-  title,
-  description,
-  side,
-  index,
-}: (typeof hitos)[0] & { index: number }) {
+function Hito({ year, title, description, index }: typeof hitos[0] & { index: number }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const isEven = index % 2 === 0;
 
   return (
     <div
       ref={ref}
-      className={`flex items-start gap-6 lg:gap-12 ${
-        side === "right" ? "lg:flex-row-reverse" : "lg:flex-row"
-      } flex-row`}
+      className={`flex gap-6 lg:gap-0 ${isEven ? "lg:flex-row" : "lg:flex-row-reverse"}`}
     >
-      {/* Year */}
+      {/* Content */}
       <motion.div
-        initial={{ opacity: 0, x: side === "left" ? -40 : 40 }}
+        initial={{ opacity: 0, x: isEven ? -30 : 30 }}
         animate={inView ? { opacity: 1, x: 0 } : {}}
-        transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-        className={`flex-shrink-0 w-24 lg:w-36 ${
-          side === "right" ? "lg:text-left" : "lg:text-right"
-        } text-left`}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="flex-1 lg:px-12 pb-12"
       >
-        <span className="font-display font-black text-[clamp(2.5rem,5vw,4.5rem)] text-[#FACC15] leading-none animate-glow">
-          {year}
-        </span>
-      </motion.div>
-
-      {/* Line + dot */}
-      <div className="flex flex-col items-center flex-shrink-0">
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={inView ? { scale: 1 } : {}}
-          transition={{ duration: 0.4, delay: 0.2 }}
-          className="w-4 h-4 rounded-full bg-[#FACC15] ring-4 ring-[#FACC15]/20 flex-shrink-0 mt-4"
-        />
-        {index < hitos.length - 1 && (
-          <motion.div
-            initial={{ scaleY: 0, originY: 0 }}
-            animate={inView ? { scaleY: 1 } : {}}
-            transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-            className="w-px flex-1 bg-gradient-to-b from-[#FACC15]/40 to-transparent min-h-16 mt-2"
-          />
-        )}
-      </div>
-
-      {/* Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={inView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-        className="flex-1 mb-12 lg:mb-16"
-      >
-        <div className="bg-[#0C1729] border border-[#1A2A4A] hover:border-[#FACC15]/30 p-6 lg:p-8 transition-all duration-300 group hover:bg-[#0F1D38]">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-0.5 bg-[#FACC15] group-hover:w-12 transition-all duration-300" />
-            <h3 className="font-display font-black text-xl lg:text-2xl uppercase tracking-tight text-[#F0F4FF]">
-              {title}
-            </h3>
-          </div>
-          <p className="font-body text-sm lg:text-base text-[#7B8FAD] leading-relaxed">
+        <div className={`${isEven ? "lg:text-right" : "lg:text-left"}`}>
+          <span className="font-display font-black text-5xl lg:text-6xl text-[#F5C200] leading-none block mb-2">
+            {year}
+          </span>
+          <h3 className="font-display font-black text-xl uppercase text-[#1A2F5E] mb-2">
+            {title}
+          </h3>
+          <p className="font-body text-sm text-[#6B7A99] leading-relaxed max-w-xs inline-block">
             {description}
           </p>
         </div>
       </motion.div>
+
+      {/* Center line + dot */}
+      <div className="hidden lg:flex flex-col items-center flex-shrink-0 w-8">
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={inView ? { scale: 1 } : {}}
+          transition={{ duration: 0.4, delay: 0.2 }}
+          className="w-4 h-4 rounded-full bg-[#F5C200] border-4 border-white ring-2 ring-[#F5C200] flex-shrink-0 mt-1"
+        />
+        {index < hitos.length - 1 && (
+          <div className="flex-1 w-px bg-[#D8E1EF] mt-2" />
+        )}
+      </div>
+
+      {/* Empty right/left side */}
+      <div className="hidden lg:block flex-1" />
     </div>
   );
 }
 
 export default function Historia() {
   const titleRef = useRef<HTMLDivElement>(null);
-  const titleInView = useInView(titleRef, { once: true, margin: "-60px" });
+  const titleInView = useInView(titleRef, { once: true });
 
   return (
-    <section id="historia" className="relative py-24 lg:py-32 bg-[#070D1A] overflow-hidden">
-      {/* Decorative background text */}
-      <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none z-0 w-full text-center overflow-hidden"
-        aria-hidden
-      >
-        <span className="font-display font-black uppercase text-[clamp(6rem,18vw,16rem)] text-[#0C1729] leading-none whitespace-nowrap">
-          HISTORIA
-        </span>
-      </div>
-
-      <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-8">
-        {/* Section header */}
-        <div ref={titleRef} className="mb-20 lg:mb-24">
+    <section id="historia" className="py-20 lg:py-28 bg-[#F7F9FC]">
+      <div className="max-w-4xl mx-auto px-4 lg:px-8">
+        {/* Header */}
+        <div ref={titleRef} className="text-center mb-16">
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={titleInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6 }}
-            className="flex items-center gap-3 mb-4"
-          >
-            <div className="h-px w-10 bg-[#FACC15]" />
-            <span className="font-display font-semibold text-xs uppercase tracking-[0.3em] text-[#FACC15]">
-              Nuestra trayectoria
-            </span>
-          </motion.div>
-
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={titleInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="font-display font-black uppercase leading-none text-[clamp(3rem,8vw,7rem)] text-[#F0F4FF]"
+            transition={{ duration: 0.5 }}
+            className="section-tag justify-center mb-4"
           >
-            Más de 70{" "}
-            <span className="text-stroke-yellow">años</span>
+            Nuestra trayectoria
+          </motion.div>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            animate={titleInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="font-display font-black uppercase text-[clamp(2.5rem,7vw,5.5rem)] leading-none text-[#1A2F5E]"
+          >
+            Más de 70 años
           </motion.h2>
           <motion.h2
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={titleInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="font-display font-black uppercase leading-none text-[clamp(3rem,8vw,7rem)] text-[#F0F4FF]"
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="font-display font-black uppercase text-[clamp(2.5rem,7vw,5.5rem)] leading-none text-[#111827]"
           >
             de historia
           </motion.h2>
-
           <motion.div
-            initial={{ scaleX: 0, originX: 0 }}
+            initial={{ scaleX: 0 }}
             animate={titleInView ? { scaleX: 1 } : {}}
-            transition={{ duration: 0.7, delay: 0.4 }}
-            className="w-32 h-1.5 bg-[#FACC15] mt-6"
+            style={{ originX: "center" }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="w-16 h-1 bg-[#F5C200] mx-auto mt-5"
           />
         </div>
 
         {/* Timeline */}
         <div className="relative">
-          {hitos.map((hito, i) => (
-            <HitoCard key={hito.year} {...hito} index={i} />
+          {/* Vertical line — desktop only */}
+          <div className="hidden lg:block absolute left-1/2 -translate-x-px top-0 bottom-0 w-px bg-[#D8E1EF]" />
+          {hitos.map((h, i) => (
+            <Hito key={h.year} {...h} index={i} />
           ))}
         </div>
 
-        {/* CTA bottom */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="mt-4 text-center"
-        >
-          <p className="font-display font-semibold text-sm uppercase tracking-widest text-[#7B8FAD] mb-6">
-            La historia continúa escribiéndose
-          </p>
+        {/* CTA */}
+        <div className="text-center mt-4">
           <a
             href="#socios"
-            className="inline-flex items-center gap-2 bg-[#FACC15] hover:bg-[#FDE047] text-[#070D1A] font-display font-black text-sm uppercase tracking-widest px-8 py-4 transition-all duration-200 hover:scale-105 active:scale-95"
+            className="inline-flex items-center bg-[#1A2F5E] hover:bg-[#152549] text-white font-display font-black text-xs uppercase tracking-widest px-8 py-4 transition-colors duration-200"
           >
             Sé parte del club
           </a>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

@@ -1,82 +1,57 @@
 import { AtSign, Share2, Play, Mail, MapPin, Phone } from "lucide-react";
+import Image from "next/image";
 
 const navLinks = [
-  { label: "Inicio", href: "#inicio" },
-  { label: "Historia", href: "#historia" },
-  { label: "Plantel", href: "#plantel" },
+  { label: "Inicio",     href: "#inicio" },
+  { label: "Historia",   href: "#historia" },
+  { label: "Plantel",    href: "#plantel" },
   { label: "Calendario", href: "#calendario" },
-  { label: "Tienda", href: "#tienda" },
+  { label: "Tienda",     href: "#tienda" },
 ];
 
 const socials = [
-  { icon: AtSign, href: "#", label: "Instagram" },
-  { icon: Share2, href: "#", label: "Twitter / X" },
-  { icon: Play, href: "#", label: "YouTube" },
+  { icon: AtSign,  href: "#", label: "Instagram" },
+  { icon: Share2,  href: "#", label: "Twitter / X" },
+  { icon: Play,    href: "#", label: "YouTube" },
 ];
 
 export default function Footer() {
   return (
-    <footer className="bg-[#050B15] border-t border-[#1A2A4A]">
-      {/* Top band */}
-      <div className="bg-[#FACC15] py-3 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between">
-          <span className="font-display font-black text-xs uppercase tracking-[0.3em] text-[#070D1A]">
-            Elbio Universitario FC
-          </span>
-          <span className="font-display font-semibold text-xs uppercase tracking-widest text-[#070D1A]/60">
-            Est. 1952
-          </span>
-        </div>
-      </div>
+    <footer className="bg-[#1A2F5E] text-white">
+      {/* Yellow top bar */}
+      <div className="h-1 bg-[#F5C200]" />
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
+      <div className="max-w-7xl mx-auto px-4 lg:px-8 py-14 lg:py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-16">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-full bg-[#FACC15] flex items-center justify-center font-display font-black text-[#070D1A] text-base">
-                EU
-              </div>
-              <div className="font-display font-black uppercase leading-tight">
-                <span className="block text-[#7B8FAD] text-xs tracking-widest">
-                  Club Atlético
-                </span>
-                <span className="block text-[#F0F4FF] text-lg tracking-tight">
-                  Elbio Universitario
-                </span>
+            <div className="flex items-center gap-3 mb-5">
+              <Image src="/logo.ico" alt="Elbio Universitario" width={44} height={44} className="rounded-full" />
+              <div className="font-display leading-tight">
+                <span className="block font-bold text-white/60 text-xs uppercase tracking-wider">Club Atlético</span>
+                <span className="block font-black text-white text-base uppercase">Elbio Universitario</span>
               </div>
             </div>
-            <p className="font-body text-sm text-[#7B8FAD] leading-relaxed mb-8 max-w-xs">
-              Más que un club de fútbol. Una comunidad universitaria unida por
-              la pasión, el respeto y los colores azul y amarillo.
+            <p className="font-body text-sm text-white/60 leading-relaxed mb-6 max-w-xs">
+              Más que un club de fútbol. Una comunidad universitaria unida por la pasión, el respeto y los colores azul y amarillo.
             </p>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               {socials.map(({ icon: Icon, href, label }) => (
-                <a
-                  key={label}
-                  href={href}
-                  aria-label={label}
-                  className="w-10 h-10 border border-[#1A2A4A] hover:border-[#FACC15] hover:text-[#FACC15] text-[#7B8FAD] flex items-center justify-center transition-all duration-200 hover:bg-[#FACC15]/10"
-                >
-                  <Icon size={16} />
+                <a key={label} href={href} aria-label={label} className="w-9 h-9 border border-white/20 hover:border-[#F5C200] hover:text-[#F5C200] text-white/60 flex items-center justify-center transition-all duration-200">
+                  <Icon size={14} />
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Navigation */}
+          {/* Nav */}
           <div>
-            <h4 className="font-display font-black text-sm uppercase tracking-widest text-[#FACC15] mb-6">
-              Secciones
-            </h4>
-            <ul className="flex flex-col gap-3">
-              {navLinks.map((l) => (
+            <h4 className="font-display font-black text-xs uppercase tracking-widest text-[#F5C200] mb-5">Secciones</h4>
+            <ul className="flex flex-col gap-2.5">
+              {navLinks.map(l => (
                 <li key={l.href}>
-                  <a
-                    href={l.href}
-                    className="font-display font-semibold text-sm uppercase tracking-wider text-[#7B8FAD] hover:text-[#F0F4FF] transition-colors duration-200 flex items-center gap-2 group"
-                  >
-                    <span className="w-4 h-px bg-[#FACC15] group-hover:w-6 transition-all duration-300" />
+                  <a href={l.href} className="font-display font-semibold text-sm uppercase tracking-wider text-white/60 hover:text-white transition-colors flex items-center gap-2 group">
+                    <span className="w-3 h-px bg-[#F5C200] group-hover:w-5 transition-all duration-200" />
                     {l.label}
                   </a>
                 </li>
@@ -86,28 +61,19 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="font-display font-black text-sm uppercase tracking-widest text-[#FACC15] mb-6">
-              Contacto
-            </h4>
-            <ul className="flex flex-col gap-4">
-              <li className="flex items-start gap-3">
-                <MapPin size={16} className="text-[#FACC15] mt-0.5 flex-shrink-0" />
-                <span className="font-body text-sm text-[#7B8FAD]">
-                  Av. Universitaria 1234, Ciudad
-                </span>
+            <h4 className="font-display font-black text-xs uppercase tracking-widest text-[#F5C200] mb-5">Contacto</h4>
+            <ul className="flex flex-col gap-3.5">
+              <li className="flex items-start gap-2.5">
+                <MapPin size={14} className="text-[#F5C200] mt-0.5 flex-shrink-0" />
+                <span className="font-body text-sm text-white/60">Av. Universitaria 1234, Ciudad</span>
               </li>
-              <li className="flex items-center gap-3">
-                <Phone size={16} className="text-[#FACC15] flex-shrink-0" />
-                <span className="font-body text-sm text-[#7B8FAD]">
-                  +54 11 0000-0000
-                </span>
+              <li className="flex items-center gap-2.5">
+                <Phone size={14} className="text-[#F5C200] flex-shrink-0" />
+                <span className="font-body text-sm text-white/60">+54 11 0000-0000</span>
               </li>
-              <li className="flex items-center gap-3">
-                <Mail size={16} className="text-[#FACC15] flex-shrink-0" />
-                <a
-                  href="mailto:info@elbiouniversitario.com"
-                  className="font-body text-sm text-[#7B8FAD] hover:text-[#FACC15] transition-colors"
-                >
+              <li className="flex items-center gap-2.5">
+                <Mail size={14} className="text-[#F5C200] flex-shrink-0" />
+                <a href="mailto:info@elbiouniversitario.com" className="font-body text-sm text-white/60 hover:text-[#F5C200] transition-colors">
                   info@elbiouniversitario.com
                 </a>
               </li>
@@ -115,14 +81,9 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="mt-16 pt-8 border-t border-[#1A2A4A] flex flex-col lg:flex-row items-center justify-between gap-4">
-          <p className="font-body text-xs text-[#7B8FAD]">
-            © {new Date().getFullYear()} Club Atlético Elbio Universitario. Todos los derechos reservados.
-          </p>
-          <p className="font-display font-semibold text-xs uppercase tracking-widest text-[#FACC15]/40">
-            Azul y Amarillo para siempre
-          </p>
+        <div className="mt-12 pt-6 border-t border-white/10 flex flex-col lg:flex-row items-center justify-between gap-3">
+          <p className="font-body text-xs text-white/40">© {new Date().getFullYear()} Club Atlético Elbio Universitario. Todos los derechos reservados.</p>
+          <p className="font-display font-semibold text-xs uppercase tracking-widest text-[#F5C200]/40">Azul y Amarillo para siempre</p>
         </div>
       </div>
     </footer>
