@@ -4,10 +4,10 @@ import { useState, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 
 const trophies = [
-  { letter: "B", year: "2014", division: "División B" },
-  { letter: "C", year: "2013", division: "División A" },
-  { letter: "D", year: "2012", division: "División B" },
-  { letter: "F", year: "2008", division: "División D" },
+  { letter: "B", year: "2014", division: "Divisional B" },
+  { letter: "C", year: "2013", division: "Divisional C" },
+  { letter: "D", year: "2012", division: "Divisional D" },
+  { letter: "F", year: "2008", division: "Divisional F" },
 ];
 
 function TrophyCard({ letter, year, division, index }: (typeof trophies)[0] & { index: number }) {
@@ -169,7 +169,7 @@ export default function TrophyBlock() {
             className="font-display font-black text-white uppercase"
             style={{ fontSize: "clamp(1.4rem, 4vw, 2.2rem)", letterSpacing: "0.05em" }}
           >
-            4 Títulos
+            4 Títulos de Mayores
           </motion.div>
         </div>
 
