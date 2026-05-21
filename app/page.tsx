@@ -1,6 +1,9 @@
 import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
+import HeroSlider from "./components/HeroSlider";
+import MatchStats from "./components/MatchStats";
+import StorePreview from "./components/StorePreview";
 import Historia from "./components/Historia";
+import PlayerPortal from "./components/PlayerPortal";
 import Plantel from "./components/Plantel";
 import Calendario from "./components/Calendario";
 import Tienda from "./components/Tienda";
@@ -13,8 +16,11 @@ export default function Home() {
     <CartProvider>
       <Navbar />
       <main>
-        <Hero />
+        <HeroSlider />
+        <MatchStats />
+        <StorePreview />
         <Historia />
+        <PlayerPortal />
         <Plantel />
         <Calendario />
         <Tienda />

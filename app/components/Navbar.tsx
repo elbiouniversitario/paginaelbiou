@@ -40,7 +40,7 @@ export default function Navbar() {
         <a href="#inicio" className="flex items-center gap-3 group">
           <Image
             src="/logo.ico"
-            alt="Elbio Universitario"
+            alt="Elbio Fernández Universitario"
             width={40}
             height={40}
             className="rounded-full group-hover:opacity-80 transition-opacity"
@@ -50,7 +50,7 @@ export default function Navbar() {
               Club Atlético
             </span>
             <span className="block font-black text-[#1A2F5E] text-base uppercase tracking-tight">
-              Elbio Universitario
+              Elbio Fernández Universitario
             </span>
           </div>
         </a>

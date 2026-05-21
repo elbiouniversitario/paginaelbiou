@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import { Star } from "lucide-react";
 
 const hitos = [
   {
@@ -136,14 +137,49 @@ export default function Historia() {
           ))}
         </div>
 
-        {/* CTA */}
-        <div className="text-center mt-4">
-          <a
-            href="#socios"
-            className="inline-flex items-center bg-[#1A2F5E] hover:bg-[#152549] text-white font-display font-black text-xs uppercase tracking-widest px-8 py-4 transition-colors duration-200"
+      </div>
+
+      {/* ---- Achievement block ---- */}
+      <div className="bg-[#1A2F5E] py-16 lg:py-20">
+        <div className="max-w-4xl mx-auto px-4 lg:px-8 text-center">
+          {/* Stars */}
+          <div className="flex justify-center gap-3 mb-6">
+            {[0, 1, 2, 3].map((i) => (
+              <Star key={i} size={28} className="text-[#F5C200]" fill="#F5C200" />
+            ))}
+          </div>
+
+          {/* Big number */}
+          <div
+            className="font-display font-black text-[#F5C200] uppercase leading-none mb-1"
+            style={{ fontSize: "clamp(4.5rem, 14vw, 9rem)" }}
           >
-            Sé parte del club
-          </a>
+            4
+          </div>
+          <div
+            className="font-display font-black text-white uppercase leading-none mb-10"
+            style={{ fontSize: "clamp(1.5rem, 5vw, 3.5rem)", letterSpacing: "0.05em" }}
+          >
+            Títulos Regionales
+          </div>
+
+          {/* Stats row */}
+          <div className="flex flex-wrap justify-center gap-x-10 gap-y-6">
+            {[
+              { value: "1952", label: "Fundación" },
+              { value: "73", label: "Años de historia" },
+              { value: "3.400+", label: "Socios activos" },
+            ].map(({ value, label }) => (
+              <div key={label} className="text-center">
+                <span className="block font-display font-black text-[#F5C200] text-3xl leading-none mb-1">
+                  {value}
+                </span>
+                <span className="block font-display font-semibold text-white/45 text-[10px] uppercase tracking-widest">
+                  {label}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

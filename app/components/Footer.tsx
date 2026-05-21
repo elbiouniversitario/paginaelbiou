@@ -26,10 +26,10 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-3 mb-5">
-              <Image src="/logo.ico" alt="Elbio Universitario" width={44} height={44} className="rounded-full" />
+              <Image src="/logo.ico" alt="Elbio Fernández Universitario" width={44} height={44} className="rounded-full" />
               <div className="font-display leading-tight">
                 <span className="block font-bold text-white/60 text-xs uppercase tracking-wider">Club Atlético</span>
-                <span className="block font-black text-white text-base uppercase">Elbio Universitario</span>
+                <span className="block font-black text-white text-base uppercase">Elbio Fernández Universitario</span>
               </div>
             </div>
             <p className="font-body text-sm text-white/60 leading-relaxed mb-6 max-w-xs">
@@ -82,7 +82,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 pt-6 border-t border-white/10 flex flex-col lg:flex-row items-center justify-between gap-3">
-          <p className="font-body text-xs text-white/40">© {new Date().getFullYear()} Club Atlético Elbio Universitario. Todos los derechos reservados.</p>
+          <p className="font-body text-xs text-white/40">© {new Date().getFullYear()} Club Atlético Elbio Fernández Universitario. Todos los derechos reservados.</p>
           <p className="font-display font-semibold text-xs uppercase tracking-widest text-[#F5C200]/40">Azul y Amarillo para siempre</p>
         </div>
       </div>
