@@ -50,8 +50,8 @@ export default function Footer() {
             </p>
             <div className="flex items-center gap-2">
               <SocialBtn href="https://instagram.com/elbiouniversitario" label="Instagram" symbol="@" />
-              <SocialBtn href="https://wa.me/5411XXXXXXXX" label="WhatsApp" symbol="W" />
-              <SocialBtn href="mailto:info@elbiouniversitario.com" label="Email" symbol="✉" />
+              <SocialBtn href="https://wa.me/59899019892" label="WhatsApp" symbol="W" />
+              <SocialBtn href="mailto:elbiouniversitario2023@gmail.com" label="Email" symbol="✉" />
             </div>
           </div>
 
@@ -88,10 +88,10 @@ export default function Footer() {
               <li className="flex items-center gap-2.5">
                 <Mail size={14} className="text-[#F5C200] flex-shrink-0" />
                 <a
-                  href="mailto:info@elbiouniversitario.com"
+                  href="mailto:elbiouniversitario2023@gmail.com"
                   className="font-body text-sm text-white/55 hover:text-[#F5C200] transition-colors"
                 >
-                  info@elbiouniversitario.com
+                  elbiouniversitario2023@gmail.com
                 </a>
               </li>
             </ul>
