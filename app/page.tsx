@@ -4,7 +4,6 @@ import MatchStats from "./components/MatchStats";
 import StorePreview from "./components/StorePreview";
 import Historia from "./components/Historia";
 import PlayerPortal from "./components/PlayerPortal";
-import Plantel from "./components/Plantel";
 import Calendario from "./components/Calendario";
 import Tienda from "./components/Tienda";
 import CartProvider from "./components/CartProvider";
@@ -21,7 +20,6 @@ export default function Home() {
         <StorePreview />
         <Historia />
         <PlayerPortal />
-        <Plantel />
         <Calendario />
         <Tienda />
       </main>

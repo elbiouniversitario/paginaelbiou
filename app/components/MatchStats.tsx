@@ -10,7 +10,7 @@ const tableStats = {
   gf: 18,
   ga: 9,
   points: 23,
-  competition: "Torneo Apertura 2025",
+  competition: "Primera Rueda 2026",
 };
 
 function getEuScore(p: Partido) {

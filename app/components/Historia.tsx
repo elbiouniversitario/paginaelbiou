@@ -2,36 +2,26 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { Star } from "lucide-react";
+import TrophyBlock from "./TrophyBlock";
 
 const hitos = [
   {
-    year: "1952",
+    year: "2002",
     title: "Fundación del Club",
     description: "Un grupo de estudiantes y docentes universitarios fundaron el club con la convicción de que el deporte y la educación van de la mano. Con pocos recursos pero mucha pasión, se jugó el primer partido oficial.",
   },
   {
-    year: "1961",
+    year: "2008",
     title: "Primer Campeonato Regional",
-    description: "Nueve años después de su fundación, el equipo conquistó su primer título regional, consolidando al club como una potencia emergente del fútbol universitario.",
+    description: "Seis años después de su fundación, el equipo conquistó su primer título regional, consolidando al club como una potencia emergente del fútbol universitario.",
   },
   {
-    year: "1978",
+    year: "2023",
     title: "Estadio Propio",
     description: "Gracias al esfuerzo colectivo de socios y dirigentes, se inauguró el estadio del club. Más de 2.000 personas presenciaron el primer partido oficial en casa propia.",
   },
   {
-    year: "1995",
-    title: "Ascenso a Primera División",
-    description: "El momento más esperado: Elbio Universitario ascendió a la primera división regional tras una campaña histórica. El festejo duró días enteros en la ciudad.",
-  },
-  {
-    year: "2008",
-    title: "Copa del Cincuentenario",
-    description: "En el marco del 56° aniversario, se organizó la Copa del Cincuentenario. Elbio Universitario se coronó campeón ante más de 5.000 hinchas.",
-  },
-  {
-    year: "2024",
+    year: "2026",
     title: "Nueva Era Digital",
     description: "El club da el salto al futuro: estadio renovado, plataforma digital, tienda oficial online y más de 3.400 socios activos.",
   },
@@ -80,7 +70,7 @@ function Hito({ year, title, description, index }: typeof hitos[0] & { index: nu
         )}
       </div>
 
-      {/* Empty right/left side */}
+      {/* Empty side */}
       <div className="hidden lg:block flex-1" />
     </div>
   );
@@ -91,97 +81,57 @@ export default function Historia() {
   const titleInView = useInView(titleRef, { once: true });
 
   return (
-    <section id="historia" className="py-20 lg:py-28 bg-[#F7F9FC]">
-      <div className="max-w-4xl mx-auto px-4 lg:px-8">
-        {/* Header */}
-        <div ref={titleRef} className="text-center mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={titleInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5 }}
-            className="section-tag justify-center mb-4"
-          >
-            Nuestra trayectoria
-          </motion.div>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={titleInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="font-display font-black uppercase text-[clamp(2.5rem,7vw,5.5rem)] leading-none text-[#1A2F5E]"
-          >
-            Más de 70 años
-          </motion.h2>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={titleInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.15 }}
-            className="font-display font-black uppercase text-[clamp(2.5rem,7vw,5.5rem)] leading-none text-[#111827]"
-          >
-            de historia
-          </motion.h2>
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={titleInView ? { scaleX: 1 } : {}}
-            style={{ originX: "center" }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="w-16 h-1 bg-[#F5C200] mx-auto mt-5"
-          />
-        </div>
-
-        {/* Timeline */}
-        <div className="relative">
-          {/* Vertical line — desktop only */}
-          <div className="hidden lg:block absolute left-1/2 -translate-x-px top-0 bottom-0 w-px bg-[#D8E1EF]" />
-          {hitos.map((h, i) => (
-            <Hito key={h.year} {...h} index={i} />
-          ))}
-        </div>
-
-      </div>
-
-      {/* ---- Achievement block ---- */}
-      <div className="bg-[#1A2F5E] py-16 lg:py-20">
-        <div className="max-w-4xl mx-auto px-4 lg:px-8 text-center">
-          {/* Stars */}
-          <div className="flex justify-center gap-3 mb-6">
-            {[0, 1, 2, 3].map((i) => (
-              <Star key={i} size={28} className="text-[#F5C200]" fill="#F5C200" />
-            ))}
+    <section id="historia">
+      {/* Timeline section — light bg */}
+      <div className="py-20 lg:py-28 bg-[#F7F9FC]">
+        <div className="max-w-4xl mx-auto px-4 lg:px-8">
+          {/* Header */}
+          <div ref={titleRef} className="text-center mb-16">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={titleInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5 }}
+              className="section-tag justify-center mb-4"
+            >
+              Nuestra trayectoria
+            </motion.div>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={titleInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="font-display font-black uppercase text-[clamp(2.5rem,7vw,5.5rem)] leading-none text-[#1A2F5E]"
+            >
+              Más de 24 años
+            </motion.h2>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={titleInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.15 }}
+              className="font-display font-black uppercase text-[clamp(2.5rem,7vw,5.5rem)] leading-none text-[#111827]"
+            >
+              de historia
+            </motion.h2>
+            <motion.div
+              initial={{ scaleX: 0 }}
+              animate={titleInView ? { scaleX: 1 } : {}}
+              style={{ originX: "center" }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="w-16 h-1 bg-[#F5C200] mx-auto mt-5"
+            />
           </div>
 
-          {/* Big number */}
-          <div
-            className="font-display font-black text-[#F5C200] uppercase leading-none mb-1"
-            style={{ fontSize: "clamp(4.5rem, 14vw, 9rem)" }}
-          >
-            4
-          </div>
-          <div
-            className="font-display font-black text-white uppercase leading-none mb-10"
-            style={{ fontSize: "clamp(1.5rem, 5vw, 3.5rem)", letterSpacing: "0.05em" }}
-          >
-            Títulos Regionales
-          </div>
-
-          {/* Stats row */}
-          <div className="flex flex-wrap justify-center gap-x-10 gap-y-6">
-            {[
-              { value: "1952", label: "Fundación" },
-              { value: "73", label: "Años de historia" },
-              { value: "3.400+", label: "Socios activos" },
-            ].map(({ value, label }) => (
-              <div key={label} className="text-center">
-                <span className="block font-display font-black text-[#F5C200] text-3xl leading-none mb-1">
-                  {value}
-                </span>
-                <span className="block font-display font-semibold text-white/45 text-[10px] uppercase tracking-widest">
-                  {label}
-                </span>
-              </div>
+          {/* Timeline */}
+          <div className="relative">
+            <div className="hidden lg:block absolute left-1/2 -translate-x-px top-0 bottom-0 w-px bg-[#D8E1EF]" />
+            {hitos.map((h, i) => (
+              <Hito key={h.year} {...h} index={i} />
             ))}
           </div>
         </div>
       </div>
+
+      {/* Trophy block — dark bg */}
+      <TrophyBlock />
     </section>
   );
 }
