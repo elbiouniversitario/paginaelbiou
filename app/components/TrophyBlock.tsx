@@ -66,9 +66,8 @@ function TrophyCard({ letter, year, division, index }: (typeof trophies)[0] & { 
           alt=""
           className="w-[70%] h-[70%] object-contain"
           style={{
-            opacity: 0.38,
-            filter: "drop-shadow(0 8px 24px rgba(245,194,0,0.25)) brightness(1.1) contrast(1.05)",
-            mixBlendMode: "luminosity",
+            opacity: 0.55,
+            filter: "drop-shadow(0 0 28px rgba(245,194,0,0.35)) drop-shadow(0 12px 20px rgba(0,0,0,0.5))",
           }}
         />
       </motion.div>
