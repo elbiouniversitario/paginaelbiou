@@ -64,23 +64,13 @@ function TrophyCard({ letter, year, division, index }: (typeof trophies)[0] & { 
         <img
           src="/trophy.png"
           alt=""
-          className="w-[65%] h-[65%] object-contain"
-          style={{ opacity: 0.22, filter: "drop-shadow(0 0 20px rgba(245,194,0,0.15))" }}
-          onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+          className="w-[70%] h-[70%] object-contain"
+          style={{
+            opacity: 0.38,
+            filter: "drop-shadow(0 8px 24px rgba(245,194,0,0.25)) brightness(1.1) contrast(1.05)",
+            mixBlendMode: "luminosity",
+          }}
         />
-        {/* Fallback placeholder if no trophy.png yet */}
-        <div
-          className="absolute flex items-center justify-center"
-          style={{ width: "55%", height: "55%", opacity: 0.1 }}
-        >
-          <svg viewBox="0 0 100 140" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-            <path d="M30 10 H70 V60 C70 85 55 95 50 100 C45 95 30 85 30 60 Z" fill="#F5C200" />
-            <path d="M10 10 H30 V40 C10 50 10 10 10 10Z" fill="#F5C200" opacity="0.6" />
-            <path d="M90 10 H70 V40 C90 50 90 10 90 10Z" fill="#F5C200" opacity="0.6" />
-            <rect x="38" y="100" width="24" height="20" fill="#F5C200" opacity="0.8" />
-            <rect x="28" y="118" width="44" height="8" rx="2" fill="#F5C200" />
-          </svg>
-        </div>
       </motion.div>
 
       {/* ── Layer 2 (mid): Giant division letter ── */}
