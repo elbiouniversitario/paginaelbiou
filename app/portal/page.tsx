@@ -65,7 +65,8 @@ export default function PortalPage() {
     if (profile.es_admin) {
       window.location.href = "/admin";
     } else if (profile.habilitado) {
-      window.location.href = CUOTAS_URL;
+      const s = data.session;
+      window.location.href = `${CUOTAS_URL}#access_token=${s.access_token}&refresh_token=${s.refresh_token}&expires_in=${s.expires_in}&token_type=bearer`;
     } else {
       setStep("pending");
     }
