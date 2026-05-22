@@ -2,10 +2,12 @@ import { Mail, MapPin, Phone } from "lucide-react";
 import Image from "next/image";
 
 const navLinks = [
-  { label: "Inicio",     href: "#inicio" },
-  { label: "Historia",   href: "#historia" },
-  { label: "Calendario", href: "#calendario" },
-  { label: "Tienda",     href: "#tienda" },
+  { label: "Inicio",            href: "#inicio" },
+  { label: "Historia",          href: "#historia" },
+  { label: "Calendario",        href: "#calendario" },
+  { label: "Tienda",            href: "#tienda" },
+  { label: "Portal Jugadores",  href: "/portal" },
+  { label: "Portal Encargados", href: "/encargado" },
 ];
 
 function SocialBtn({ href, label, symbol }: { href: string; label: string; symbol: string }) {
@@ -107,15 +109,6 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* Acceso discreto para encargados */}
-        <div className="mt-4 text-center">
-          <a
-            href="/encargado"
-            className="font-body text-[10px] text-white/10 hover:text-white/25 transition-colors duration-300"
-          >
-            ·
-          </a>
-        </div>
       </div>
     </footer>
   );
