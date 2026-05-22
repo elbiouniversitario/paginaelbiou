@@ -8,15 +8,10 @@ import type { Partido } from "@/lib/types";
 type Categoria = "Mayor" | "Reserva" | "Pre-Senior" | "Sub 20" | "Sub 18" | "Femenino";
 const categorias: Categoria[] = ["Mayor", "Reserva", "Pre-Senior", "Sub 20", "Sub 18", "Femenino"];
 
-const tableStats = {
-  position: 3,
-  played: 12,
-  won: 7,
-  drawn: 2,
-  lost: 3,
-  points: 23,
-  competition: "Primera Rueda 2026",
-};
+interface TablaRow {
+  posicion: number; pj: number; pg: number; pe: number; pp: number; pts: number;
+  competencia: string | null;
+}
 
 function getEuScore(p: Partido) {
   return p.es_local ? p.resultado_local ?? 0 : p.resultado_visitante ?? 0;
@@ -34,6 +29,7 @@ function formatFecha(fecha: string, hora?: string | null) {
 export default function MatchStats() {
   const [categoria, setCategoria] = useState<Categoria>("Mayor");
   const [partidos,  setPartidos]  = useState<Partido[]>(mockPartidos);
+  const [tabla,     setTabla]     = useState<TablaRow | null>(null);
 
   useEffect(() => {
     if (!supabase) return;
@@ -41,6 +37,19 @@ export default function MatchStats() {
       if (data?.length) setPartidos(data as Partido[]);
     });
   }, []);
+
+  useEffect(() => {
+    if (!supabase) return;
+    const dbName =
+      categoria === "Pre-Senior" ? "Pre-Senior" : categoria;
+    supabase
+      .from("tabla_posiciones")
+      .select("posicion,pj,pg,pe,pp,pts,competencia")
+      .eq("categoria", dbName)
+      .eq("is_local_team", true)
+      .single()
+      .then(({ data }) => { setTabla((data as TablaRow | null) ?? null); });
+  }, [categoria]);
 
   const byCategoria = partidos.filter((p) => p.categoria === categoria);
 
@@ -85,28 +94,34 @@ export default function MatchStats() {
             <p className="font-display font-bold text-[#F5C200] text-[9px] uppercase tracking-[0.22em] mb-4">
               Posición en Tabla
             </p>
-            <div className="flex items-center gap-5">
-              <span
-                className="font-display font-black text-white leading-none"
-                style={{ fontSize: "clamp(3rem, 6vw, 4.5rem)" }}
-              >
-                3°
-              </span>
-              <div>
-                <p className="font-display font-black text-white text-sm uppercase tracking-wide leading-tight mb-2">
-                  {tableStats.competition}
-                </p>
-                <div className="flex gap-3 font-display font-bold text-[10px] uppercase text-white/35">
-                  <span><span className="text-white/65">{tableStats.played}</span>PJ</span>
-                  <span><span className="text-white/65">{tableStats.won}</span>G</span>
-                  <span><span className="text-white/65">{tableStats.drawn}</span>E</span>
-                  <span><span className="text-white/65">{tableStats.lost}</span>P</span>
+            {tabla ? (
+              <div className="flex items-center gap-5">
+                <span
+                  className="font-display font-black text-white leading-none"
+                  style={{ fontSize: "clamp(3rem, 6vw, 4.5rem)" }}
+                >
+                  {tabla.posicion}°
+                </span>
+                <div>
+                  {tabla.competencia && (
+                    <p className="font-display font-black text-white text-sm uppercase tracking-wide leading-tight mb-2">
+                      {tabla.competencia}
+                    </p>
+                  )}
+                  <div className="flex gap-3 font-display font-bold text-[10px] uppercase text-white/35">
+                    <span><span className="text-white/65">{tabla.pj}</span>PJ</span>
+                    <span><span className="text-white/65">{tabla.pg}</span>G</span>
+                    <span><span className="text-white/65">{tabla.pe}</span>E</span>
+                    <span><span className="text-white/65">{tabla.pp}</span>P</span>
+                  </div>
+                  <p className="font-display font-black text-[#F5C200] text-xl mt-1.5 leading-none">
+                    {tabla.pts} <span className="text-[10px] font-bold text-white/30 tracking-widest">PTS</span>
+                  </p>
                 </div>
-                <p className="font-display font-black text-[#F5C200] text-xl mt-1.5 leading-none">
-                  {tableStats.points} <span className="text-[10px] font-bold text-white/30 tracking-widest">PTS</span>
-                </p>
               </div>
-            </div>
+            ) : (
+              <p className="font-body text-white/30 text-sm">Sin datos</p>
+            )}
           </div>
 
           {/* Col 2 — Último resultado */}

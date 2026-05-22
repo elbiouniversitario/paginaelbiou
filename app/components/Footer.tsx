@@ -106,6 +106,16 @@ export default function Footer() {
             Azul y Oro para siempre
           </p>
         </div>
+
+        {/* Acceso discreto para encargados */}
+        <div className="mt-4 text-center">
+          <a
+            href="/encargado"
+            className="font-body text-[10px] text-white/10 hover:text-white/25 transition-colors duration-300"
+          >
+            ·
+          </a>
+        </div>
       </div>
     </footer>
   );
