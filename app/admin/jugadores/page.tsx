@@ -5,6 +5,11 @@ import { supabase } from "@/lib/supabase";
 import type { Profile } from "@/lib/types";
 import { CheckCircle, XCircle, Clock } from "lucide-react";
 
+async function getToken() {
+  const { data } = await supabase!.auth.getSession();
+  return data.session?.access_token ?? "";
+}
+
 export default function JugadoresAdmin() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading,  setLoading]  = useState(true);
@@ -12,11 +17,12 @@ export default function JugadoresAdmin() {
   async function load() {
     if (!supabase) return;
     setLoading(true);
-    const { data } = await supabase
-      .from("profiles")
-      .select("*")
-      .order("created_at", { ascending: false });
-    setProfiles((data ?? []) as Profile[]);
+    const token = await getToken();
+    const res = await fetch("/api/admin/profiles", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json() as Profile[];
+    setProfiles(Array.isArray(data) ? data : []);
     setLoading(false);
   }
 
@@ -24,7 +30,12 @@ export default function JugadoresAdmin() {
 
   async function toggleHabilitado(id: string, current: boolean) {
     if (!supabase) return;
-    await supabase.from("profiles").update({ habilitado: !current } as never).eq("id", id);
+    const token = await getToken();
+    await fetch("/api/admin/profiles", {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ id, habilitado: !current }),
+    });
     load();
   }
 
