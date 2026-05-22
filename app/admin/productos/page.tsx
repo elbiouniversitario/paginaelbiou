@@ -209,14 +209,19 @@ export default function ProductosAdmin() {
       ? form.talles.split(",").map((t) => t.trim()).filter(Boolean)
       : [];
 
-    const { error } = await supabase.from("productos").insert({
-      nombre: form.nombre, descripcion: form.descripcion,
-      precio: parseFloat(form.precio), categoria: form.categoria,
-      talles: tallesArr, stock: parseInt(form.stock),
-      foto_url, destacado: false, activo: true,
-    } as never);
-
-    if (error) { setSavErr(error.message); setSaving(false); return; }
+    const token2 = await getToken();
+    const insertRes = await fetch("/api/admin/productos", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token2}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nombre: form.nombre, descripcion: form.descripcion,
+        precio: parseFloat(form.precio), categoria: form.categoria,
+        talles: tallesArr, stock: parseInt(form.stock),
+        foto_url, destacado: false, activo: true,
+      }),
+    });
+    const insertJson = await insertRes.json() as { ok?: boolean; error?: string };
+    if (!insertRes.ok) { setSavErr(insertJson.error ?? "Error al guardar"); setSaving(false); return; }
     setForm(empty);
     setImgFile(null);
     setImgPrev("");

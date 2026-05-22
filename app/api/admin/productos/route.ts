@@ -14,6 +14,15 @@ async function verifyAdmin(req: NextRequest) {
   return profile?.es_admin ? db : null;
 }
 
+export async function POST(req: NextRequest) {
+  const db = await verifyAdmin(req);
+  if (!db) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const body = await req.json() as Record<string, unknown>;
+  const { error } = await db.from("productos").insert(body as never);
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ ok: true });
+}
+
 export async function GET(req: NextRequest) {
   const db = await verifyAdmin(req);
   if (!db) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
