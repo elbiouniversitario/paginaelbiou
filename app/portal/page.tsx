@@ -76,7 +76,8 @@ export default function PortalPage() {
       },
     });
 
-    if (authErr || !data.user) {
+    // Si el usuario fue creado (con o sin error de confirmación) procedemos
+    if (!data.user) {
       setLoading(false);
       setError(authErr?.message ?? "Error al crear la cuenta.");
       return;
