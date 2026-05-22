@@ -16,6 +16,8 @@ export interface Env {
   SUPABASE_URL: string;
   SUPABASE_SERVICE_KEY: string;
   SITE_URL: string;
+  CALLMEBOT_API_KEY: string;
+  WPP_ADMIN_NUMBER: string;
 }
 
 interface CartItemPayload {
@@ -27,6 +29,8 @@ interface CartItemPayload {
 interface CheckoutPayload {
   items: CartItemPayload[];
   email: string;
+  nombre_cliente?: string;
+  telefono?: string;
 }
 
 const DLOCAL_API = "https://api.dlocalgo.com/v1";
@@ -83,6 +87,19 @@ async function generateSignature(payload: object, secret: string): Promise<strin
   return btoa(String.fromCharCode(...new Uint8Array(sig)));
 }
 
+async function sendWppNotification(
+  payload: CheckoutPayload,
+  total: number,
+  env: Env
+): Promise<void> {
+  if (!env.CALLMEBOT_API_KEY || !env.WPP_ADMIN_NUMBER) return;
+  const items  = payload.items.map((i) => `${i.cantidad}x ${i.producto.nombre}`).join(", ");
+  const nombre = payload.nombre_cliente ?? payload.email;
+  const msg    = `🛒 *Nueva compra EU!*\nCliente: ${nombre}\nProductos: ${items}\nTotal: $${total.toLocaleString("es-UY")}\nEmail: ${payload.email}${payload.telefono ? `\nWPP: ${payload.telefono}` : ""}`;
+  const url    = `https://api.callmebot.com/whatsapp.php?phone=${env.WPP_ADMIN_NUMBER}&text=${encodeURIComponent(msg)}&apikey=${env.CALLMEBOT_API_KEY}`;
+  await fetch(url).catch(() => {});
+}
+
 async function saveOrder(
   payload: CheckoutPayload,
   paymentId: string,
@@ -103,10 +120,12 @@ async function saveOrder(
       Prefer: "return=representation",
     },
     body: JSON.stringify({
-      email: payload.email,
+      email:          payload.email,
+      nombre_cliente: payload.nombre_cliente ?? null,
+      telefono:       payload.telefono ?? null,
       total,
       estado: "pendiente",
-      dlocal_payment_id: paymentId,
+      dlocal_payment_id:  paymentId,
       dlocal_payment_url: paymentUrl,
     }),
   });
@@ -170,7 +189,13 @@ export default {
     // POST /webhook — dLocal Go notifica cambios de estado
     if (url.pathname === "/webhook" && request.method === "POST") {
       try {
-        const body = await request.json() as { id: string; status: string };
+        const body = await request.json() as {
+          id: string;
+          status: string;
+          order?: { email?: string; name?: string; phone?: string };
+          items?: CartItemPayload[];
+          amount?: number;
+        };
         const newStatus = body.status === "PAID" ? "pagado" : body.status === "CANCELLED" ? "cancelado" : "pendiente";
 
         await fetch(`${env.SUPABASE_URL}/rest/v1/pedidos?dlocal_payment_id=eq.${body.id}`, {
@@ -182,6 +207,19 @@ export default {
           },
           body: JSON.stringify({ estado: newStatus }),
         });
+
+        if (newStatus === "pagado") {
+          await sendWppNotification(
+            {
+              email: body.order?.email ?? "desconocido",
+              nombre_cliente: body.order?.name,
+              telefono: body.order?.phone,
+              items: body.items ?? [],
+            },
+            body.amount ?? 0,
+            env
+          );
+        }
 
         return Response.json({ ok: true });
       } catch (err) {

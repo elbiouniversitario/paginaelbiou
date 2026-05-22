@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useCart } from "./CartProvider";
@@ -9,28 +9,63 @@ function formatPrecio(n: number) {
   return new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 }).format(n);
 }
 
+function CartInput({ placeholder, value, onChange, type = "text", required }: {
+  placeholder: string; value: string; onChange: (v: string) => void; type?: string; required?: boolean;
+}) {
+  return (
+    <input
+      type={type}
+      placeholder={placeholder}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      required={required}
+      className="w-full border border-[#D8E1EF] bg-white text-[#1A2F5E] font-body text-sm px-3 py-2.5 outline-none focus:border-[#1A2F5E] transition-colors placeholder:text-[#6B7A99]/60"
+    />
+  );
+}
+
 export default function CartDrawer() {
   const { items, open, setOpen, total, count, remove, updateQty, clear } = useCart();
+  const [email,      setEmail]      = useState("");
+  const [nombre,     setNombre]     = useState("");
+  const [telefono,   setTelefono]   = useState("");
+  const [showForm,   setShowForm]   = useState(false);
+  const [processing, setProcessing] = useState(false);
+  const [checkErr,   setCheckErr]   = useState("");
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
-  const handleCheckout = async () => {
+  const workerUrl = process.env.NEXT_PUBLIC_WORKER_URL;
+
+  async function handleCheckout(e: React.FormEvent) {
+    e.preventDefault();
+    if (!workerUrl) {
+      setCheckErr("Pasarela de pago no configurada aún.");
+      return;
+    }
+    setProcessing(true);
+    setCheckErr("");
     try {
-      const res = await fetch("/api/checkout", {
+      const res = await fetch(`${workerUrl}/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items }),
+        body: JSON.stringify({ items, email, nombre_cliente: nombre, telefono }),
       });
-      const data = await res.json();
-      if (data.payment_url) window.location.href = data.payment_url;
-      else alert("Pasarela de pago no configurada aún.");
+      const data = await res.json() as { payment_url?: string; error?: string };
+      if (data.payment_url) {
+        window.location.href = data.payment_url;
+      } else {
+        setCheckErr(data.error ?? "Error al procesar el pago.");
+        setProcessing(false);
+      }
     } catch {
-      alert("Error al procesar el pago. Intentá de nuevo.");
+      setCheckErr("Error de conexión. Intentá de nuevo.");
+      setProcessing(false);
     }
-  };
+  }
 
   return (
     <AnimatePresence>
@@ -102,9 +137,33 @@ export default function CartDrawer() {
                   <span className="font-display font-semibold text-xs uppercase tracking-widest text-[#6B7A99]">Total</span>
                   <span className="font-display font-black text-xl text-[#1A2F5E]">{formatPrecio(total)}</span>
                 </div>
-                <button onClick={handleCheckout} className="w-full bg-[#1A2F5E] hover:bg-[#152549] text-white font-display font-black text-xs uppercase tracking-widest py-4 transition-colors duration-200">
-                  Finalizar compra
-                </button>
+
+                {showForm ? (
+                  <form onSubmit={handleCheckout} className="flex flex-col gap-2.5">
+                    <CartInput placeholder="Tu nombre" value={nombre} onChange={setNombre} required />
+                    <CartInput placeholder="Email *" type="email" value={email} onChange={setEmail} required />
+                    <CartInput placeholder="WhatsApp (opcional)" type="tel" value={telefono} onChange={setTelefono} />
+                    {checkErr && <p className="font-body text-red-500 text-xs">{checkErr}</p>}
+                    <button
+                      type="submit"
+                      disabled={processing}
+                      className="w-full bg-[#1A2F5E] hover:bg-[#152549] text-white font-display font-black text-xs uppercase tracking-widest py-4 transition-colors duration-200 disabled:opacity-60"
+                    >
+                      {processing ? "Procesando..." : "Ir al pago →"}
+                    </button>
+                    <button type="button" onClick={() => setShowForm(false)} className="font-body text-xs text-[#6B7A99] hover:text-[#1A2F5E] text-center">
+                      Cancelar
+                    </button>
+                  </form>
+                ) : (
+                  <button
+                    onClick={() => setShowForm(true)}
+                    className="w-full bg-[#1A2F5E] hover:bg-[#152549] text-white font-display font-black text-xs uppercase tracking-widest py-4 transition-colors duration-200"
+                  >
+                    Finalizar compra
+                  </button>
+                )}
+
                 <button onClick={clear} className="font-display font-semibold text-xs uppercase tracking-widest text-[#6B7A99] hover:text-red-500 transition-colors text-center">
                   Vaciar carrito
                 </button>

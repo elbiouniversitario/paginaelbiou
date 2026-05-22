@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { MapPin, Clock, Shield } from "lucide-react";
 import type { Partido } from "@/lib/types";
 import { mockPartidos } from "@/lib/mock-data";
+import { supabase } from "@/lib/supabase";
 
 type Tab = "proximos" | "resultados";
 type Categoria = "Mayor" | "Reserva" | "Pre-Senior" | "Sub 20" | "Sub 18" | "Femenino";
@@ -124,12 +125,22 @@ function ResultadoCard({ partido, index }: { partido: Partido; index: number }) 
 }
 
 export default function Calendario() {
-  const [tab, setTab]             = useState<Tab>("proximos");
+  const [tab,       setTab]       = useState<Tab>("proximos");
   const [categoria, setCategoria] = useState<Categoria>("Mayor");
+  const [partidos,  setPartidos]  = useState<Partido[]>(mockPartidos);
   const titleRef                  = useRef<HTMLDivElement>(null);
   const titleInView               = useInView(titleRef, { once: true });
-  const proximos   = mockPartidos.filter((p) => p.estado === "programado");
-  const resultados = mockPartidos.filter((p) => p.estado === "finalizado");
+
+  useEffect(() => {
+    if (!supabase) return;
+    supabase.from("partidos").select("*").order("fecha", { ascending: true }).then(({ data }) => {
+      if (data?.length) setPartidos(data as Partido[]);
+    });
+  }, []);
+
+  const byCategoria = partidos.filter((p) => p.categoria === categoria);
+  const proximos    = byCategoria.filter((p) => p.estado === "programado");
+  const resultados  = byCategoria.filter((p) => p.estado === "finalizado").reverse();
 
   return (
     <section id="calendario" className="py-20 lg:py-28 bg-[#F7F9FC]">

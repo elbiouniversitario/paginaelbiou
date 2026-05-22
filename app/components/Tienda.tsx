@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { ShoppingBag, Plus } from "lucide-react";
 import type { Producto, CategoriaProducto } from "@/lib/types";
 import { mockProductos } from "@/lib/mock-data";
+import { supabase } from "@/lib/supabase";
 import { useCart } from "./CartProvider";
-
-const talles = ["XS", "S", "M", "L", "XL", "XXL"];
 const categorias: { label: string; value: CategoriaProducto | "Todos" }[] = [
   { label: "Todos",       value: "Todos" },
   { label: "Camisetas",   value: "Camisetas" },
@@ -25,7 +24,8 @@ function ProductCard({ producto, index }: { producto: Producto; index: number })
   const [added, setAdded] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
-  const needsTalle = producto.categoria === "Camisetas" || producto.categoria === "Shorts";
+  const tallesDisponibles = producto.talles ?? [];
+  const needsTalle = tallesDisponibles.length > 0;
 
   const handleAdd = () => {
     if (needsTalle && !talle) return;
@@ -45,14 +45,19 @@ function ProductCard({ producto, index }: { producto: Producto; index: number })
       {/* Image area */}
       <div className="relative aspect-square bg-[#EEF3FB] flex items-center justify-center overflow-hidden">
         {producto.destacado && (
-          <span className="absolute top-3 left-3 bg-[#F5C200] text-[#1A2F5E] font-display font-black text-[9px] uppercase tracking-widest px-2 py-0.5">
+          <span className="absolute top-3 left-3 bg-[#F5C200] text-[#1A2F5E] font-display font-black text-[9px] uppercase tracking-widest px-2 py-0.5 z-10">
             Destacado
           </span>
         )}
-        <div className="flex flex-col items-center gap-2 text-[#1A2F5E]/30 group-hover:text-[#1A2F5E]/50 transition-colors">
-          <ShoppingBag size={36} strokeWidth={1.5} />
-          <span className="font-display font-black text-xs uppercase tracking-widest">EU</span>
-        </div>
+        {producto.foto_url
+          ? <img src={producto.foto_url} alt={producto.nombre} className="absolute inset-0 w-full h-full object-cover" />
+          : (
+            <div className="flex flex-col items-center gap-2 text-[#1A2F5E]/30 group-hover:text-[#1A2F5E]/50 transition-colors">
+              <ShoppingBag size={36} strokeWidth={1.5} />
+              <span className="font-display font-black text-xs uppercase tracking-widest">EU</span>
+            </div>
+          )
+        }
       </div>
 
       {/* Info */}
@@ -67,7 +72,7 @@ function ProductCard({ producto, index }: { producto: Producto; index: number })
               Talle {!talle && <span className="text-red-400">*</span>}
             </p>
             <div className="flex flex-wrap gap-1">
-              {talles.map(t => (
+              {tallesDisponibles.map((t) => (
                 <button
                   key={t}
                   onClick={() => setTalle(talle === t ? null : t)}
@@ -107,10 +112,19 @@ function ProductCard({ producto, index }: { producto: Producto; index: number })
 
 export default function Tienda() {
   const [categoria, setCategoria] = useState<CategoriaProducto | "Todos">("Todos");
+  const [productos, setProductos] = useState(mockProductos);
   const { count, toggleOpen } = useCart();
   const titleRef = useRef<HTMLDivElement>(null);
   const titleInView = useInView(titleRef, { once: true });
-  const filtrados = categoria === "Todos" ? mockProductos : mockProductos.filter(p => p.categoria === categoria);
+
+  useEffect(() => {
+    if (!supabase) return;
+    supabase.from("productos").select("*").eq("activo", true).order("destacado", { ascending: false }).then(({ data }) => {
+      if (data?.length) setProductos(data as typeof mockProductos);
+    });
+  }, []);
+
+  const filtrados = categoria === "Todos" ? productos : productos.filter((p) => p.categoria === categoria);
 
   return (
     <section id="tienda" className="py-20 lg:py-28 bg-white">

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { mockPartidos } from "@/lib/mock-data";
+import { supabase } from "@/lib/supabase";
 import type { Partido } from "@/lib/types";
 
 type Categoria = "Mayor" | "Reserva" | "Pre-Senior" | "Sub 20" | "Sub 18" | "Femenino";
@@ -24,7 +25,7 @@ function getRivalScore(p: Partido) {
   return p.es_local ? p.resultado_visitante ?? 0 : p.resultado_local ?? 0;
 }
 
-function formatFecha(fecha: string, hora?: string) {
+function formatFecha(fecha: string, hora?: string | null) {
   const d = new Date(fecha + "T00:00:00");
   const day = d.toLocaleDateString("es-AR", { weekday: "short", day: "numeric", month: "short" }).toUpperCase();
   return hora ? `${day} - ${hora}` : day;
@@ -32,12 +33,22 @@ function formatFecha(fecha: string, hora?: string) {
 
 export default function MatchStats() {
   const [categoria, setCategoria] = useState<Categoria>("Mayor");
+  const [partidos,  setPartidos]  = useState<Partido[]>(mockPartidos);
 
-  const last = [...mockPartidos]
+  useEffect(() => {
+    if (!supabase) return;
+    supabase.from("partidos").select("*").then(({ data }) => {
+      if (data?.length) setPartidos(data as Partido[]);
+    });
+  }, []);
+
+  const byCategoria = partidos.filter((p) => p.categoria === categoria);
+
+  const last = [...byCategoria]
     .filter((p) => p.estado === "finalizado")
     .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())[0];
 
-  const next = [...mockPartidos]
+  const next = [...byCategoria]
     .filter((p) => p.estado === "programado")
     .sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime())[0];
 

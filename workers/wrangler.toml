@@ -5,8 +5,10 @@ compatibility_date = "2024-01-01"
 [vars]
 SITE_URL = "https://paginaelbiou.vercel.app"
 
-# Secretos — agregar con: wrangler secret put DLOCAL_API_KEY
+# Secretos — agregar con:
 # wrangler secret put DLOCAL_API_KEY
 # wrangler secret put DLOCAL_SECRET_KEY
 # wrangler secret put SUPABASE_URL
 # wrangler secret put SUPABASE_SERVICE_KEY
+# wrangler secret put CALLMEBOT_API_KEY        (activar en callmebot.com/blog/free-whatsapp-message-api/)
+# wrangler secret put WPP_ADMIN_NUMBER         (ej: 59899019892  — sin + ni espacios)

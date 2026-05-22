@@ -1,9 +1,11 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { ShoppingBag, ArrowRight } from "lucide-react";
 import { mockProductos } from "@/lib/mock-data";
+import { supabase } from "@/lib/supabase";
+import type { Producto } from "@/lib/types";
 
 function formatPrecio(n: number) {
   return new Intl.NumberFormat("es-AR", {
@@ -13,12 +15,12 @@ function formatPrecio(n: number) {
   }).format(n);
 }
 
-const featured = [
+const defaultFeatured: Producto[] = [
   ...mockProductos.filter((p) => p.destacado),
   ...mockProductos.filter((p) => !p.destacado),
 ].slice(0, 4);
 
-function PreviewCard({ producto, index }: { producto: (typeof featured)[0]; index: number }) {
+function PreviewCard({ producto, index }: { producto: Producto; index: number }) {
   const ref = useRef<HTMLAnchorElement>(null);
   const inView = useInView(ref, { once: true, margin: "-30px" });
 
@@ -39,12 +41,15 @@ function PreviewCard({ producto, index }: { producto: (typeof featured)[0]; inde
             Destacado
           </span>
         )}
-        {/* Placeholder graphic */}
-        <div className="flex flex-col items-center gap-2 text-[#1A2F5E]/20 group-hover:text-[#1A2F5E]/35 transition-colors duration-250">
-          <ShoppingBag size={40} strokeWidth={1} />
-          <span className="font-display font-black text-xs uppercase tracking-widest">EFU</span>
-        </div>
-        {/* Hover overlay */}
+        {producto.foto_url
+          ? <img src={producto.foto_url} alt={producto.nombre} className="absolute inset-0 w-full h-full object-cover" />
+          : (
+            <div className="flex flex-col items-center gap-2 text-[#1A2F5E]/20 group-hover:text-[#1A2F5E]/35 transition-colors duration-250">
+              <ShoppingBag size={40} strokeWidth={1} />
+              <span className="font-display font-black text-xs uppercase tracking-widest">EFU</span>
+            </div>
+          )
+        }
         <div className="absolute inset-0 bg-[#1A2F5E]/0 group-hover:bg-[#1A2F5E]/5 transition-colors duration-250" />
       </div>
 
@@ -70,8 +75,22 @@ function PreviewCard({ producto, index }: { producto: (typeof featured)[0]; inde
 }
 
 export default function StorePreview() {
+  const [featured, setFeatured] = useState<Producto[]>(defaultFeatured);
   const titleRef = useRef<HTMLDivElement>(null);
   const titleInView = useInView(titleRef, { once: true });
+
+  useEffect(() => {
+    if (!supabase) return;
+    supabase
+      .from("productos")
+      .select("*")
+      .eq("activo", true)
+      .order("destacado", { ascending: false })
+      .limit(4)
+      .then(({ data }) => {
+        if (data?.length) setFeatured(data as Producto[]);
+      });
+  }, []);
 
   return (
     <section className="py-16 lg:py-20 bg-[#F7F9FC]">
@@ -111,7 +130,7 @@ export default function StorePreview() {
 
         {/* Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-          {featured.map((p, i) => (
+          {featured.map((p: Producto, i: number) => (
             <PreviewCard key={p.id} producto={p} index={i} />
           ))}
         </div>
