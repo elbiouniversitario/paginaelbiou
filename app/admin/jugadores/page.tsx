@@ -103,7 +103,7 @@ function ProfileRow({ profile, onToggle }: { profile: Profile; onToggle: (id: st
     }`}>
       <div className="w-8 h-8 rounded-full bg-white/8 flex items-center justify-center flex-shrink-0">
         <span className="font-display font-black text-white/60 text-[11px]">
-          {(profile.nombre ?? "?")[0].toUpperCase()}
+          {(profile.nombre || "?")[0].toUpperCase()}
         </span>
       </div>
       <div className="flex-1 min-w-0">
