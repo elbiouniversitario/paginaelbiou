@@ -18,11 +18,12 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Token inválido" }, { status: 401 });
     }
 
+    type ProfileRow = { habilitado: boolean; es_admin: boolean };
     const { data: profile, error } = await db
       .from("profiles")
-      .select("*")
+      .select("habilitado, es_admin")
       .eq("id", user.id)
-      .single();
+      .single() as { data: ProfileRow | null; error: { message: string } | null };
 
     if (error || !profile) {
       return NextResponse.json({ habilitado: false, es_admin: false });
