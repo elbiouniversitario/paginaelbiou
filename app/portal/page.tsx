@@ -7,7 +7,7 @@ import { supabase } from "@/lib/supabase";
 import type { CategoriaEquipo, Posicion } from "@/lib/types";
 
 type Tab = "login" | "register";
-type Step = "form" | "pending" | "approved";
+type Step = "form" | "pending" | "approved" | "reset";
 
 const categorias: CategoriaEquipo[] = ["Mayor", "Reserva", "Pre-Senior", "Sub 20", "Sub 18", "Femenino"];
 const posiciones: Posicion[] = ["Arquero", "Defensor", "Mediocampista", "Delantero"];
@@ -22,6 +22,7 @@ export default function PortalPage() {
 
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPass, setLoginPass]   = useState("");
+  const [resetSent,  setResetSent]  = useState(false);
 
   const [regNombre,    setRegNombre]    = useState("");
   const [regEmail,     setRegEmail]     = useState("");
@@ -102,6 +103,18 @@ export default function PortalPage() {
     setStep("pending");
   }
 
+  async function handleReset(e: React.FormEvent) {
+    e.preventDefault();
+    if (!supabase) return;
+    setLoading(true);
+    setError("");
+    await supabase.auth.resetPasswordForEmail(loginEmail, {
+      redirectTo: `${window.location.origin}/portal/nueva-contrasena`,
+    });
+    setLoading(false);
+    setResetSent(true);
+  }
+
   if (step === "pending") return <PendingScreen />;
 
   return (
@@ -134,13 +147,55 @@ export default function PortalPage() {
         </div>
 
         {/* Login */}
-        {tab === "login" && (
+        {tab === "login" && step !== "reset" && (
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
             <Field icon={<Mail size={14} />} type="email" placeholder="Email" value={loginEmail} onChange={setLoginEmail} />
             <Field icon={<Lock size={14} />} type="password" placeholder="Contraseña" value={loginPass} onChange={setLoginPass} />
             {error && <p className="font-body text-red-400 text-xs text-center">{error}</p>}
             <SubmitBtn loading={loading} label="Ingresar" />
+            <button
+              type="button"
+              onClick={() => { setStep("reset"); setError(""); setResetSent(false); }}
+              className="font-body text-white/30 text-[11px] text-center hover:text-white/60 transition-colors mt-1"
+            >
+              ¿Olvidaste tu contraseña?
+            </button>
           </form>
+        )}
+
+        {/* Reset password */}
+        {tab === "login" && step === "reset" && (
+          <div className="flex flex-col gap-4">
+            {resetSent ? (
+              <div className="text-center flex flex-col gap-4">
+                <p className="font-body text-white/70 text-sm leading-relaxed">
+                  Te enviamos un email con el link para cambiar tu contraseña. Revisá tu bandeja (y el spam).
+                </p>
+                <button
+                  onClick={() => { setStep("form"); setResetSent(false); }}
+                  className="font-display font-bold text-[11px] uppercase tracking-widest text-[#F5C200]/60 hover:text-[#F5C200] transition-colors"
+                >
+                  ← Volver
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleReset} className="flex flex-col gap-4">
+                <p className="font-body text-white/50 text-xs text-center">
+                  Ingresá tu email y te mandamos un link para resetear la contraseña.
+                </p>
+                <Field icon={<Mail size={14} />} type="email" placeholder="Email" value={loginEmail} onChange={setLoginEmail} required />
+                {error && <p className="font-body text-red-400 text-xs text-center">{error}</p>}
+                <SubmitBtn loading={loading} label="Enviar link" />
+                <button
+                  type="button"
+                  onClick={() => { setStep("form"); setError(""); }}
+                  className="font-body text-white/30 text-[11px] text-center hover:text-white/60 transition-colors"
+                >
+                  ← Volver al login
+                </button>
+              </form>
+            )}
+          </div>
         )}
 
         {/* Register */}
