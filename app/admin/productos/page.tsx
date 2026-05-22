@@ -153,8 +153,12 @@ export default function ProductosAdmin() {
   async function load() {
     if (!supabase) return;
     setLoading(true);
-    const { data } = await supabase.from("productos").select("*").order("created_at", { ascending: false });
-    setProductos((data ?? []) as Producto[]);
+    const token = await getToken();
+    const res = await fetch("/api/admin/productos", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json() as Producto[];
+    setProductos(Array.isArray(data) ? data : []);
     setLoading(false);
   }
 
@@ -221,18 +225,31 @@ export default function ProductosAdmin() {
   }
 
   async function toggleActivo(id: string, current: boolean) {
-    if (!supabase) return;
-    await supabase.from("productos").update({ activo: !current } as never).eq("id", id);
+    const token = await getToken();
+    await fetch("/api/admin/productos", {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ id, activo: !current }),
+    });
     load();
   }
   async function toggleDestacado(id: string, current: boolean) {
-    if (!supabase) return;
-    await supabase.from("productos").update({ destacado: !current } as never).eq("id", id);
+    const token = await getToken();
+    await fetch("/api/admin/productos", {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ id, destacado: !current }),
+    });
     load();
   }
   async function eliminar(id: string) {
-    if (!supabase || !confirm("¿Eliminar este producto?")) return;
-    await supabase.from("productos").delete().eq("id", id);
+    if (!confirm("¿Eliminar este producto?")) return;
+    const token = await getToken();
+    await fetch("/api/admin/productos", {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
     load();
   }
 
