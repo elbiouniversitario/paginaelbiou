@@ -20,18 +20,17 @@ export async function GET(req: NextRequest) {
 
     const { data: profile, error } = await db
       .from("profiles")
-      .select("habilitado, es_admin")
+      .select("*")
       .eq("id", user.id)
       .single();
 
     if (error || !profile) {
-      // Si no hay perfil aún, devolvemos pendiente
       return NextResponse.json({ habilitado: false, es_admin: false });
     }
 
     return NextResponse.json({
       habilitado: profile.habilitado ?? false,
-      es_admin:   (profile as unknown as { es_admin: boolean }).es_admin ?? false,
+      es_admin:   profile.es_admin ?? false,
     });
   } catch {
     return NextResponse.json({ error: "Error interno" }, { status: 500 });
