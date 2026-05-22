@@ -41,21 +41,29 @@ export default function PortalPage() {
       password: loginPass,
     });
 
-    if (authErr || !data.user) {
+    if (authErr || !data.user || !data.session) {
       setLoading(false);
       setError("Email o contraseña incorrectos.");
       return;
     }
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("habilitado")
-      .eq("id", data.user.id)
-      .single() as { data: { habilitado: boolean } | null };
+    // Verificación server-side con service role — bypasea RLS
+    const res = await fetch("/api/profile", {
+      headers: { Authorization: `Bearer ${data.session.access_token}` },
+    });
 
     setLoading(false);
 
-    if (profile?.habilitado) {
+    if (!res.ok) {
+      setError("Error al verificar la cuenta. Intenta de nuevo.");
+      return;
+    }
+
+    const profile = await res.json() as { habilitado: boolean; es_admin: boolean };
+
+    if (profile.es_admin) {
+      window.location.href = "/admin";
+    } else if (profile.habilitado) {
       window.location.href = CUOTAS_URL;
     } else {
       setStep("pending");

@@ -18,14 +18,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     if (!supabase) { setChecking(false); return; }
-    supabase.auth.getUser().then(async ({ data }) => {
-      if (!data.user) { window.location.href = "/portal"; return; }
-      const { data: profile } = await supabase!
-        .from("profiles")
-        .select("es_admin")
-        .eq("id", data.user.id)
-        .single() as { data: { es_admin: boolean } | null };
-      if (!profile?.es_admin) { window.location.href = "/"; return; }
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!session) { window.location.href = "/portal"; return; }
+      const res = await fetch("/api/profile", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (!res.ok) { window.location.href = "/portal"; return; }
+      const profile = await res.json() as { habilitado: boolean; es_admin: boolean };
+      if (!profile.es_admin) { window.location.href = "/"; return; }
       setAllowed(true);
       setChecking(false);
     });
