@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Menu, X, ShoppingBag, User } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Menu, X, ShoppingBag, User, ChevronDown } from "lucide-react";
 import clsx from "clsx";
 import Image from "next/image";
 import { useCart } from "./CartProvider";
@@ -14,9 +14,21 @@ const links = [
 ];
 
 export default function Navbar() {
-  const [open, setOpen]         = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const { count, toggleOpen }   = useCart();
+  const [open,        setOpen]        = useState(false);
+  const [scrolled,    setScrolled]    = useState(false);
+  const [loginOpen,   setLoginOpen]   = useState(false);
+  const loginRef = useRef<HTMLDivElement>(null);
+  const { count, toggleOpen } = useCart();
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (loginRef.current && !loginRef.current.contains(e.target as Node)) {
+        setLoginOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 30);
@@ -68,13 +80,37 @@ export default function Navbar() {
 
         {/* Right: Iniciar Sesión + Cart */}
         <div className="flex items-center gap-1">
-          <a
-            href="/login"
-            className="hidden lg:flex items-center gap-1.5 font-display font-bold text-[11px] uppercase tracking-[0.12em] text-[#1A2F5E] hover:text-[#F5C200] transition-colors duration-200 px-3 py-2"
-          >
-            <User size={13} />
-            Iniciar Sesión
-          </a>
+          {/* Login dropdown — desktop */}
+          <div ref={loginRef} className="hidden lg:block relative">
+            <button
+              onClick={() => setLoginOpen((v) => !v)}
+              className="flex items-center gap-1.5 font-display font-bold text-[11px] uppercase tracking-[0.12em] text-[#1A2F5E] hover:text-[#F5C200] transition-colors duration-200 px-3 py-2"
+            >
+              <User size={13} />
+              Iniciar Sesión
+              <ChevronDown size={11} className={clsx("transition-transform duration-200", loginOpen && "rotate-180")} />
+            </button>
+            {loginOpen && (
+              <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-[#D8E1EF] shadow-lg z-50">
+                <a
+                  href="/portal"
+                  onClick={() => setLoginOpen(false)}
+                  className="flex items-center gap-2.5 px-4 py-3 font-display font-bold text-[11px] uppercase tracking-wider text-[#1A2F5E] hover:bg-[#F5C200]/10 hover:text-[#F5C200] transition-colors border-b border-[#D8E1EF]"
+                >
+                  <User size={12} />
+                  Portal Jugadores
+                </a>
+                <a
+                  href="/login"
+                  onClick={() => setLoginOpen(false)}
+                  className="flex items-center gap-2.5 px-4 py-3 font-display font-bold text-[11px] uppercase tracking-wider text-[#1A2F5E] hover:bg-[#F5C200]/10 hover:text-[#F5C200] transition-colors"
+                >
+                  <ShoppingBag size={12} />
+                  Tienda / Compras
+                </a>
+              </div>
+            )}
+          </div>
 
           <button
             onClick={toggleOpen}
@@ -121,10 +157,18 @@ export default function Navbar() {
             </a>
           ))}
           <a
-            href="/login"
-            className="mt-3 text-center flex items-center justify-center gap-2 border border-[#1A2F5E] text-[#1A2F5E] font-display font-bold text-xs uppercase tracking-widest py-3"
+            href="/portal"
+            onClick={() => setOpen(false)}
+            className="mt-3 flex items-center gap-2 border border-[#1A2F5E] text-[#1A2F5E] font-display font-bold text-xs uppercase tracking-widest py-3 px-4"
           >
-            <User size={12} /> Iniciar Sesión
+            <User size={12} /> Portal Jugadores
+          </a>
+          <a
+            href="/login"
+            onClick={() => setOpen(false)}
+            className="mt-2 flex items-center gap-2 border border-[#D8E1EF] text-[#6B7A99] font-display font-bold text-xs uppercase tracking-widest py-3 px-4"
+          >
+            <ShoppingBag size={12} /> Tienda / Compras
           </a>
         </nav>
       </div>
