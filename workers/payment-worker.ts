@@ -41,22 +41,6 @@ interface DbProduct { id: string; nombre: string; precio: number }
 
 const DLOCAL_API = "https://api.dlocalgo.com/v1";
 
-// ── Signature generation (dLocal V3-HMAC-SHA256) ─────────────────────────
-
-async function generateSignature(
-  login: string, timestamp: number, nonce: string,
-  body: object, secret: string
-): Promise<string> {
-  const encoder  = new TextEncoder();
-  const key      = await crypto.subtle.importKey(
-    "raw", encoder.encode(secret),
-    { name: "HMAC", hash: "SHA-256" }, false, ["sign"]
-  );
-  const message  = login + timestamp.toString() + nonce + JSON.stringify(body);
-  const sig      = await crypto.subtle.sign("HMAC", key, encoder.encode(message));
-  return btoa(String.fromCharCode(...new Uint8Array(sig)));
-}
-
 // ── Fetch real prices from Supabase ────────────────────────────────────────
 
 async function fetchRealPrices(
@@ -92,19 +76,11 @@ async function createDlocalPayment(
     payer:             { email: payload.email },
   };
 
-  const timestamp = Date.now();
-  const nonce     = crypto.randomUUID();
-  const signature = await generateSignature(
-    env.DLOCAL_API_KEY, timestamp, nonce, body, env.DLOCAL_SECRET_KEY
-  );
-
   const res = await fetch(`${DLOCAL_API}/payments`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-Login":      env.DLOCAL_API_KEY,
-      "X-Trans-Key":  env.DLOCAL_SECRET_KEY,
-      Authorization:  `V3-HMAC-SHA256 login=${env.DLOCAL_API_KEY}, timestamp=${timestamp}, nonce=${nonce}, signature=${signature}`,
+      Authorization:  `Bearer ${env.DLOCAL_API_KEY}:${env.DLOCAL_SECRET_KEY}`,
     },
     body: JSON.stringify(body),
   });
