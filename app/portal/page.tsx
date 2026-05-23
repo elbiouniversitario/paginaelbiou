@@ -100,6 +100,14 @@ export default function PortalPage() {
       numero:    regNumero ? parseInt(regNumero) : null,
     } as never).eq("id", data.user.id);
 
+    fetch("/api/notify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: `*Nuevo jugador EFU!*\nNombre: ${regNombre}\nEmail: ${regEmail}\nCategoría: ${regCategoria}\nPosición: ${regPosicion}${regNumero ? `\nNúmero: ${regNumero}` : ""}\n\nEntrá al admin para habilitarlo.`,
+      }),
+    }).catch(() => {});
+
     setLoading(false);
     setStep("pending");
   }
