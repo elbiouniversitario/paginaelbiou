@@ -11,6 +11,7 @@ const categorias: { label: string; value: CategoriaProducto | "Todos" }[] = [
   { label: "Todos",       value: "Todos" },
   { label: "Camisetas",   value: "Camisetas" },
   { label: "Shorts",      value: "Shorts" },
+  { label: "Abrigos",     value: "Abrigos" },
   { label: "Accesorios",  value: "Accesorios" },
 ];
 

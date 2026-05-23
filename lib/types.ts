@@ -1,6 +1,6 @@
 export type Posicion = "Arquero" | "Defensor" | "Mediocampista" | "Delantero";
 export type EstadoPartido = "programado" | "en_curso" | "finalizado" | "suspendido";
-export type CategoriaProducto = "Camisetas" | "Shorts" | "Accesorios" | "Calzado";
+export type CategoriaProducto = "Camisetas" | "Shorts" | "Abrigos" | "Accesorios" | "Calzado";
 export type CategoriaEquipo = "Mayor" | "Reserva" | "Pre-Senior" | "Sub 20" | "Sub 18" | "Femenino";
 
 export interface Profile {
