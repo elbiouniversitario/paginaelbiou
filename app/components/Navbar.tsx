@@ -59,7 +59,7 @@ export default function Navbar() {
             <span className="block font-black text-[#1A2F5E] text-base uppercase tracking-tight leading-none">
               Elbio Fernández
             </span>
-            <span className="block font-bold text-[#6B7A99] text-[11px] uppercase tracking-wider leading-none mt-0.5">
+            <span className="block font-bold text-[#6B7A99] text-xs uppercase tracking-wider leading-none mt-0.5">
               Fútbol Universitario
             </span>
           </div>
@@ -119,7 +119,7 @@ export default function Navbar() {
           >
             <ShoppingBag size={19} />
             {count > 0 && (
-              <span className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-[#F5C200] text-[#1A2F5E] font-display font-black text-[9px] flex items-center justify-center leading-none">
+              <span className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-[#F5C200] text-[#1A2F5E] font-display font-black text-[11px] flex items-center justify-center leading-none">
                 {count}
               </span>
             )}

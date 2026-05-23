@@ -73,7 +73,7 @@ export default function MatchStats() {
             <button
               key={cat}
               onClick={() => setCategoria(cat)}
-              className={`flex-1 font-display font-black text-[11px] uppercase tracking-[0.15em] py-3.5 transition-all duration-200 border-b-2 -mb-px ${
+              className={`flex-1 font-display font-black text-xs uppercase tracking-[0.15em] py-3.5 transition-all duration-200 border-b-2 -mb-px ${
                 categoria === cat
                   ? "text-[#F5C200] border-[#F5C200]"
                   : "text-white/35 border-transparent hover:text-white/60"
@@ -91,7 +91,7 @@ export default function MatchStats() {
 
           {/* Col 1 — Tabla */}
           <div className="pb-6 sm:pb-0 sm:pr-10">
-            <p className="font-display font-bold text-[#F5C200] text-[9px] uppercase tracking-[0.22em] mb-4">
+            <p className="font-display font-bold text-[#F5C200] text-xs uppercase tracking-[0.18em] mb-4">
               Posición en Tabla
             </p>
             {tabla ? (
@@ -108,7 +108,7 @@ export default function MatchStats() {
                       {tabla.competencia}
                     </p>
                   )}
-                  <div className="flex gap-3 font-display font-bold text-[10px] uppercase text-white/35">
+                  <div className="flex gap-3 font-display font-bold text-xs uppercase text-white/35 tabular-nums">
                     <span><span className="text-white/65">{tabla.pj}</span>PJ</span>
                     <span><span className="text-white/65">{tabla.pg}</span>G</span>
                     <span><span className="text-white/65">{tabla.pe}</span>E</span>
@@ -126,7 +126,7 @@ export default function MatchStats() {
 
           {/* Col 2 — Último resultado */}
           <div className="py-6 sm:py-0 sm:px-10">
-            <p className="font-display font-bold text-[#F5C200] text-[9px] uppercase tracking-[0.22em] mb-4">
+            <p className="font-display font-bold text-[#F5C200] text-xs uppercase tracking-[0.18em] mb-4">
               Último Resultado
             </p>
             {last ? (
@@ -146,7 +146,7 @@ export default function MatchStats() {
                     {last.es_local ? last.rival.toUpperCase().split(" ")[0] : "ELBIO"}
                   </span>
                 </div>
-                <p className="font-display font-bold text-[10px] uppercase tracking-[0.2em] text-white/25">
+                <p className="font-display font-bold text-xs uppercase tracking-[0.18em] text-white/25">
                   {last.competencia}
                 </p>
               </>
@@ -157,7 +157,7 @@ export default function MatchStats() {
 
           {/* Col 3 — Próximo partido */}
           <div className="pt-6 sm:pt-0 sm:pl-10">
-            <p className="font-display font-bold text-[#F5C200] text-[9px] uppercase tracking-[0.22em] mb-4">
+            <p className="font-display font-bold text-[#F5C200] text-xs uppercase tracking-[0.18em] mb-4">
               Próximo Partido
             </p>
             {next ? (
@@ -172,10 +172,10 @@ export default function MatchStats() {
                 <p className="font-display font-black text-[#F5C200] text-sm tracking-wide mb-1">
                   {formatFecha(next.fecha, next.hora)}
                 </p>
-                <p className="font-display font-bold text-white/30 text-[10px] uppercase tracking-widest mb-3 truncate">
+                <p className="font-display font-bold text-white/30 text-xs uppercase tracking-widest mb-3 truncate">
                   {next.sede}
                 </p>
-                <span className="inline-block font-display font-black text-[10px] uppercase tracking-[0.15em] bg-[#F5C200] text-[#0D1B2E] px-3 py-1">
+                <span className="inline-block font-display font-black text-xs uppercase tracking-[0.15em] bg-[#F5C200] text-[#0D1B2E] px-3 py-1">
                   {next.es_local ? "Local" : "Visitante"}
                 </span>
               </>

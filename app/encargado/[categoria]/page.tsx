@@ -54,7 +54,7 @@ function EstadoBadge({ estado }: { estado: string }) {
     suspendido: "Suspendido", en_curso: "En curso",
   };
   return (
-    <span className={`font-display font-bold text-[9px] uppercase tracking-widest px-2 py-0.5 ${map[estado] ?? "bg-white/10 text-white/40"}`}>
+    <span className={`font-display font-bold text-xs uppercase tracking-widest px-2 py-0.5 ${map[estado] ?? "bg-white/10 text-white/40"}`}>
       {labels[estado] ?? estado}
     </span>
   );
@@ -303,7 +303,7 @@ function TablaModal({
               <div className="flex items-center justify-between mb-1.5">
                 <p className={labelCls}>PTS</p>
                 <button type="button" onClick={autoPts}
-                  className="font-display font-bold text-[9px] uppercase tracking-wider text-[#F5C200]/70 hover:text-[#F5C200] transition-colors">
+                  className="font-display font-bold text-xs uppercase tracking-wider text-[#F5C200]/70 hover:text-[#F5C200] transition-colors">
                   auto
                 </button>
               </div>
@@ -314,9 +314,14 @@ function TablaModal({
 
           {/* Es nuestro equipo */}
           <label className="flex items-center gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={form.is_local_team}
+              onChange={(e) => setForm((f) => ({ ...f, is_local_team: e.target.checked }))}
+              className="sr-only"
+            />
             <div
-              onClick={() => setForm((f) => ({ ...f, is_local_team: !f.is_local_team }))}
-              className={`w-5 h-5 flex items-center justify-center border transition-colors ${
+              className={`w-5 h-5 flex items-center justify-center border transition-colors flex-shrink-0 ${
                 form.is_local_team ? "bg-[#F5C200] border-[#F5C200]" : "bg-transparent border-white/20"
               }`}
             >
@@ -347,7 +352,7 @@ function TablaModal({
 
 const inputCls  = "w-full bg-white/5 border border-white/10 text-white font-display text-sm px-3 py-2.5 focus:outline-none focus:border-[#F5C200] transition-colors";
 const selectCls = "w-full bg-[#0D1B2E] border border-white/10 text-white font-display text-sm px-3 py-2.5 focus:outline-none focus:border-[#F5C200] transition-colors";
-const labelCls  = "font-display font-bold text-[10px] uppercase tracking-widest text-white/40 block mb-1.5";
+const labelCls  = "font-display font-bold text-xs uppercase tracking-widest text-white/40 block mb-1.5";
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -497,7 +502,7 @@ export default function Dashboard() {
       <header className="bg-[#0A1525] border-b border-white/8">
         <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
           <div>
-            <p className="font-display font-bold text-[#F5C200] text-[9px] uppercase tracking-[0.22em]">
+            <p className="font-display font-bold text-[#F5C200] text-xs uppercase tracking-[0.18em]">
               Portal Encargados
             </p>
             <h1 className="font-display font-black text-white text-lg uppercase tracking-wide leading-none mt-0.5">
@@ -506,7 +511,7 @@ export default function Dashboard() {
           </div>
           <button
             onClick={logout}
-            className="flex items-center gap-1.5 font-display font-bold text-[10px] uppercase tracking-wider text-white/40 hover:text-white/70 transition-colors"
+            className="flex items-center gap-1.5 font-display font-bold text-xs uppercase tracking-wider text-white/40 hover:text-white/70 transition-colors"
           >
             <LogOut size={13} /> Salir
           </button>
@@ -572,7 +577,7 @@ export default function Dashboard() {
                         <div className="font-display font-black text-base leading-none">
                           {new Date(p.fecha + "T00:00:00").getDate()}
                         </div>
-                        <div className="font-display font-semibold text-[8px] uppercase tracking-wider opacity-60">
+                        <div className="font-display font-semibold text-[10px] uppercase tracking-wider opacity-60">
                           {new Date(p.fecha + "T00:00:00").toLocaleDateString("es-AR", { month: "short" })}
                         </div>
                       </div>
@@ -591,11 +596,11 @@ export default function Dashboard() {
                         </div>
                         <div className="flex items-center gap-2 flex-wrap">
                           <EstadoBadge estado={p.estado} />
-                          <span className="font-display font-bold text-[9px] uppercase tracking-wider text-white/30">
+                          <span className="font-display font-bold text-xs uppercase tracking-wider text-white/30">
                             {p.es_local ? "Local" : "Visitante"}
                           </span>
                           {p.competencia && (
-                            <span className="font-display font-bold text-[9px] uppercase tracking-wider text-white/25">
+                            <span className="font-display font-bold text-xs uppercase tracking-wider text-white/25">
                               {p.competencia}
                             </span>
                           )}
@@ -634,7 +639,7 @@ export default function Dashboard() {
                   {tabla.length} equipo{tabla.length !== 1 ? "s" : ""}
                 </p>
                 {competenciaActual && (
-                  <p className="font-display font-semibold text-[#F5C200]/60 text-[10px] uppercase tracking-widest mt-0.5">
+                  <p className="font-display font-semibold text-[#F5C200]/60 text-xs uppercase tracking-widest mt-0.5">
                     {competenciaActual}
                   </p>
                 )}
@@ -659,7 +664,7 @@ export default function Dashboard() {
                   <thead>
                     <tr className="border-b border-white/10">
                       {["#","Equipo","PJ","G","E","P","GF","GC","PTS",""].map((h) => (
-                        <th key={h} className="font-display font-bold text-[9px] uppercase tracking-widest text-white/30 pb-2 pr-3 whitespace-nowrap">
+                        <th key={h} className="font-display font-bold text-xs uppercase tracking-widest text-white/30 pb-2 pr-3 whitespace-nowrap">
                           {h}
                         </th>
                       ))}

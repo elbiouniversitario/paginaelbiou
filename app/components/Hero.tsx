@@ -133,7 +133,7 @@ export default function Hero() {
                 <Icon size={18} className="text-[#F5C200] flex-shrink-0" />
                 <div>
                   <div className="font-display font-black text-xl text-[#1A2F5E] leading-none">{value}</div>
-                  <div className="font-display font-semibold text-[10px] uppercase tracking-widest text-[#6B7A99] mt-0.5">{label}</div>
+                  <div className="font-display font-semibold text-xs uppercase tracking-widest text-[#6B7A99] mt-0.5">{label}</div>
                 </div>
               </div>
             ))}

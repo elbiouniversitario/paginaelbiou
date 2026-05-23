@@ -28,7 +28,7 @@ function ProximoCard({ partido, index }: { partido: Partido; index: number }) {
       {/* Date block */}
       <div className="flex-shrink-0 bg-[#1A2F5E] text-white text-center px-4 py-2.5 min-w-[68px]">
         <div className="font-display font-black text-2xl leading-none">{fecha.getDate()}</div>
-        <div className="font-display font-semibold text-[10px] uppercase tracking-wider mt-0.5 opacity-60">
+        <div className="font-display font-semibold text-xs uppercase tracking-wider mt-0.5 opacity-60">
           {fecha.toLocaleDateString("es-AR", { month: "short" })}
         </div>
       </div>
@@ -36,16 +36,16 @@ function ProximoCard({ partido, index }: { partido: Partido; index: number }) {
       {/* Match info */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-2 flex-wrap">
-          <span className="font-display font-bold text-[9px] uppercase tracking-widest bg-[#EEF3FB] text-[#1A2F5E] px-2 py-0.5">
+          <span className="font-display font-bold text-xs uppercase tracking-widest bg-[#EEF3FB] text-[#1A2F5E] px-2 py-0.5">
             {partido.competencia}
           </span>
-          <span className="font-display font-semibold text-[9px] uppercase tracking-widest text-[#6B7A99]">
+          <span className="font-display font-semibold text-xs uppercase tracking-widest text-[#6B7A99]">
             {partido.es_local ? "Local" : "Visitante"}
           </span>
         </div>
         <div className="flex items-center gap-2 mb-2 flex-wrap">
           <div className="flex items-center gap-1.5">
-            <div className="w-6 h-6 rounded-full bg-[#F5C200] flex items-center justify-center font-display font-black text-[#1A2F5E] text-[9px] flex-shrink-0">
+            <div className="w-6 h-6 rounded-full bg-[#F5C200] flex items-center justify-center font-display font-black text-[#1A2F5E] text-[10px] flex-shrink-0">
               EU
             </div>
             <span className="font-display font-black text-sm uppercase text-[#1A2F5E] whitespace-nowrap">EFU</span>
@@ -92,12 +92,12 @@ function ResultadoCard({ partido, index }: { partido: Partido; index: number }) 
     >
       <div className="flex-shrink-0 bg-[#F7F9FC] border border-[#D8E1EF] text-center px-4 py-2.5 min-w-[68px]">
         <div className="font-display font-black text-2xl leading-none text-[#6B7A99]">{fecha.getDate()}</div>
-        <div className="font-display font-semibold text-[10px] uppercase tracking-wider mt-0.5 text-[#6B7A99]/50">
+        <div className="font-display font-semibold text-xs uppercase tracking-wider mt-0.5 text-[#6B7A99]/50">
           {fecha.toLocaleDateString("es-AR", { month: "short" })}
         </div>
       </div>
       <div className="flex-1 min-w-0">
-        <div className="font-display font-semibold text-[9px] uppercase tracking-widest text-[#6B7A99] mb-2">
+        <div className="font-display font-semibold text-xs uppercase tracking-widest text-[#6B7A99] mb-2">
           {partido.competencia}
         </div>
         <div className="flex items-center gap-2">

@@ -158,8 +158,8 @@ export default function PortalPage() {
         {/* Login */}
         {tab === "login" && step !== "reset" && (
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
-            <Field icon={<Mail size={14} />} type="email" placeholder="Email" value={loginEmail} onChange={setLoginEmail} />
-            <Field icon={<Lock size={14} />} type="password" placeholder="Contraseña" value={loginPass} onChange={setLoginPass} />
+            <Field icon={<Mail size={14} />} type="email" placeholder="Email" value={loginEmail} onChange={setLoginEmail} name="email" autoComplete="email" />
+            <Field icon={<Lock size={14} />} type="password" placeholder="Contraseña" value={loginPass} onChange={setLoginPass} name="password" autoComplete="current-password" />
             {error && <p className="font-body text-red-400 text-xs text-center">{error}</p>}
             <SubmitBtn loading={loading} label="Ingresar" />
             <button
@@ -192,7 +192,7 @@ export default function PortalPage() {
                 <p className="font-body text-white/50 text-xs text-center">
                   Ingresá tu email y te mandamos un link para resetear la contraseña.
                 </p>
-                <Field icon={<Mail size={14} />} type="email" placeholder="Email" value={loginEmail} onChange={setLoginEmail} required />
+                <Field icon={<Mail size={14} />} type="email" placeholder="Email" value={loginEmail} onChange={setLoginEmail} required name="email" autoComplete="email" />
                 {error && <p className="font-body text-red-400 text-xs text-center">{error}</p>}
                 <SubmitBtn loading={loading} label="Enviar link" />
                 <button
@@ -210,9 +210,9 @@ export default function PortalPage() {
         {/* Register */}
         {tab === "register" && (
           <form onSubmit={handleRegister} className="flex flex-col gap-3.5">
-            <Field icon={<User size={14} />} type="text" placeholder="Nombre completo" value={regNombre} onChange={setRegNombre} required />
-            <Field icon={<Mail size={14} />} type="email" placeholder="Email" value={regEmail} onChange={setRegEmail} required />
-            <Field icon={<Lock size={14} />} type="password" placeholder="Contraseña (mín. 6 caracteres)" value={regPass} onChange={setRegPass} required />
+            <Field icon={<User size={14} />} type="text" placeholder="Nombre completo" value={regNombre} onChange={setRegNombre} required name="name" autoComplete="name" />
+            <Field icon={<Mail size={14} />} type="email" placeholder="Email" value={regEmail} onChange={setRegEmail} required name="email" autoComplete="email" />
+            <Field icon={<Lock size={14} />} type="password" placeholder="Contraseña (mín. 6 caracteres)" value={regPass} onChange={setRegPass} required name="new-password" autoComplete="new-password" />
 
             <Select
               value={regCategoria}
@@ -231,7 +231,7 @@ export default function PortalPage() {
             {error && <p className="font-body text-red-400 text-xs text-center">{error}</p>}
             <SubmitBtn loading={loading} label="Crear cuenta" />
 
-            <p className="font-body text-white/30 text-[11px] text-center leading-relaxed mt-1">
+            <p className="font-body text-white/30 text-xs text-center leading-relaxed mt-1">
               Tu cuenta quedará pendiente de aprobación por el administrador del club.
             </p>
           </form>
@@ -242,7 +242,7 @@ export default function PortalPage() {
 }
 
 function Field({
-  icon, type, placeholder, value, onChange, required,
+  icon, type, placeholder, value, onChange, required, autoComplete, name,
 }: {
   icon: React.ReactNode;
   type: string;
@@ -250,6 +250,8 @@ function Field({
   value: string;
   onChange: (v: string) => void;
   required?: boolean;
+  autoComplete?: string;
+  name?: string;
 }) {
   return (
     <div className="flex items-center gap-3 border border-white/10 bg-white/4 px-4 py-3 focus-within:border-[#F5C200]/50 transition-colors">
@@ -260,6 +262,9 @@ function Field({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         required={required}
+        autoComplete={autoComplete}
+        name={name}
+        spellCheck={type === "email" ? false : undefined}
         className="bg-transparent font-body text-sm text-white placeholder:text-white/25 outline-none flex-1 min-w-0"
       />
     </div>

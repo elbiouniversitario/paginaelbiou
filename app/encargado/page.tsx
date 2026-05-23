@@ -63,7 +63,7 @@ export default function EncargadoLogin() {
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {/* Category */}
           <div>
-            <label className="font-display font-bold text-[10px] uppercase tracking-widest text-white/40 block mb-1.5">
+            <label className="font-display font-bold text-xs uppercase tracking-widest text-white/40 block mb-1.5">
               Categoría
             </label>
             <select
@@ -81,7 +81,7 @@ export default function EncargadoLogin() {
 
           {/* Password */}
           <div>
-            <label className="font-display font-bold text-[10px] uppercase tracking-widest text-white/40 block mb-1.5">
+            <label className="font-display font-bold text-xs uppercase tracking-widest text-white/40 block mb-1.5">
               Contraseña
             </label>
             <div className="relative">
@@ -91,6 +91,8 @@ export default function EncargadoLogin() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••"
+                autoComplete="current-password"
+                name="password"
                 className="w-full bg-white/5 border border-white/10 text-white font-display font-bold text-sm pl-9 pr-10 py-3 focus:outline-none focus:border-[#F5C200] transition-colors placeholder:text-white/20"
                 required
               />

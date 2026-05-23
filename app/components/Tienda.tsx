@@ -45,12 +45,12 @@ function ProductCard({ producto, index }: { producto: Producto; index: number })
       {/* Image area */}
       <div className="relative aspect-square bg-[#EEF3FB] flex items-center justify-center overflow-hidden">
         {producto.destacado && (
-          <span className="absolute top-3 left-3 bg-[#F5C200] text-[#1A2F5E] font-display font-black text-[9px] uppercase tracking-widest px-2 py-0.5 z-10">
+          <span className="absolute top-3 left-3 bg-[#F5C200] text-[#1A2F5E] font-display font-black text-xs uppercase tracking-widest px-2 py-0.5 z-10">
             Destacado
           </span>
         )}
         {producto.foto_url
-          ? <img src={producto.foto_url} alt={producto.nombre} className="absolute inset-0 w-full h-full object-cover" />
+          ? <img src={producto.foto_url} alt={producto.nombre} width={400} height={400} className="absolute inset-0 w-full h-full object-cover" />
           : (
             <div className="flex flex-col items-center gap-2 text-[#1A2F5E]/30 group-hover:text-[#1A2F5E]/50 transition-colors">
               <ShoppingBag size={36} strokeWidth={1.5} />
@@ -62,13 +62,13 @@ function ProductCard({ producto, index }: { producto: Producto; index: number })
 
       {/* Info */}
       <div className="p-4 flex flex-col flex-1">
-        <span className="font-display font-semibold text-[9px] uppercase tracking-widest text-[#6B7A99] mb-1">{producto.categoria}</span>
+        <span className="font-display font-semibold text-xs uppercase tracking-widest text-[#6B7A99] mb-1">{producto.categoria}</span>
         <h3 className="font-display font-black text-sm uppercase text-[#1A2F5E] leading-tight mb-1">{producto.nombre}</h3>
-        <p className="font-body text-xs text-[#6B7A99] leading-relaxed mb-4 flex-1">{producto.descripcion}</p>
+        <p className="font-body text-sm text-[#6B7A99] leading-relaxed mb-4 flex-1">{producto.descripcion}</p>
 
         {needsTalle && (
           <div className="mb-3">
-            <p className="font-display font-semibold text-[9px] uppercase tracking-widest text-[#6B7A99] mb-1.5">
+            <p className="font-display font-semibold text-xs uppercase tracking-widest text-[#6B7A99] mb-1.5">
               Talle {!talle && <span className="text-red-400">*</span>}
             </p>
             <div className="flex flex-wrap gap-1">
@@ -76,7 +76,7 @@ function ProductCard({ producto, index }: { producto: Producto; index: number })
                 <button
                   key={t}
                   onClick={() => setTalle(talle === t ? null : t)}
-                  className={`font-display font-bold text-[10px] px-2 py-1 border transition-all duration-150 ${
+                  className={`font-display font-bold text-xs px-2 py-1 border transition-all duration-150 ${
                     talle === t
                       ? "bg-[#1A2F5E] border-[#1A2F5E] text-white"
                       : "border-[#D8E1EF] text-[#6B7A99] hover:border-[#1A2F5E] hover:text-[#1A2F5E]"
@@ -94,7 +94,7 @@ function ProductCard({ producto, index }: { producto: Producto; index: number })
           <button
             onClick={handleAdd}
             disabled={needsTalle && !talle}
-            className={`flex items-center gap-1.5 font-display font-black text-[10px] uppercase tracking-widest px-3 py-2 transition-all duration-200 ${
+            className={`flex items-center gap-1.5 font-display font-black text-xs uppercase tracking-widest px-3 py-2 transition-all duration-200 ${
               added
                 ? "bg-green-600 text-white"
                 : needsTalle && !talle
