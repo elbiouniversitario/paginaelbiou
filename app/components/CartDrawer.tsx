@@ -38,18 +38,12 @@ export default function CartDrawer() {
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
-  const workerUrl = process.env.NEXT_PUBLIC_WORKER_URL;
-
   async function handleCheckout(e: React.FormEvent) {
     e.preventDefault();
-    if (!workerUrl) {
-      setCheckErr("Pasarela de pago no configurada aún.");
-      return;
-    }
     setProcessing(true);
     setCheckErr("");
     try {
-      const res = await fetch(`${workerUrl}/checkout`, {
+      const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ items, email, nombre_cliente: nombre, telefono }),
