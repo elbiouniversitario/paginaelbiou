@@ -4,8 +4,20 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
+import { supabase } from "@/lib/supabase";
 
-const slides = [
+type Slide = {
+  id: number;
+  tag: string;
+  headline: [string, string];
+  sub: string;
+  from: string;
+  via: string;
+  accentColor: string;
+  foto: string;
+};
+
+const DEFAULT_SLIDES: Slide[] = [
   {
     id: 0,
     tag: "Estadio Municipal",
@@ -14,6 +26,7 @@ const slides = [
     from: "#040D1C",
     via: "#091A30",
     accentColor: "#F5C200",
+    foto: "",
   },
   {
     id: 1,
@@ -23,6 +36,7 @@ const slides = [
     from: "#050F18",
     via: "#081C2A",
     accentColor: "#60A5FA",
+    foto: "",
   },
   {
     id: 2,
@@ -32,6 +46,7 @@ const slides = [
     from: "#08091A",
     via: "#0E1038",
     accentColor: "#F5C200",
+    foto: "",
   },
   {
     id: 3,
@@ -41,6 +56,7 @@ const slides = [
     from: "#0A0E16",
     via: "#121E2E",
     accentColor: "#A78BFA",
+    foto: "",
   },
 ];
 
@@ -51,8 +67,31 @@ const slideVariants = {
 };
 
 export default function HeroSlider() {
+  const [slides, setSlides] = useState<Slide[]>(DEFAULT_SLIDES);
   const [current, setCurrent] = useState(0);
   const [dir, setDir] = useState(1);
+
+  useEffect(() => {
+    if (!supabase) return;
+    supabase.from("site_content").select("clave,valor").then(({ data }) => {
+      const rows = data as { clave: string; valor: string | null }[] | null;
+      if (!rows?.length) return;
+      const map: Record<string, string> = {};
+      for (const row of rows) map[row.clave] = row.valor ?? "";
+      setSlides((prev) =>
+        prev.map((def, i) => ({
+          ...def,
+          tag:      map[`slide_${i + 1}_tag`]    || def.tag,
+          headline: [
+            map[`slide_${i + 1}_linea1`] || def.headline[0],
+            map[`slide_${i + 1}_linea2`] || def.headline[1],
+          ] as [string, string],
+          sub:  map[`slide_${i + 1}_sub`]  || def.sub,
+          foto: map[`slide_${i + 1}_foto`] || "",
+        }))
+      );
+    });
+  }, []);
 
   const go = useCallback(
     (to: number) => {
@@ -60,7 +99,7 @@ export default function HeroSlider() {
       setDir(to > current ? 1 : -1);
       setCurrent(target);
     },
-    [current]
+    [current, slides.length]
   );
 
   const next = useCallback(() => go(current + 1), [current, go]);
@@ -92,6 +131,16 @@ export default function HeroSlider() {
           className="absolute inset-0"
           style={{ background: `linear-gradient(135deg, ${s.from} 0%, ${s.via} 60%, ${s.from} 100%)` }}
         >
+          {/* Background photo (if set) */}
+          {s.foto && (
+            <img
+              src={s.foto}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ opacity: 0.38 }}
+            />
+          )}
+
           {/* Grid texture */}
           <div
             className="absolute inset-0 opacity-[0.03]"
