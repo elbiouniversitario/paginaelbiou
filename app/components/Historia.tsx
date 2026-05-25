@@ -87,9 +87,10 @@ export default function Historia() {
   useEffect(() => {
     if (!supabase) return;
     supabase.from("site_content").select("clave,valor").then(({ data }) => {
-      if (!data?.length) return;
+      const rows = data as { clave: string; valor: string | null }[] | null;
+      if (!rows?.length) return;
       const map: Record<string, string> = {};
-      for (const row of data) map[row.clave] = row.valor ?? "";
+      for (const row of rows) map[row.clave] = row.valor ?? "";
       const built: Hito[] = [1, 2, 3, 4].map((n) => ({
         year:        map[`hito_${n}_year`]   || DEFAULT_HITOS[n - 1].year,
         title:       map[`hito_${n}_titulo`] || DEFAULT_HITOS[n - 1].title,

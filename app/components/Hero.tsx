@@ -38,7 +38,8 @@ export default function Hero() {
   useEffect(() => {
     if (!supabase) return;
     supabase.from("site_content").select("valor").eq("clave", "hero_descripcion").single().then(({ data }) => {
-      if (data?.valor) setDescripcion(data.valor);
+      const row = data as { valor: string | null } | null;
+      if (row?.valor) setDescripcion(row.valor);
     });
   }, []);
 
