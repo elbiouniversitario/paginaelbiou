@@ -15,6 +15,7 @@ type Slide = {
   via: string;
   accentColor: string;
   foto: string;
+  visible: boolean;
 };
 
 const DEFAULT_SLIDES: Slide[] = [
@@ -27,6 +28,7 @@ const DEFAULT_SLIDES: Slide[] = [
     via: "#091A30",
     accentColor: "#F5C200",
     foto: "",
+    visible: true,
   },
   {
     id: 1,
@@ -37,6 +39,7 @@ const DEFAULT_SLIDES: Slide[] = [
     via: "#081C2A",
     accentColor: "#60A5FA",
     foto: "",
+    visible: true,
   },
   {
     id: 2,
@@ -47,6 +50,7 @@ const DEFAULT_SLIDES: Slide[] = [
     via: "#0E1038",
     accentColor: "#F5C200",
     foto: "",
+    visible: true,
   },
   {
     id: 3,
@@ -57,6 +61,7 @@ const DEFAULT_SLIDES: Slide[] = [
     via: "#121E2E",
     accentColor: "#A78BFA",
     foto: "",
+    visible: true,
   },
 ];
 
@@ -86,20 +91,24 @@ export default function HeroSlider() {
             map[`slide_${i + 1}_linea1`] || def.headline[0],
             map[`slide_${i + 1}_linea2`] || def.headline[1],
           ] as [string, string],
-          sub:  map[`slide_${i + 1}_sub`]  || def.sub,
-          foto: map[`slide_${i + 1}_foto`] || "",
+          sub:     map[`slide_${i + 1}_sub`]     || def.sub,
+          foto:    map[`slide_${i + 1}_foto`]    || "",
+          visible: map[`slide_${i + 1}_visible`] !== "false",
         }))
       );
     });
   }, []);
 
+  const visibleSlides = slides.filter((s) => s.visible);
+  const activeSlides  = visibleSlides.length > 0 ? visibleSlides : slides;
+
   const go = useCallback(
     (to: number) => {
-      const target = (to + slides.length) % slides.length;
+      const target = (to + activeSlides.length) % activeSlides.length;
       setDir(to > current ? 1 : -1);
       setCurrent(target);
     },
-    [current, slides.length]
+    [current, activeSlides.length]
   );
 
   const next = useCallback(() => go(current + 1), [current, go]);
@@ -110,7 +119,7 @@ export default function HeroSlider() {
     return () => clearInterval(t);
   }, [next]);
 
-  const s = slides[current];
+  const s = activeSlides[current] ?? activeSlides[0];
 
   return (
     <section
@@ -249,7 +258,7 @@ export default function HeroSlider() {
 
       {/* ---- Slide indicators ---- */}
       <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 flex gap-2 items-center">
-        {slides.map((_, i) => (
+        {activeSlides.map((_, i) => (
           <button
             key={i}
             onClick={() => go(i)}

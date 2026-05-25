@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { supabase } from "@/lib/supabase";
-import { Save, RotateCcw, Upload, X, ImageIcon } from "lucide-react";
+import { Save, RotateCcw, Upload, X, ImageIcon, Eye, EyeOff } from "lucide-react";
 
 type ContentMap = Record<string, string>;
 
@@ -11,6 +11,7 @@ type Section = {
   title: string;
   fields: SectionField[];
   fotoKey?: string;
+  visibleKey?: string;
 };
 
 const SECTIONS: Section[] = [
@@ -55,6 +56,7 @@ const SECTIONS: Section[] = [
   {
     title: "Slider — Slide 1",
     fotoKey: "slide_1_foto",
+    visibleKey: "slide_1_visible",
     fields: [
       { key: "slide_1_tag",    label: "Etiqueta pequeña" },
       { key: "slide_1_linea1", label: "Título — Línea 1" },
@@ -65,6 +67,7 @@ const SECTIONS: Section[] = [
   {
     title: "Slider — Slide 2",
     fotoKey: "slide_2_foto",
+    visibleKey: "slide_2_visible",
     fields: [
       { key: "slide_2_tag",    label: "Etiqueta pequeña" },
       { key: "slide_2_linea1", label: "Título — Línea 1" },
@@ -75,6 +78,7 @@ const SECTIONS: Section[] = [
   {
     title: "Slider — Slide 3",
     fotoKey: "slide_3_foto",
+    visibleKey: "slide_3_visible",
     fields: [
       { key: "slide_3_tag",    label: "Etiqueta pequeña" },
       { key: "slide_3_linea1", label: "Título — Línea 1" },
@@ -85,6 +89,7 @@ const SECTIONS: Section[] = [
   {
     title: "Slider — Slide 4",
     fotoKey: "slide_4_foto",
+    visibleKey: "slide_4_visible",
     fields: [
       { key: "slide_4_tag",    label: "Etiqueta pequeña" },
       { key: "slide_4_linea1", label: "Título — Línea 1" },
@@ -198,6 +203,28 @@ export default function ContenidoAdmin() {
               {section.title}
             </h2>
             <div className="flex flex-col gap-4">
+              {/* Visibility toggle (slider sections) */}
+              {section.visibleKey && (() => {
+                const isVisible = content[section.visibleKey!] !== "false";
+                return (
+                  <div className="flex items-center justify-between py-2 border-b border-white/6 mb-1">
+                    <span className="font-display font-bold text-white/40 text-xs uppercase tracking-widest">
+                      Visibilidad del slide
+                    </span>
+                    <button
+                      onClick={() => set(section.visibleKey!, isVisible ? "false" : "true")}
+                      className={`flex items-center gap-2 font-display font-bold text-xs uppercase tracking-widest px-4 py-1.5 transition-colors ${
+                        isVisible
+                          ? "bg-[#F5C200]/15 text-[#F5C200] border border-[#F5C200]/30 hover:bg-[#F5C200]/25"
+                          : "bg-white/6 text-white/30 border border-white/10 hover:border-white/25 hover:text-white/50"
+                      }`}
+                    >
+                      {isVisible ? <><Eye size={12} /> Visible</> : <><EyeOff size={12} /> Oculto</>}
+                    </button>
+                  </div>
+                );
+              })()}
+
               {/* Photo upload (slider sections) */}
               {section.fotoKey && (
                 <div>

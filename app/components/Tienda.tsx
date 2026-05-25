@@ -48,14 +48,22 @@ function ProductCard({ producto, index }: { producto: Producto; index: number })
       className="bg-white border border-[#D8E1EF] hover:border-[#1A2F5E]/30 hover:shadow-md transition-all duration-200 flex flex-col group"
     >
       {/* Image area */}
-      <div className="relative aspect-square bg-[#EEF3FB] flex items-center justify-center overflow-hidden">
+      <div
+        className="relative aspect-square flex items-center justify-center overflow-hidden"
+        style={currentPhoto ? {
+          backgroundColor: "#fff",
+          backgroundImage: "linear-gradient(45deg,#ececec 25%,transparent 25%),linear-gradient(-45deg,#ececec 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#ececec 75%),linear-gradient(-45deg,transparent 75%,#ececec 75%)",
+          backgroundSize: "14px 14px",
+          backgroundPosition: "0 0,0 7px,7px -7px,-7px 0",
+        } : { backgroundColor: "#EEF3FB" }}
+      >
         {producto.destacado && (
           <span className="absolute top-3 left-3 bg-[#F5C200] text-[#1A2F5E] font-display font-black text-xs uppercase tracking-widest px-2 py-0.5 z-10">
             Destacado
           </span>
         )}
         {currentPhoto
-          ? <img src={currentPhoto} alt={producto.nombre} width={400} height={400} className="absolute inset-0 w-full h-full object-cover" />
+          ? <img src={currentPhoto} alt={producto.nombre} width={400} height={400} className="absolute inset-0 w-full h-full object-contain p-2" />
           : (
             <div className="flex flex-col items-center gap-2 text-[#1A2F5E]/30 group-hover:text-[#1A2F5E]/50 transition-colors">
               <ShoppingBag size={36} strokeWidth={1.5} />
