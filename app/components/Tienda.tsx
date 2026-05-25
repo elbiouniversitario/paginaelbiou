@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
-import { ShoppingBag, Plus } from "lucide-react";
+import { ShoppingBag, Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Producto, CategoriaProducto } from "@/lib/types";
 import { mockProductos } from "@/lib/mock-data";
 import { supabase } from "@/lib/supabase";
@@ -23,10 +23,14 @@ function ProductCard({ producto, index }: { producto: Producto; index: number })
   const { add } = useCart();
   const [talle, setTalle] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
+  const [photoIndex, setPhotoIndex] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
   const tallesDisponibles = producto.talles ?? [];
   const needsTalle = tallesDisponibles.length > 0;
+  const photos = producto.fotos?.length ? producto.fotos : producto.foto_url ? [producto.foto_url] : [];
+  const currentPhoto = photos[photoIndex] ?? null;
+  const hasMultiple = photos.length > 1;
 
   const handleAdd = () => {
     if (needsTalle && !talle) return;
@@ -50,8 +54,8 @@ function ProductCard({ producto, index }: { producto: Producto; index: number })
             Destacado
           </span>
         )}
-        {producto.foto_url
-          ? <img src={producto.foto_url} alt={producto.nombre} width={400} height={400} className="absolute inset-0 w-full h-full object-cover" />
+        {currentPhoto
+          ? <img src={currentPhoto} alt={producto.nombre} width={400} height={400} className="absolute inset-0 w-full h-full object-cover" />
           : (
             <div className="flex flex-col items-center gap-2 text-[#1A2F5E]/30 group-hover:text-[#1A2F5E]/50 transition-colors">
               <ShoppingBag size={36} strokeWidth={1.5} />
@@ -59,6 +63,31 @@ function ProductCard({ producto, index }: { producto: Producto; index: number })
             </div>
           )
         }
+        {hasMultiple && (
+          <>
+            <button
+              onClick={(e) => { e.stopPropagation(); setPhotoIndex((i) => (i - 1 + photos.length) % photos.length); }}
+              className="absolute left-1.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white shadow-sm"
+            >
+              <ChevronLeft size={14} className="text-[#1A2F5E]" />
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); setPhotoIndex((i) => (i + 1) % photos.length); }}
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white shadow-sm"
+            >
+              <ChevronRight size={14} className="text-[#1A2F5E]" />
+            </button>
+            <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
+              {photos.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={(e) => { e.stopPropagation(); setPhotoIndex(i); }}
+                  className={`w-1.5 h-1.5 rounded-full transition-all ${i === photoIndex ? "bg-white scale-125" : "bg-white/50"}`}
+                />
+              ))}
+            </div>
+          </>
+        )}
       </div>
 
       {/* Info */}

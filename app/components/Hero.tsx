@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, type Variants } from "framer-motion";
 import { Trophy, Users, Calendar, Star } from "lucide-react";
 import Image from "next/image";
+import { supabase } from "@/lib/supabase";
 
 const stats = [
   { icon: Trophy,   value: "12",     label: "Campeonatos" },
@@ -28,9 +29,18 @@ const container: Variants = {
   visible: { transition: { staggerChildren: 0.1, delayChildren: 0.15 } },
 };
 
+const DEFAULT_DESC = "Más que un club. Una comunidad forjada en la cancha, en las aulas y en el corazón de cada socio desde 1952.";
+
 export default function Hero() {
   const [visible, setVisible] = useState(false);
+  const [descripcion, setDescripcion] = useState(DEFAULT_DESC);
   useEffect(() => { const t = setTimeout(() => setVisible(true), 80); return () => clearTimeout(t); }, []);
+  useEffect(() => {
+    if (!supabase) return;
+    supabase.from("site_content").select("valor").eq("clave", "hero_descripcion").single().then(({ data }) => {
+      if (data?.valor) setDescripcion(data.valor);
+    });
+  }, []);
 
   return (
     <section id="inicio" className="relative overflow-hidden bg-white pt-20">
@@ -78,8 +88,7 @@ export default function Hero() {
             />
 
             <motion.p variants={fadeUp} className="font-body text-base text-[#6B7A99] max-w-md mb-8 mx-auto lg:mx-0 leading-relaxed">
-              Más que un club. Una comunidad forjada en la cancha, en las aulas
-              y en el corazón de cada socio desde 1952.
+              {descripcion}
             </motion.p>
 
             <motion.div variants={fadeUp} className="flex flex-wrap gap-3 justify-center lg:justify-start">

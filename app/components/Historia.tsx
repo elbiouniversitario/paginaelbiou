@@ -1,10 +1,13 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import TrophyBlock from "./TrophyBlock";
+import { supabase } from "@/lib/supabase";
 
-const hitos = [
+type Hito = { year: string; title: string; description: string };
+
+const DEFAULT_HITOS: Hito[] = [
   {
     year: "2002",
     title: "Fundación del Club",
@@ -27,7 +30,7 @@ const hitos = [
   },
 ];
 
-function Hito({ year, title, description, index }: typeof hitos[0] & { index: number }) {
+function HitoItem({ year, title, description, index, total }: Hito & { index: number; total: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const isEven = index % 2 === 0;
@@ -65,7 +68,7 @@ function Hito({ year, title, description, index }: typeof hitos[0] & { index: nu
           transition={{ duration: 0.4, delay: 0.2 }}
           className="w-4 h-4 rounded-full bg-[#F5C200] border-4 border-white ring-2 ring-[#F5C200] flex-shrink-0 mt-1"
         />
-        {index < hitos.length - 1 && (
+        {index < total - 1 && (
           <div className="flex-1 w-px bg-[#D8E1EF] mt-2" />
         )}
       </div>
@@ -79,6 +82,22 @@ function Hito({ year, title, description, index }: typeof hitos[0] & { index: nu
 export default function Historia() {
   const titleRef = useRef<HTMLDivElement>(null);
   const titleInView = useInView(titleRef, { once: true });
+  const [hitos, setHitos] = useState<Hito[]>(DEFAULT_HITOS);
+
+  useEffect(() => {
+    if (!supabase) return;
+    supabase.from("site_content").select("clave,valor").then(({ data }) => {
+      if (!data?.length) return;
+      const map: Record<string, string> = {};
+      for (const row of data) map[row.clave] = row.valor ?? "";
+      const built: Hito[] = [1, 2, 3, 4].map((n) => ({
+        year:        map[`hito_${n}_year`]   || DEFAULT_HITOS[n - 1].year,
+        title:       map[`hito_${n}_titulo`] || DEFAULT_HITOS[n - 1].title,
+        description: map[`hito_${n}_desc`]   || DEFAULT_HITOS[n - 1].description,
+      }));
+      setHitos(built);
+    });
+  }, []);
 
   return (
     <section id="historia">
@@ -124,7 +143,7 @@ export default function Historia() {
           <div className="relative">
             <div className="hidden lg:block absolute left-1/2 -translate-x-px top-0 bottom-0 w-px bg-[#D8E1EF]" />
             {hitos.map((h, i) => (
-              <Hito key={h.year} {...h} index={i} />
+              <HitoItem key={i} {...h} index={i} total={hitos.length} />
             ))}
           </div>
         </div>

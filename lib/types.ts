@@ -45,11 +45,17 @@ export interface Producto {
   descripcion: string;
   precio: number;
   foto_url: string;
+  fotos?: string[];
   categoria: CategoriaProducto;
   talles: string[];
   stock: number;
   destacado?: boolean;
   activo?: boolean;
+}
+
+export interface SiteContent {
+  clave: string;
+  valor: string | null;
 }
 
 export interface CartItem {
