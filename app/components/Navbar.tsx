@@ -5,6 +5,7 @@ import { Menu, X, ShoppingBag, User, ChevronDown } from "lucide-react";
 import clsx from "clsx";
 import Image from "next/image";
 import { useCart } from "./CartProvider";
+import { useStoreAuth } from "./StoreAuthProvider";
 
 const links = [
   { label: "Inicio",     href: "#inicio" },
@@ -19,6 +20,7 @@ export default function Navbar() {
   const [loginOpen,   setLoginOpen]   = useState(false);
   const loginRef = useRef<HTMLDivElement>(null);
   const { count, toggleOpen } = useCart();
+  const { storeUser } = useStoreAuth();
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -101,12 +103,12 @@ export default function Navbar() {
                   Portal Jugadores
                 </a>
                 <a
-                  href="/login"
+                  href="/tienda/cuenta"
                   onClick={() => setLoginOpen(false)}
                   className="flex items-center gap-2.5 px-4 py-3 font-display font-bold text-[11px] uppercase tracking-wider text-[#1A2F5E] hover:bg-[#F5C200]/10 hover:text-[#F5C200] transition-colors"
                 >
                   <ShoppingBag size={12} />
-                  Tienda / Compras
+                  {storeUser ? `Mis compras · ${storeUser.nombre.split(" ")[0]}` : "Tienda / Compras"}
                 </a>
               </div>
             )}
@@ -164,11 +166,11 @@ export default function Navbar() {
             <User size={12} /> Portal Jugadores
           </a>
           <a
-            href="/login"
+            href="/tienda/cuenta"
             onClick={() => setOpen(false)}
             className="mt-2 flex items-center gap-2 border border-[#D8E1EF] text-[#6B7A99] font-display font-bold text-xs uppercase tracking-widest py-3 px-4"
           >
-            <ShoppingBag size={12} /> Tienda / Compras
+            <ShoppingBag size={12} /> {storeUser ? `Mis compras · ${storeUser.nombre.split(" ")[0]}` : "Tienda / Compras"}
           </a>
         </nav>
       </div>

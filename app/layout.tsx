@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Barlow_Condensed, Barlow } from "next/font/google";
 import "./globals.css";
 import IntroAnimation from "./components/IntroAnimation";
+import { StoreAuthProvider } from "./components/StoreAuthProvider";
 
 const barlowCondensed = Barlow_Condensed({
   weight: ["400", "600", "700", "800", "900"],
@@ -42,8 +43,10 @@ export default function RootLayout({
       className={`${barlowCondensed.variable} ${barlow.variable}`}
     >
       <body>
-        <IntroAnimation />
-        {children}
+        <StoreAuthProvider>
+          <IntroAnimation />
+          {children}
+        </StoreAuthProvider>
       </body>
     </html>
   );

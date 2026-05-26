@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
+import { X, Minus, Plus, ShoppingBag, Trash2, User } from "lucide-react";
 import { useCart } from "./CartProvider";
+import { useStoreAuth } from "./StoreAuthProvider";
 
 function formatPrecio(n: number) {
   return new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 }).format(n);
@@ -26,12 +27,23 @@ function CartInput({ placeholder, value, onChange, type = "text", required }: {
 
 export default function CartDrawer() {
   const { items, open, setOpen, total, count, remove, updateQty, clear } = useCart();
+  const { storeUser, setStoreUser } = useStoreAuth();
+
   const [email,      setEmail]      = useState("");
   const [nombre,     setNombre]     = useState("");
   const [telefono,   setTelefono]   = useState("");
   const [showForm,   setShowForm]   = useState(false);
   const [processing, setProcessing] = useState(false);
   const [checkErr,   setCheckErr]   = useState("");
+
+  // Pre-fill from stored user
+  useEffect(() => {
+    if (storeUser) {
+      setNombre(storeUser.nombre);
+      setEmail(storeUser.email);
+      setTelefono(storeUser.telefono);
+    }
+  }, [storeUser]);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -50,6 +62,8 @@ export default function CartDrawer() {
       });
       const data = await res.json() as { payment_url?: string; error?: string };
       if (data.payment_url) {
+        // Save user profile for future visits
+        setStoreUser({ nombre, email, telefono });
         window.location.href = data.payment_url;
       } else {
         setCheckErr(data.error ?? "Error al procesar el pago.");
@@ -86,9 +100,21 @@ export default function CartDrawer() {
                   <span className="bg-[#F5C200] text-[#1A2F5E] font-display font-black text-xs w-5 h-5 rounded-full flex items-center justify-center">{count}</span>
                 )}
               </div>
-              <button onClick={() => setOpen(false)} className="text-[#6B7A99] hover:text-[#1A2F5E] transition-colors">
-                <X size={18} />
-              </button>
+              <div className="flex items-center gap-2">
+                {storeUser && (
+                  <a
+                    href="/tienda/cuenta"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-1 font-display font-bold text-[10px] uppercase tracking-widest text-[#6B7A99] hover:text-[#1A2F5E] transition-colors"
+                  >
+                    <User size={11} />
+                    {storeUser.nombre.split(" ")[0]}
+                  </a>
+                )}
+                <button onClick={() => setOpen(false)} className="text-[#6B7A99] hover:text-[#1A2F5E] transition-colors">
+                  <X size={18} />
+                </button>
+              </div>
             </div>
 
             {/* Items */}
@@ -134,9 +160,9 @@ export default function CartDrawer() {
 
                 {showForm ? (
                   <form onSubmit={handleCheckout} className="flex flex-col gap-2.5">
-                    <CartInput placeholder="Tu nombre" value={nombre} onChange={setNombre} required />
+                    <CartInput placeholder="Nombre completo *" value={nombre} onChange={setNombre} required />
                     <CartInput placeholder="Email *" type="email" value={email} onChange={setEmail} required />
-                    <CartInput placeholder="WhatsApp (opcional)" type="tel" value={telefono} onChange={setTelefono} />
+                    <CartInput placeholder="Celular *" type="tel" value={telefono} onChange={setTelefono} required />
                     {checkErr && <p className="font-body text-red-500 text-xs">{checkErr}</p>}
                     <button
                       type="submit"
