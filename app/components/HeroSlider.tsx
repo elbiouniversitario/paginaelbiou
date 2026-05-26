@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import Image from "next/image";
 
 type Slide = {
   id: number;
@@ -146,62 +145,17 @@ export default function HeroSlider() {
               src={s.foto}
               alt=""
               className="absolute inset-0 w-full h-full object-cover"
-              style={{ opacity: 0.38 }}
+              style={{ opacity: 0.72 }}
             />
           )}
 
-          {/* Grid texture */}
-          <div
-            className="absolute inset-0 opacity-[0.03]"
-            style={{
-              backgroundImage:
-                "linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)",
-              backgroundSize: "50px 50px",
-            }}
-          />
-          {/* Spotlight glow top-right */}
-          <div
-            className="absolute -top-24 right-0 w-[500px] h-[500px] rounded-full opacity-[0.07]"
-            style={{ background: `radial-gradient(circle, ${s.accentColor} 0%, transparent 70%)` }}
-          />
           {/* Bottom fade */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
-          {/* Left fade to protect crest readability */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent" />
         </motion.div>
       </AnimatePresence>
 
       {/* Yellow bottom strip */}
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#F5C200] z-30" />
-
-      {/* ---- Club crest — left side ---- */}
-      <div className="absolute left-6 sm:left-10 lg:left-16 top-1/2 -translate-y-1/2 z-20 flex flex-col items-center gap-3 select-none">
-        <div className="relative flex items-center justify-center">
-          {/* Glow behind crest */}
-          <div
-            className="absolute w-32 h-32 lg:w-48 lg:h-48 rounded-full opacity-20 blur-2xl"
-            style={{ background: "#F5C200" }}
-          />
-          {/* Outer ring */}
-          <div className="absolute w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 rounded-full border border-white/10" />
-          <div className="absolute w-20 h-20 sm:w-28 sm:h-28 lg:w-36 lg:h-36 rounded-full border border-white/10" />
-          {/* Crest circle */}
-          <div className="relative w-16 h-16 sm:w-24 sm:h-24 lg:w-32 lg:h-32 rounded-full bg-white/10 backdrop-blur-sm border border-white/25 flex items-center justify-center p-2 overflow-hidden">
-            <Image
-              src="/logo.ico"
-              alt="Elbio Fernández Universitario"
-              width={120}
-              height={120}
-              className="w-full h-full object-contain"
-              unoptimized
-            />
-          </div>
-        </div>
-        <div className="text-center leading-tight">
-          <span className="block font-display font-bold text-white/35 text-[8px] uppercase tracking-[0.25em]">Club Atlético</span>
-          <span className="block font-display font-black text-white/50 text-[8px] uppercase tracking-[0.2em] mt-0.5">Est. 1952</span>
-        </div>
-      </div>
 
       {/* ---- Slide text — bottom right ---- */}
       <AnimatePresence mode="wait">
