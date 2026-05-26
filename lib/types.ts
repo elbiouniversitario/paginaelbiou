@@ -53,6 +53,16 @@ export interface Producto {
   activo?: boolean;
 }
 
+export interface Goleador {
+  id: string;
+  partido_id: string;
+  jugador_nombre: string;
+  minuto: number | null;
+  es_penal: boolean;
+  categoria: CategoriaEquipo;
+  created_at: string;
+}
+
 export interface SiteContent {
   clave: string;
   valor: string | null;
@@ -86,6 +96,11 @@ export type Database = {
         Row: Producto;
         Insert: Omit<Producto, "id">;
         Update: Partial<Producto>;
+      };
+      goleadores: {
+        Row: Goleador;
+        Insert: Omit<Goleador, "id" | "created_at">;
+        Update: Partial<Goleador>;
       };
     };
   };

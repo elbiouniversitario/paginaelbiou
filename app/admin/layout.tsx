@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
-import { ShoppingBag, Users, ClipboardList, LayoutDashboard, LogOut, FileText } from "lucide-react";
+import { ShoppingBag, Users, ClipboardList, LayoutDashboard, LogOut, FileText, CalendarDays } from "lucide-react";
 
 const navItems = [
   { href: "/admin",           icon: <LayoutDashboard size={15} />, label: "Dashboard" },
   { href: "/admin/productos", icon: <ShoppingBag size={15} />,     label: "Productos" },
   { href: "/admin/jugadores", icon: <Users size={15} />,           label: "Jugadores" },
+  { href: "/admin/partidos",  icon: <CalendarDays size={15} />,    label: "Partidos" },
   { href: "/admin/pedidos",   icon: <ClipboardList size={15} />,   label: "Pedidos" },
   { href: "/admin/contenido", icon: <FileText size={15} />,        label: "Contenido" },
 ];

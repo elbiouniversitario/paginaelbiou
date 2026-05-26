@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
-import { MapPin, Clock, Shield } from "lucide-react";
+import { MapPin, Clock, Shield, Trophy, AlertCircle } from "lucide-react";
 import type { Partido } from "@/lib/types";
 import { mockPartidos } from "@/lib/mock-data";
 import { supabase } from "@/lib/supabase";
@@ -12,10 +12,13 @@ type Categoria = "Mayor" | "Reserva" | "Pre-Senior" | "Sub 20" | "Sub 18" | "Fem
 
 const categorias: Categoria[] = ["Mayor", "Reserva", "Pre-Senior", "Sub 20", "Sub 18", "Femenino"];
 
+type GoleadorEntry = { nombre: string; goles: number };
+
 function ProximoCard({ partido, index }: { partido: Partido; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-20px" });
   const fecha = new Date(partido.fecha + "T00:00:00");
+  const suspendido = partido.estado === "suspendido";
 
   return (
     <motion.div
@@ -23,21 +26,25 @@ function ProximoCard({ partido, index }: { partido: Partido; index: number }) {
       initial={{ opacity: 0, y: 14 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.4, delay: index * 0.07 }}
-      className="bg-white border border-[#D8E1EF] hover:border-[#1A2F5E]/30 hover:shadow-sm transition-all duration-200 flex flex-col lg:flex-row lg:items-center gap-4 p-4 lg:p-5"
+      className={`border transition-all duration-200 flex flex-col lg:flex-row lg:items-center gap-4 p-4 lg:p-5 ${
+        suspendido
+          ? "bg-[#FFF8EC] border-orange-200"
+          : "bg-white border-[#D8E1EF] hover:border-[#1A2F5E]/30 hover:shadow-sm"
+      }`}
     >
-      {/* Date block */}
-      <div className="flex-shrink-0 bg-[#1A2F5E] text-white text-center px-4 py-2.5 min-w-[68px]">
+      <div className={`flex-shrink-0 text-white text-center px-4 py-2.5 min-w-[68px] ${suspendido ? "bg-orange-400" : "bg-[#1A2F5E]"}`}>
         <div className="font-display font-black text-2xl leading-none">{fecha.getDate()}</div>
         <div className="font-display font-semibold text-xs uppercase tracking-wider mt-0.5 opacity-60">
           {fecha.toLocaleDateString("es-AR", { month: "short" })}
         </div>
       </div>
 
-      {/* Match info */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-2 flex-wrap">
-          <span className="font-display font-bold text-xs uppercase tracking-widest bg-[#EEF3FB] text-[#1A2F5E] px-2 py-0.5">
-            {partido.competencia}
+          <span className={`font-display font-bold text-xs uppercase tracking-widest px-2 py-0.5 ${
+            suspendido ? "bg-orange-100 text-orange-700" : "bg-[#EEF3FB] text-[#1A2F5E]"
+          }`}>
+            {suspendido ? "Suspendido" : partido.competencia}
           </span>
           <span className="font-display font-semibold text-xs uppercase tracking-widest text-[#6B7A99]">
             {partido.es_local ? "Local" : "Visitante"}
@@ -60,14 +67,26 @@ function ProximoCard({ partido, index }: { partido: Partido; index: number }) {
             </span>
           </div>
         </div>
-        <div className="flex gap-3 text-[#6B7A99] flex-wrap">
-          <span className="flex items-center gap-1 font-body text-xs">
-            <Clock size={10} />{partido.hora} hs
-          </span>
-          <span className="flex items-center gap-1 font-body text-xs truncate max-w-[200px]">
-            <MapPin size={10} />{partido.sede}
-          </span>
-        </div>
+        {!suspendido && (
+          <div className="flex gap-3 text-[#6B7A99] flex-wrap">
+            {partido.hora && (
+              <span className="flex items-center gap-1 font-body text-xs">
+                <Clock size={10} />{partido.hora} hs
+              </span>
+            )}
+            {partido.sede && (
+              <span className="flex items-center gap-1 font-body text-xs truncate max-w-[200px]">
+                <MapPin size={10} />{partido.sede}
+              </span>
+            )}
+          </div>
+        )}
+        {suspendido && (
+          <div className="flex items-center gap-1 text-orange-500">
+            <AlertCircle size={10} />
+            <span className="font-body text-xs">Fecha a confirmar</span>
+          </div>
+        )}
       </div>
     </motion.div>
   );
@@ -77,10 +96,10 @@ function ResultadoCard({ partido, index }: { partido: Partido; index: number }) 
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-20px" });
   const fecha = new Date(partido.fecha + "T00:00:00");
-  const golesEU = partido.es_local ? partido.resultado_local ?? 0 : partido.resultado_visitante ?? 0;
+  const golesEU    = partido.es_local ? partido.resultado_local ?? 0 : partido.resultado_visitante ?? 0;
   const golesRival = partido.es_local ? partido.resultado_visitante ?? 0 : partido.resultado_local ?? 0;
-  const resultado = golesEU === golesRival ? "Empate" : golesEU > golesRival ? "Victoria" : "Derrota";
-  const color = resultado === "Victoria" ? "#16A34A" : resultado === "Empate" ? "#D97706" : "#DC2626";
+  const resultado  = golesEU === golesRival ? "Empate" : golesEU > golesRival ? "Victoria" : "Derrota";
+  const color      = resultado === "Victoria" ? "#16A34A" : resultado === "Empate" ? "#D97706" : "#DC2626";
 
   return (
     <motion.div
@@ -124,6 +143,57 @@ function ResultadoCard({ partido, index }: { partido: Partido; index: number }) 
   );
 }
 
+function GoleadoresPanel({ categoria }: { categoria: Categoria }) {
+  const [goleadores, setGoleadores] = useState<GoleadorEntry[]>([]);
+  const [loading,    setLoading]    = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(`/api/goleadores?categoria=${encodeURIComponent(categoria)}`)
+      .then((r) => r.json())
+      .then((data) => { setGoleadores(Array.isArray(data) ? data : []); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, [categoria]);
+
+  if (loading) {
+    return <p className="font-body text-xs text-[#6B7A99] py-6 text-center">Cargando...</p>;
+  }
+
+  if (goleadores.length === 0) {
+    return (
+      <div className="flex flex-col items-center gap-2 py-10 text-[#6B7A99]/40">
+        <Trophy size={28} strokeWidth={1.5} />
+        <p className="font-display font-bold text-xs uppercase tracking-widest">Sin goles registrados</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-1.5">
+      {goleadores.map(({ nombre, goles }, i) => (
+        <motion.div
+          key={nombre}
+          initial={{ opacity: 0, x: 10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3, delay: i * 0.06 }}
+          className="flex items-center gap-3 bg-white border border-[#D8E1EF] px-4 py-3"
+        >
+          <span className={`font-display font-black text-sm w-5 text-center flex-shrink-0 ${
+            i === 0 ? "text-[#F5C200]" : i === 1 ? "text-[#9CA3AF]" : i === 2 ? "text-[#B45309]" : "text-[#D8E1EF]"
+          }`}>
+            {i + 1}
+          </span>
+          {i === 0 && <Trophy size={12} className="text-[#F5C200] flex-shrink-0" />}
+          <span className="font-display font-black text-xs uppercase text-[#1A2F5E] flex-1 truncate">
+            {nombre}
+          </span>
+          <span className="font-display font-black text-xl text-[#1A2F5E] leading-none">{goles}</span>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
 export default function Calendario() {
   const [tab,       setTab]       = useState<Tab>("proximos");
   const [categoria, setCategoria] = useState<Categoria>("Mayor");
@@ -138,35 +208,32 @@ export default function Calendario() {
     });
   }, []);
 
-  const byCategoria = partidos.filter((p) => p.categoria === categoria);
-  const proximos    = byCategoria.filter((p) => p.estado === "programado");
-  const resultados  = byCategoria.filter((p) => p.estado === "finalizado").reverse();
+  const byCategoria  = partidos.filter((p) => p.categoria === categoria);
+  const programados  = byCategoria.filter((p) => p.estado === "programado");
+  const suspendidos  = byCategoria.filter((p) => p.estado === "suspendido");
+  const proximos     = [...programados, ...suspendidos];
+  const resultados   = byCategoria.filter((p) => p.estado === "finalizado").reverse();
 
   return (
     <section id="calendario" className="py-20 lg:py-28 bg-[#F7F9FC]">
-      <div className="max-w-5xl mx-auto px-4 lg:px-8">
-        {/* Header */}
-        <div ref={titleRef} className="mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={titleInView ? { opacity: 1, y: 0 } : {}}
-            className="section-tag mb-3"
-          >
-            Temporada 2026
-          </motion.div>
+      <div className="max-w-7xl mx-auto px-4 lg:px-8">
+
+        {/* Header — inverted: big = TEMPORADA 2026, small = section tags */}
+        <div ref={titleRef} className="mb-10">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             animate={titleInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            transition={{ duration: 0.6 }}
             className="font-display font-black uppercase text-[clamp(2.5rem,7vw,5.5rem)] leading-none text-[#1A2F5E]"
           >
-            Calendario
+            Temporada 2026
           </motion.h2>
           <div className="w-16 h-1 bg-[#F5C200] mt-4" />
         </div>
 
         <div className="flex flex-col lg:flex-row gap-6">
-          {/* ── Category sidebar ── */}
+
+          {/* ── Shared category sidebar ── */}
           <div className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-x-visible flex-shrink-0 lg:w-40 pb-1 lg:pb-0">
             {categorias.map((cat) => (
               <button
@@ -183,39 +250,67 @@ export default function Calendario() {
             ))}
           </div>
 
-          {/* ── Content area ── */}
-          <div className="flex-1 min-w-0">
-            {/* Próximos / Resultados tabs */}
-            <div className="flex gap-0 mb-5 border-b border-[#D8E1EF]">
-              {(["proximos", "resultados"] as Tab[]).map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setTab(t)}
-                  className={`font-display font-black text-xs uppercase tracking-wider px-5 py-2.5 border-b-2 -mb-px transition-all duration-200 ${
-                    tab === t
-                      ? "border-[#F5C200] text-[#1A2F5E]"
-                      : "border-transparent text-[#6B7A99] hover:text-[#1A2F5E]"
-                  }`}
+          {/* ── Right area: calendar + goleadores ── */}
+          <div className="flex-1 min-w-0 flex flex-col xl:flex-row gap-6">
+
+            {/* Calendar column */}
+            <div className="flex-1 min-w-0">
+              <div className="section-tag mb-4">Calendario</div>
+
+              {/* Tabs */}
+              <div className="flex gap-0 mb-5 border-b border-[#D8E1EF]">
+                {(["proximos", "resultados"] as Tab[]).map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => setTab(t)}
+                    className={`font-display font-black text-xs uppercase tracking-wider px-5 py-2.5 border-b-2 -mb-px transition-all duration-200 ${
+                      tab === t
+                        ? "border-[#F5C200] text-[#1A2F5E]"
+                        : "border-transparent text-[#6B7A99] hover:text-[#1A2F5E]"
+                    }`}
+                  >
+                    {t === "proximos" ? "Próximos" : "Resultados"}
+                  </button>
+                ))}
+              </div>
+
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={`${tab}-${categoria}`}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.25 }}
+                  className="flex flex-col gap-2.5"
                 >
-                  {t === "proximos" ? "Próximos" : "Resultados"}
-                </button>
-              ))}
+                  {tab === "proximos"
+                    ? proximos.length > 0
+                      ? proximos.map((p, i) => <ProximoCard key={p.id} partido={p} index={i} />)
+                      : <p className="font-body text-sm text-[#6B7A99] py-8 text-center">No hay próximos partidos.</p>
+                    : resultados.length > 0
+                      ? resultados.map((p, i) => <ResultadoCard key={p.id} partido={p} index={i} />)
+                      : <p className="font-body text-sm text-[#6B7A99] py-8 text-center">Sin resultados registrados.</p>
+                  }
+                </motion.div>
+              </AnimatePresence>
             </div>
 
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`${tab}-${categoria}`}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.25 }}
-                className="flex flex-col gap-2.5"
-              >
-                {tab === "proximos"
-                  ? proximos.map((p, i) => <ProximoCard key={p.id} partido={p} index={i} />)
-                  : resultados.map((p, i) => <ResultadoCard key={p.id} partido={p} index={i} />)}
-              </motion.div>
-            </AnimatePresence>
+            {/* Goleadores column */}
+            <div className="xl:w-64 flex-shrink-0">
+              <div className="section-tag mb-4">Goleadores</div>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={categoria}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <GoleadoresPanel categoria={categoria} />
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
           </div>
         </div>
       </div>
