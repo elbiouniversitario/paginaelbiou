@@ -86,9 +86,11 @@ function ResultadoCard({ partido, index }: { partido: Partido; index: number }) 
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-20px" });
   const fecha = new Date(partido.fecha + "T00:00:00");
-  const golesEU    = partido.es_local ? partido.resultado_local ?? 0 : partido.resultado_visitante ?? 0;
-  const golesRival = partido.es_local ? partido.resultado_visitante ?? 0 : partido.resultado_local ?? 0;
+  const golesEU    = partido.resultado_local    ?? 0;
+  const golesRival = partido.resultado_visitante ?? 0;
   const resultado  = golesEU === golesRival ? "Empate" : golesEU > golesRival ? "Victoria" : "Derrota";
+  const leftGoals  = partido.es_local ? golesEU : golesRival;
+  const rightGoals = partido.es_local ? golesRival : golesEU;
   const color      = resultado === "Victoria" ? "#16A34A" : resultado === "Empate" ? "#D97706" : "#DC2626";
 
   return (
@@ -114,9 +116,9 @@ function ResultadoCard({ partido, index }: { partido: Partido; index: number }) 
             {partido.es_local ? "Elbio" : partido.rival}
           </span>
           <div className="flex items-center gap-1.5 flex-shrink-0 bg-[#1A2F5E] px-3 py-1">
-            <span className="font-display font-black text-lg text-white">{golesEU}</span>
+            <span className="font-display font-black text-lg text-white">{leftGoals}</span>
             <span className="font-display text-white/35 text-sm">-</span>
-            <span className="font-display font-black text-lg text-white">{golesRival}</span>
+            <span className="font-display font-black text-lg text-white">{rightGoals}</span>
           </div>
           <span className="font-display font-black text-sm uppercase text-[#111827] flex-1 truncate text-right">
             {partido.es_local ? partido.rival : "Elbio"}

@@ -13,12 +13,8 @@ interface TablaRow {
   competencia: string | null;
 }
 
-function getEuScore(p: Partido) {
-  return p.es_local ? p.resultado_local ?? 0 : p.resultado_visitante ?? 0;
-}
-function getRivalScore(p: Partido) {
-  return p.es_local ? p.resultado_visitante ?? 0 : p.resultado_local ?? 0;
-}
+function getEuScore(p: Partido)    { return p.resultado_local    ?? 0; }
+function getRivalScore(p: Partido) { return p.resultado_visitante ?? 0; }
 
 function formatFecha(fecha: string, hora?: string | null) {
   const d = new Date(fecha + "T00:00:00");
@@ -135,12 +131,18 @@ export default function MatchStats() {
                   <span className="font-display font-black text-white text-sm uppercase tracking-wide flex-1 min-w-0 truncate">
                     {last.es_local ? "ELBIO" : last.rival.toUpperCase()}
                   </span>
-                  <span className="font-display font-black text-[#F5C200] leading-none flex-shrink-0" style={{ fontSize: "2.8rem" }}>
-                    {getEuScore(last)}
+                  <span
+                    className={`font-display font-black leading-none flex-shrink-0 ${last.es_local ? "text-[#F5C200]" : "text-white"}`}
+                    style={{ fontSize: "2.8rem" }}
+                  >
+                    {last.es_local ? getEuScore(last) : getRivalScore(last)}
                   </span>
                   <span className="font-display font-bold text-white/25 text-xl flex-shrink-0">-</span>
-                  <span className="font-display font-black text-white leading-none flex-shrink-0" style={{ fontSize: "2.8rem" }}>
-                    {getRivalScore(last)}
+                  <span
+                    className={`font-display font-black leading-none flex-shrink-0 ${last.es_local ? "text-white" : "text-[#F5C200]"}`}
+                    style={{ fontSize: "2.8rem" }}
+                  >
+                    {last.es_local ? getRivalScore(last) : getEuScore(last)}
                   </span>
                   <span className="font-display font-black text-white text-sm uppercase tracking-wide flex-1 min-w-0 truncate text-right">
                     {last.es_local ? last.rival.toUpperCase() : "ELBIO"}
