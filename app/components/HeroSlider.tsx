@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
-import { supabase } from "@/lib/supabase";
 
 type Slide = {
   id: number;
@@ -77,26 +76,27 @@ export default function HeroSlider() {
   const [dir, setDir] = useState(1);
 
   useEffect(() => {
-    if (!supabase) return;
-    supabase.from("site_content").select("clave,valor").then(({ data }) => {
-      const rows = data as { clave: string; valor: string | null }[] | null;
-      if (!rows?.length) return;
-      const map: Record<string, string> = {};
-      for (const row of rows) map[row.clave] = row.valor ?? "";
-      setSlides((prev) =>
-        prev.map((def, i) => ({
-          ...def,
-          tag:      map[`slide_${i + 1}_tag`]    || def.tag,
-          headline: [
-            map[`slide_${i + 1}_linea1`] || def.headline[0],
-            map[`slide_${i + 1}_linea2`] || def.headline[1],
-          ] as [string, string],
-          sub:     map[`slide_${i + 1}_sub`]     || def.sub,
-          foto:    map[`slide_${i + 1}_foto`]    || "",
-          visible: map[`slide_${i + 1}_visible`] !== "false",
-        }))
-      );
-    });
+    fetch("/api/site-content")
+      .then((r) => r.json())
+      .then((rows: { clave: string; valor: string | null }[]) => {
+        if (!rows?.length) return;
+        const map: Record<string, string> = {};
+        for (const row of rows) map[row.clave] = row.valor ?? "";
+        setSlides((prev) =>
+          prev.map((def, i) => ({
+            ...def,
+            tag:      map[`slide_${i + 1}_tag`]    || def.tag,
+            headline: [
+              map[`slide_${i + 1}_linea1`] || def.headline[0],
+              map[`slide_${i + 1}_linea2`] || def.headline[1],
+            ] as [string, string],
+            sub:     map[`slide_${i + 1}_sub`]     || def.sub,
+            foto:    map[`slide_${i + 1}_foto`]    || "",
+            visible: map[`slide_${i + 1}_visible`] !== "false",
+          }))
+        );
+      })
+      .catch(() => {});
   }, []);
 
   const visibleSlides = slides.filter((s) => s.visible);
