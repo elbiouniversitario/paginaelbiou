@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Plus, Pencil, Trash2, LogOut, Check, X, Star } from "lucide-react";
 import { CATEGORIES, type CatSlug } from "@/lib/encargado-auth";
-import type { Partido } from "@/lib/types";
+import type { Partido, Goleador } from "@/lib/types";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -60,12 +60,119 @@ function EstadoBadge({ estado }: { estado: string }) {
   );
 }
 
+// ── Goleadores section (inside partido modal) ─────────────────────────────
+
+function GoleadoresSection({ partidoId, token }: { partidoId: string; token: string }) {
+  const [goles,     setGoles]     = useState<Goleador[]>([]);
+  const [nombre,    setNombre]    = useState("");
+  const [minuto,    setMinuto]    = useState("");
+  const [esPenal,   setEsPenal]   = useState(false);
+  const [adding,    setAdding]    = useState(false);
+
+  useEffect(() => {
+    fetch(`/api/encargado/goleadores?partido_id=${partidoId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => r.json())
+      .then((d) => setGoles(Array.isArray(d) ? d : []));
+  }, [partidoId, token]);
+
+  async function addGol() {
+    if (!nombre.trim()) return;
+    setAdding(true);
+    const res = await fetch("/api/encargado/goleadores", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        partido_id: partidoId,
+        jugador_nombre: nombre.trim(),
+        minuto: minuto ? parseInt(minuto) : null,
+        es_penal: esPenal,
+      }),
+    });
+    const gol = await res.json() as Goleador;
+    if (gol?.id) {
+      setGoles((prev) => [...prev, gol]);
+      setNombre(""); setMinuto(""); setEsPenal(false);
+    }
+    setAdding(false);
+  }
+
+  async function deleteGol(id: string) {
+    await fetch(`/api/encargado/goleadores?id=${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    setGoles((prev) => prev.filter((g) => g.id !== id));
+  }
+
+  return (
+    <div className="border-t border-white/10 pt-4">
+      <p className="font-display font-bold text-[#F5C200] text-xs uppercase tracking-widest mb-3">
+        Goleadores de Elbio
+      </p>
+
+      {/* Existing goals */}
+      {goles.length > 0 && (
+        <div className="flex flex-col gap-1 mb-3">
+          {goles.map((g) => (
+            <div key={g.id} className="flex items-center gap-2 bg-white/5 px-3 py-2">
+              <span className="font-display font-black text-white text-xs uppercase flex-1">{g.jugador_nombre}</span>
+              {g.minuto && <span className="font-body text-white/30 text-xs">{g.minuto}&apos;</span>}
+              {g.es_penal && (
+                <span className="font-display font-bold text-[9px] uppercase tracking-widest text-[#F5C200]/60 border border-[#F5C200]/20 px-1.5 py-0.5">Penal</span>
+              )}
+              <button onClick={() => deleteGol(g.id)} className="text-white/20 hover:text-red-400 transition-colors">
+                <Trash2 size={12} />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Add goal form */}
+      <div className="flex flex-col gap-2">
+        <input
+          type="text"
+          placeholder="Nombre del jugador"
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && addGol()}
+          className={inputCls}
+        />
+        <div className="flex gap-2 items-center">
+          <input
+            type="number" min={1} max={120} placeholder="Minuto (opcional)"
+            value={minuto}
+            onChange={(e) => setMinuto(e.target.value)}
+            className={`${inputCls} flex-1`}
+          />
+          <label className="flex items-center gap-1.5 cursor-pointer flex-shrink-0">
+            <input type="checkbox" checked={esPenal} onChange={(e) => setEsPenal(e.target.checked)} className="accent-[#F5C200]" />
+            <span className="font-display font-bold text-xs uppercase tracking-wider text-white/50">Penal</span>
+          </label>
+        </div>
+        <button
+          type="button"
+          onClick={addGol}
+          disabled={adding || !nombre.trim()}
+          className="flex items-center justify-center gap-1.5 bg-white/6 border border-white/10 text-white/60 hover:text-white hover:border-white/25 font-display font-black text-xs uppercase tracking-wider py-2.5 transition-all disabled:opacity-40"
+        >
+          <Plus size={12} />
+          Agregar gol
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ── Partido Modal ─────────────────────────────────────────────────────────
 
 function PartidoModal({
-  initial, onSave, onClose,
+  initial, token, onSave, onClose,
 }: {
   initial?: PartidoForm & { id?: string };
+  token: string;
   onSave: (data: PartidoForm & { id?: string }) => Promise<void>;
   onClose: () => void;
 }) {
@@ -191,6 +298,11 @@ function PartidoModal({
                   className={inputCls} required />
               </Field>
             </div>
+          )}
+
+          {/* Goleadores — only when editing a finalizado match */}
+          {form.estado === "finalizado" && initial?.id && (
+            <GoleadoresSection partidoId={initial.id} token={token} />
           )}
 
           <div className="flex gap-2 pt-2">
@@ -713,6 +825,7 @@ export default function Dashboard() {
       {/* ── Modals ── */}
       {partidoModal.open && (
         <PartidoModal
+          token={token ?? ""}
           initial={
             partidoModal.edit
               ? {

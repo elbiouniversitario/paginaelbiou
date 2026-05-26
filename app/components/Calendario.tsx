@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
-import { MapPin, Clock, Shield, Trophy, AlertCircle } from "lucide-react";
+import { MapPin, Clock, Trophy, AlertCircle } from "lucide-react";
 import type { Partido } from "@/lib/types";
 import { mockPartidos } from "@/lib/mock-data";
 import { supabase } from "@/lib/supabase";
@@ -51,21 +51,11 @@ function ProximoCard({ partido, index }: { partido: Partido; index: number }) {
           </span>
         </div>
         <div className="flex items-center gap-2 mb-2 flex-wrap">
-          <div className="flex items-center gap-1.5">
-            <div className="w-6 h-6 rounded-full bg-[#F5C200] flex items-center justify-center font-display font-black text-[#1A2F5E] text-[10px] flex-shrink-0">
-              EU
-            </div>
-            <span className="font-display font-black text-sm uppercase text-[#1A2F5E] whitespace-nowrap">Elbio</span>
-          </div>
+          <span className="font-display font-black text-sm uppercase text-[#1A2F5E] whitespace-nowrap">Elbio</span>
           <span className="font-display font-bold text-xs text-[#6B7A99]">vs</span>
-          <div className="flex items-center gap-1.5">
-            <div className="w-6 h-6 rounded-full bg-[#EEF3FB] border border-[#D8E1EF] flex items-center justify-center flex-shrink-0">
-              <Shield size={10} className="text-[#6B7A99]" />
-            </div>
-            <span className="font-display font-black text-sm uppercase text-[#111827] truncate max-w-[140px]">
-              {partido.rival}
-            </span>
-          </div>
+          <span className="font-display font-black text-sm uppercase text-[#111827]">
+            {partido.rival}
+          </span>
         </div>
         {!suspendido && (
           <div className="flex gap-3 text-[#6B7A99] flex-wrap">
