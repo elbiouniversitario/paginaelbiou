@@ -130,7 +130,7 @@ export default function PortalPage() {
     <div className="min-h-screen bg-[#060D16] flex flex-col items-center justify-center px-4 py-16">
       {/* Logo */}
       <a href="/" className="flex flex-col items-center gap-3 mb-10">
-        <Image src="/logo.ico" alt="EFU" width={64} height={64} unoptimized className="object-contain" />
+        <Image src="/logo.ico" alt="Elbio Fernández Universitario" width={64} height={64} unoptimized className="object-contain" />
         <div className="text-center font-display leading-tight">
           <span className="block font-bold text-white/40 text-[10px] uppercase tracking-widest">Elbio Fernández</span>
           <span className="block font-black text-white text-sm uppercase tracking-tight">Fútbol Universitario</span>

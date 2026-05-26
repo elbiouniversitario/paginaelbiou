@@ -49,7 +49,7 @@ export default function Navbar() {
         <a href="#inicio" className="flex items-center gap-3 group flex-shrink-0">
           <Image
             src="/logo.ico"
-            alt="EFU"
+            alt="Elbio Fernández Universitario"
             width={44}
             height={44}
             className="object-contain flex-shrink-0"

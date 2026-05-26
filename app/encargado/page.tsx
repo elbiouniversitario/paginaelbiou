@@ -53,7 +53,7 @@ export default function EncargadoLogin() {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="flex flex-col items-center mb-10">
-          <Image src="/logo.ico" alt="EFU" width={56} height={56} className="object-contain" unoptimized />
+          <Image src="/logo.ico" alt="Elbio Fernández Universitario" width={56} height={56} className="object-contain" unoptimized />
           <p className="font-display font-black text-white text-xs uppercase tracking-[0.22em] mt-3">
             Portal Encargados
           </p>

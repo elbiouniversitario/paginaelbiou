@@ -46,7 +46,7 @@ function PreviewCard({ producto, index }: { producto: Producto; index: number })
           : (
             <div className="flex flex-col items-center gap-2 text-[#1A2F5E]/20 group-hover:text-[#1A2F5E]/35 transition-colors duration-250">
               <ShoppingBag size={40} strokeWidth={1} />
-              <span className="font-display font-black text-xs uppercase tracking-widest">EFU</span>
+              <span className="font-display font-black text-xs uppercase tracking-widest">Elbio</span>
             </div>
           )
         }

@@ -132,18 +132,18 @@ export default function MatchStats() {
             {last ? (
               <>
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="font-display font-black text-white text-lg uppercase tracking-wide flex-1">
-                    {last.es_local ? "ELBIO" : last.rival.toUpperCase().split(" ")[0]}
+                  <span className="font-display font-black text-white text-sm uppercase tracking-wide flex-1 min-w-0 truncate">
+                    {last.es_local ? "ELBIO" : last.rival.toUpperCase()}
                   </span>
-                  <span className="font-display font-black text-[#F5C200] leading-none" style={{ fontSize: "2.8rem" }}>
+                  <span className="font-display font-black text-[#F5C200] leading-none flex-shrink-0" style={{ fontSize: "2.8rem" }}>
                     {getEuScore(last)}
                   </span>
-                  <span className="font-display font-bold text-white/25 text-xl">-</span>
-                  <span className="font-display font-black text-white leading-none" style={{ fontSize: "2.8rem" }}>
+                  <span className="font-display font-bold text-white/25 text-xl flex-shrink-0">-</span>
+                  <span className="font-display font-black text-white leading-none flex-shrink-0" style={{ fontSize: "2.8rem" }}>
                     {getRivalScore(last)}
                   </span>
-                  <span className="font-display font-black text-white text-lg uppercase tracking-wide flex-1 text-right">
-                    {last.es_local ? last.rival.toUpperCase().split(" ")[0] : "ELBIO"}
+                  <span className="font-display font-black text-white text-sm uppercase tracking-wide flex-1 min-w-0 truncate text-right">
+                    {last.es_local ? last.rival.toUpperCase() : "ELBIO"}
                   </span>
                 </div>
                 <p className="font-display font-bold text-xs uppercase tracking-[0.18em] text-white/25">
@@ -165,8 +165,8 @@ export default function MatchStats() {
                 <div className="flex items-center gap-2 mb-2">
                   <span className="font-display font-black text-white text-xl uppercase tracking-wide">ELBIO</span>
                   <span className="font-display font-bold text-white/30 text-base mx-1">vs</span>
-                  <span className="font-display font-black text-white/60 text-xl uppercase tracking-wide truncate">
-                    {next.rival.toUpperCase().split(" ")[0]}
+                  <span className="font-display font-black text-white/60 text-xl uppercase tracking-wide truncate min-w-0">
+                    {next.rival.toUpperCase()}
                   </span>
                 </div>
                 <p className="font-display font-black text-[#F5C200] text-sm tracking-wide mb-1">

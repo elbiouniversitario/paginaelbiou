@@ -180,7 +180,7 @@ function PartidoModal({
           {/* Score — only when finalizado */}
           {form.estado === "finalizado" && (
             <div className="grid grid-cols-2 gap-3">
-              <Field label="Goles EFU">
+              <Field label="Goles Elbio">
                 <input type="number" min={0} value={form.resultado_local}
                   onChange={(e) => set("resultado_local", e.target.value)}
                   className={inputCls} required />
@@ -328,7 +328,7 @@ function TablaModal({
               {form.is_local_team && <Check size={12} className="text-[#0D1B2E]" />}
             </div>
             <span className="font-display font-bold text-xs uppercase tracking-wider text-white/60">
-              Este equipo es EFU (posición en tabla principal)
+              Este equipo es Elbio Fernández (posición en tabla principal)
             </span>
           </label>
 

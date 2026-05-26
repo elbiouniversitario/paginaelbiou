@@ -137,7 +137,7 @@ function PartidoRow({ partido, token, onUpdate }: {
             )}
           </div>
           <span className="font-display font-semibold text-[10px] uppercase tracking-wider text-white/30">
-            {partido.es_local ? "Local · Campo Deportivo EFU" : "Visitante"}
+            {partido.es_local ? "Local · Campo Deportivo Elbio Fernández" : "Visitante"}
           </span>
         </div>
 
@@ -181,7 +181,7 @@ function PartidoRow({ partido, token, onUpdate }: {
             <div className="flex items-end gap-2">
               <div>
                 <label className="block font-display font-bold text-white/30 text-[10px] uppercase tracking-widest mb-1.5">
-                  {partido.es_local ? "Goles EFU" : "Goles rival"}
+                  {partido.es_local ? "Goles Elbio" : "Goles rival"}
                 </label>
                 <input
                   type="number" min={0} max={99}
@@ -193,7 +193,7 @@ function PartidoRow({ partido, token, onUpdate }: {
               <span className="font-display font-black text-white/20 text-xl pb-2">–</span>
               <div>
                 <label className="block font-display font-bold text-white/30 text-[10px] uppercase tracking-widest mb-1.5">
-                  {partido.es_local ? "Goles rival" : "Goles EFU"}
+                  {partido.es_local ? "Goles rival" : "Goles Elbio"}
                 </label>
                 <input
                   type="number" min={0} max={99}
@@ -217,7 +217,7 @@ function PartidoRow({ partido, token, onUpdate }: {
           {/* Goles section — always visible when expanded */}
           <div>
               <p className="font-display font-bold text-white/30 text-[10px] uppercase tracking-widest mb-3">
-                Goleadores de EFU
+                Goleadores de Elbio
               </p>
 
               {/* Existing goals */}

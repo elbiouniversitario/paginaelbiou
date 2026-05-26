@@ -55,7 +55,7 @@ function ProximoCard({ partido, index }: { partido: Partido; index: number }) {
             <div className="w-6 h-6 rounded-full bg-[#F5C200] flex items-center justify-center font-display font-black text-[#1A2F5E] text-[10px] flex-shrink-0">
               EU
             </div>
-            <span className="font-display font-black text-sm uppercase text-[#1A2F5E] whitespace-nowrap">EFU</span>
+            <span className="font-display font-black text-sm uppercase text-[#1A2F5E] whitespace-nowrap">Elbio</span>
           </div>
           <span className="font-display font-bold text-xs text-[#6B7A99]">vs</span>
           <div className="flex items-center gap-1.5">
@@ -121,7 +121,7 @@ function ResultadoCard({ partido, index }: { partido: Partido; index: number }) 
         </div>
         <div className="flex items-center gap-2">
           <span className="font-display font-black text-sm uppercase text-[#1A2F5E] flex-1 truncate">
-            {partido.es_local ? "EFU" : partido.rival}
+            {partido.es_local ? "Elbio" : partido.rival}
           </span>
           <div className="flex items-center gap-1.5 flex-shrink-0 bg-[#1A2F5E] px-3 py-1">
             <span className="font-display font-black text-lg text-white">{golesEU}</span>
@@ -129,7 +129,7 @@ function ResultadoCard({ partido, index }: { partido: Partido; index: number }) 
             <span className="font-display font-black text-lg text-white">{golesRival}</span>
           </div>
           <span className="font-display font-black text-sm uppercase text-[#111827] flex-1 truncate text-right">
-            {partido.es_local ? partido.rival : "EFU"}
+            {partido.es_local ? partido.rival : "Elbio"}
           </span>
         </div>
       </div>
