@@ -87,7 +87,7 @@ export default function MatchStats() {
 
           {/* Col 1 — Tabla */}
           <div className="pb-6 sm:pb-0 sm:pr-10">
-            <p className="font-display font-bold text-[#F5C200] text-xs uppercase tracking-[0.18em] mb-4">
+            <p className="font-display font-bold text-[#F5C200] text-[11px] uppercase tracking-[0.22em] mb-5">
               Posición en Tabla
             </p>
             {tabla ? (
@@ -100,18 +100,18 @@ export default function MatchStats() {
                 </span>
                 <div>
                   {tabla.competencia && (
-                    <p className="font-display font-black text-white text-sm uppercase tracking-wide leading-tight mb-2">
+                    <p className="font-display font-black text-white text-base uppercase tracking-[0.08em] leading-tight mb-3">
                       {tabla.competencia}
                     </p>
                   )}
-                  <div className="flex gap-3 font-display font-bold text-xs uppercase text-white/35 tabular-nums">
-                    <span><span className="text-white/65">{tabla.pj}</span>PJ</span>
-                    <span><span className="text-white/65">{tabla.pg}</span>G</span>
-                    <span><span className="text-white/65">{tabla.pe}</span>E</span>
-                    <span><span className="text-white/65">{tabla.pp}</span>P</span>
+                  <div className="flex gap-4 font-display font-bold text-sm uppercase text-white/35 tabular-nums tracking-wider">
+                    <span><span className="text-white/70">{tabla.pj}</span> PJ</span>
+                    <span><span className="text-white/70">{tabla.pg}</span> G</span>
+                    <span><span className="text-white/70">{tabla.pe}</span> E</span>
+                    <span><span className="text-white/70">{tabla.pp}</span> P</span>
                   </div>
-                  <p className="font-display font-black text-[#F5C200] text-xl mt-1.5 leading-none">
-                    {tabla.pts} <span className="text-[10px] font-bold text-white/30 tracking-widest">PTS</span>
+                  <p className="font-display font-black text-[#F5C200] text-2xl mt-2 leading-none">
+                    {tabla.pts} <span className="text-xs font-bold text-white/30 tracking-widest">PTS</span>
                   </p>
                 </div>
               </div>
@@ -122,33 +122,33 @@ export default function MatchStats() {
 
           {/* Col 2 — Último resultado */}
           <div className="py-6 sm:py-0 sm:px-10">
-            <p className="font-display font-bold text-[#F5C200] text-xs uppercase tracking-[0.18em] mb-4">
+            <p className="font-display font-bold text-[#F5C200] text-[11px] uppercase tracking-[0.22em] mb-5">
               Último Resultado
             </p>
             {last ? (
               <>
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="font-display font-black text-white text-sm uppercase tracking-wide flex-1 min-w-0 truncate">
+                  <span className="font-display font-black text-white text-base uppercase tracking-[0.1em] flex-1 min-w-0 truncate">
                     {last.es_local ? "ELBIO" : last.rival.toUpperCase()}
                   </span>
                   <span
                     className={`font-display font-black leading-none flex-shrink-0 ${last.es_local ? "text-[#F5C200]" : "text-white"}`}
-                    style={{ fontSize: "2.8rem" }}
+                    style={{ fontSize: "3rem" }}
                   >
                     {last.es_local ? getEuScore(last) : getRivalScore(last)}
                   </span>
-                  <span className="font-display font-bold text-white/25 text-xl flex-shrink-0">-</span>
+                  <span className="font-display font-bold text-white/25 text-2xl flex-shrink-0">-</span>
                   <span
                     className={`font-display font-black leading-none flex-shrink-0 ${last.es_local ? "text-white" : "text-[#F5C200]"}`}
-                    style={{ fontSize: "2.8rem" }}
+                    style={{ fontSize: "3rem" }}
                   >
                     {last.es_local ? getRivalScore(last) : getEuScore(last)}
                   </span>
-                  <span className="font-display font-black text-white text-sm uppercase tracking-wide flex-1 min-w-0 truncate text-right">
+                  <span className="font-display font-black text-white text-base uppercase tracking-[0.1em] flex-1 min-w-0 truncate text-right">
                     {last.es_local ? last.rival.toUpperCase() : "ELBIO"}
                   </span>
                 </div>
-                <p className="font-display font-bold text-xs uppercase tracking-[0.18em] text-white/25">
+                <p className="font-display font-bold text-[11px] uppercase tracking-[0.22em] text-white/30">
                   {last.competencia}
                 </p>
               </>
@@ -159,25 +159,25 @@ export default function MatchStats() {
 
           {/* Col 3 — Próximo partido */}
           <div className="pt-6 sm:pt-0 sm:pl-10">
-            <p className="font-display font-bold text-[#F5C200] text-xs uppercase tracking-[0.18em] mb-4">
+            <p className="font-display font-bold text-[#F5C200] text-[11px] uppercase tracking-[0.22em] mb-5">
               Próximo Partido
             </p>
             {next ? (
               <>
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="font-display font-black text-white text-xl uppercase tracking-wide">ELBIO</span>
-                  <span className="font-display font-bold text-white/30 text-base mx-1">vs</span>
-                  <span className="font-display font-black text-white/60 text-xl uppercase tracking-wide truncate min-w-0">
+                <div className="flex items-center gap-2 mb-3 flex-wrap">
+                  <span className="font-display font-black text-white text-2xl uppercase tracking-[0.08em]">ELBIO</span>
+                  <span className="font-display font-bold text-white/30 text-lg mx-1">vs</span>
+                  <span className="font-display font-black text-white/60 text-2xl uppercase tracking-[0.08em] truncate min-w-0">
                     {next.rival.toUpperCase()}
                   </span>
                 </div>
-                <p className="font-display font-black text-[#F5C200] text-sm tracking-wide mb-1">
+                <p className="font-display font-black text-[#F5C200] text-sm tracking-[0.12em] mb-1.5">
                   {formatFecha(next.fecha, next.hora)}
                 </p>
-                <p className="font-display font-bold text-white/30 text-xs uppercase tracking-widest mb-3 truncate">
+                <p className="font-display font-bold text-white/30 text-sm uppercase tracking-wider mb-4 truncate">
                   {next.sede}
                 </p>
-                <span className="inline-block font-display font-black text-xs uppercase tracking-[0.15em] bg-[#F5C200] text-[#0D1B2E] px-3 py-1">
+                <span className="inline-block font-display font-black text-xs uppercase tracking-[0.18em] bg-[#F5C200] text-[#0D1B2E] px-4 py-1.5">
                   {next.es_local ? "Local" : "Visitante"}
                 </span>
               </>
