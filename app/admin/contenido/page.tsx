@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { supabase } from "@/lib/supabase";
-import { Save, RotateCcw, Upload, X, ImageIcon, Eye, EyeOff } from "lucide-react";
+import { Save, RotateCcw, Upload, X, ImageIcon, Eye, EyeOff, Plus, Trash2 } from "lucide-react";
 
 type ContentMap = Record<string, string>;
 
@@ -12,6 +12,7 @@ type Section = {
   fields: SectionField[];
   fotoKey?: string;
   visibleKey?: string;
+  custom?: "hitos";
 };
 
 const SECTIONS: Section[] = [
@@ -22,36 +23,17 @@ const SECTIONS: Section[] = [
     ],
   },
   {
-    title: "Historia — Hito 1",
+    title: "Historia — Encabezado",
     fields: [
-      { key: "hito_1_year",   label: "Año" },
-      { key: "hito_1_titulo", label: "Título" },
-      { key: "hito_1_desc",   label: "Descripción", multiline: true },
+      { key: "historia_subtag",        label: "Etiqueta pequeña" },
+      { key: "historia_titulo_linea1", label: "Título — Línea 1 (azul)" },
+      { key: "historia_titulo_linea2", label: "Título — Línea 2 (negro)" },
     ],
   },
   {
-    title: "Historia — Hito 2",
-    fields: [
-      { key: "hito_2_year",   label: "Año" },
-      { key: "hito_2_titulo", label: "Título" },
-      { key: "hito_2_desc",   label: "Descripción", multiline: true },
-    ],
-  },
-  {
-    title: "Historia — Hito 3",
-    fields: [
-      { key: "hito_3_year",   label: "Año" },
-      { key: "hito_3_titulo", label: "Título" },
-      { key: "hito_3_desc",   label: "Descripción", multiline: true },
-    ],
-  },
-  {
-    title: "Historia — Hito 4",
-    fields: [
-      { key: "hito_4_year",   label: "Año" },
-      { key: "hito_4_titulo", label: "Título" },
-      { key: "hito_4_desc",   label: "Descripción", multiline: true },
-    ],
+    title: "Historia — Hitos",
+    custom: "hitos",
+    fields: [],
   },
   {
     title: "Slider — Slide 1",
@@ -98,14 +80,6 @@ const SECTIONS: Section[] = [
     ],
   },
   {
-    title: "Historia — Encabezado",
-    fields: [
-      { key: "historia_subtag",        label: "Etiqueta pequeña" },
-      { key: "historia_titulo_linea1", label: "Título — Línea 1 (azul)" },
-      { key: "historia_titulo_linea2", label: "Título — Línea 2 (negro)" },
-    ],
-  },
-  {
     title: "Palmarés — Títulos",
     fields: [
       { key: "palmares_titulo",    label: "Título de la sección" },
@@ -145,13 +119,111 @@ const SECTIONS: Section[] = [
   },
 ];
 
+// ---- Dynamic hitos editor ----
+
+function HitosEditor({
+  content,
+  set,
+}: {
+  content: ContentMap;
+  set: (key: string, value: string) => void;
+}) {
+  const count = Math.max(1, parseInt(content["hito_count"] || "4") || 4);
+
+  function addHito() {
+    const n = count + 1;
+    set("hito_count", String(n));
+    set(`hito_${n}_year`,   "");
+    set(`hito_${n}_titulo`, "");
+    set(`hito_${n}_desc`,   "");
+  }
+
+  function removeHito(n: number) {
+    // Shift all subsequent hitos down by one position
+    for (let i = n; i < count; i++) {
+      set(`hito_${i}_year`,   content[`hito_${i + 1}_year`]   ?? "");
+      set(`hito_${i}_titulo`, content[`hito_${i + 1}_titulo`] ?? "");
+      set(`hito_${i}_desc`,   content[`hito_${i + 1}_desc`]   ?? "");
+    }
+    set(`hito_${count}_year`,   "");
+    set(`hito_${count}_titulo`, "");
+    set(`hito_${count}_desc`,   "");
+    set("hito_count", String(count - 1));
+  }
+
+  const inputCls = "w-full bg-white/4 border border-white/10 text-white font-body text-sm px-3 py-2.5 outline-none focus:border-[#F5C200]/40 transition-colors";
+  const labelCls = "block font-display font-bold text-white/30 text-xs uppercase tracking-widest mb-1.5";
+
+  return (
+    <div className="flex flex-col gap-3">
+      {Array.from({ length: count }, (_, i) => i + 1).map((n) => (
+        <div key={n} className="border border-white/8 bg-white/3 p-4">
+          <div className="flex items-center justify-between mb-3">
+            <span className="font-display font-bold text-[#F5C200]/70 text-xs uppercase tracking-widest">
+              Hito {n}
+            </span>
+            {count > 1 && (
+              <button
+                onClick={() => removeHito(n)}
+                className="flex items-center gap-1.5 font-display font-bold text-xs uppercase tracking-widest text-red-400/50 hover:text-red-400 transition-colors"
+              >
+                <Trash2 size={11} /> Eliminar
+              </button>
+            )}
+          </div>
+          <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-3 gap-3">
+              <div>
+                <label className={labelCls}>Año</label>
+                <input
+                  type="text"
+                  value={content[`hito_${n}_year`] ?? ""}
+                  onChange={(e) => set(`hito_${n}_year`, e.target.value)}
+                  className={inputCls}
+                />
+              </div>
+              <div className="col-span-2">
+                <label className={labelCls}>Título</label>
+                <input
+                  type="text"
+                  value={content[`hito_${n}_titulo`] ?? ""}
+                  onChange={(e) => set(`hito_${n}_titulo`, e.target.value)}
+                  className={inputCls}
+                />
+              </div>
+            </div>
+            <div>
+              <label className={labelCls}>Descripción</label>
+              <textarea
+                value={content[`hito_${n}_desc`] ?? ""}
+                onChange={(e) => set(`hito_${n}_desc`, e.target.value)}
+                rows={3}
+                className={`${inputCls} resize-none`}
+              />
+            </div>
+          </div>
+        </div>
+      ))}
+
+      <button
+        onClick={addHito}
+        className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-widest text-[#F5C200]/60 hover:text-[#F5C200] border border-[#F5C200]/15 hover:border-[#F5C200]/35 px-4 py-3 transition-colors w-full justify-center"
+      >
+        <Plus size={13} /> Agregar hito
+      </button>
+    </div>
+  );
+}
+
+// ---- Main page ----
+
 export default function ContenidoAdmin() {
-  const [content,    setContent]    = useState<ContentMap>({});
-  const [original,   setOriginal]   = useState<ContentMap>({});
-  const [loading,    setLoading]    = useState(true);
-  const [saving,     setSaving]     = useState(false);
-  const [saved,      setSaved]      = useState(false);
-  const [uploading,  setUploading]  = useState<string | null>(null);
+  const [content,   setContent]   = useState<ContentMap>({});
+  const [original,  setOriginal]  = useState<ContentMap>({});
+  const [loading,   setLoading]   = useState(true);
+  const [saving,    setSaving]    = useState(false);
+  const [saved,     setSaved]     = useState(false);
+  const [uploading, setUploading] = useState<string | null>(null);
   const fileRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   async function getToken() {
@@ -248,110 +320,115 @@ export default function ContenidoAdmin() {
             <h2 className="font-display font-black text-[#F5C200] text-xs uppercase tracking-widest mb-4">
               {section.title}
             </h2>
-            <div className="flex flex-col gap-4">
-              {/* Visibility toggle (slider sections) */}
-              {section.visibleKey && (() => {
-                const isVisible = content[section.visibleKey!] !== "false";
-                return (
-                  <div className="flex items-center justify-between py-2 border-b border-white/6 mb-1">
-                    <span className="font-display font-bold text-white/40 text-xs uppercase tracking-widest">
-                      Visibilidad del slide
-                    </span>
-                    <button
-                      onClick={() => set(section.visibleKey!, isVisible ? "false" : "true")}
-                      className={`flex items-center gap-2 font-display font-bold text-xs uppercase tracking-widest px-4 py-1.5 transition-colors ${
-                        isVisible
-                          ? "bg-[#F5C200]/15 text-[#F5C200] border border-[#F5C200]/30 hover:bg-[#F5C200]/25"
-                          : "bg-white/6 text-white/30 border border-white/10 hover:border-white/25 hover:text-white/50"
-                      }`}
-                    >
-                      {isVisible ? <><Eye size={12} /> Visible</> : <><EyeOff size={12} /> Oculto</>}
-                    </button>
-                  </div>
-                );
-              })()}
 
-              {/* Photo upload (slider sections) */}
-              {section.fotoKey && (
-                <div>
-                  <label className="block font-display font-bold text-white/40 text-xs uppercase tracking-widest mb-2">
-                    Foto de fondo
-                  </label>
-                  <div className="flex items-center gap-4">
-                    {content[section.fotoKey] ? (
-                      <div className="relative flex-shrink-0">
-                        <img
-                          src={content[section.fotoKey]}
-                          alt="preview"
-                          className="w-32 h-20 object-cover border border-white/10"
-                        />
-                        <button
-                          onClick={() => set(section.fotoKey!, "")}
-                          className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-red-500/80 hover:bg-red-500 text-white flex items-center justify-center transition-colors"
-                        >
-                          <X size={10} />
-                        </button>
+            {section.custom === "hitos" ? (
+              <HitosEditor content={content} set={set} />
+            ) : (
+              <div className="flex flex-col gap-4">
+                {/* Visibility toggle */}
+                {section.visibleKey && (() => {
+                  const isVisible = content[section.visibleKey!] !== "false";
+                  return (
+                    <div className="flex items-center justify-between py-2 border-b border-white/6 mb-1">
+                      <span className="font-display font-bold text-white/40 text-xs uppercase tracking-widest">
+                        Visibilidad del slide
+                      </span>
+                      <button
+                        onClick={() => set(section.visibleKey!, isVisible ? "false" : "true")}
+                        className={`flex items-center gap-2 font-display font-bold text-xs uppercase tracking-widest px-4 py-1.5 transition-colors ${
+                          isVisible
+                            ? "bg-[#F5C200]/15 text-[#F5C200] border border-[#F5C200]/30 hover:bg-[#F5C200]/25"
+                            : "bg-white/6 text-white/30 border border-white/10 hover:border-white/25 hover:text-white/50"
+                        }`}
+                      >
+                        {isVisible ? <><Eye size={12} /> Visible</> : <><EyeOff size={12} /> Oculto</>}
+                      </button>
+                    </div>
+                  );
+                })()}
+
+                {/* Photo upload */}
+                {section.fotoKey && (
+                  <div>
+                    <label className="block font-display font-bold text-white/40 text-xs uppercase tracking-widest mb-2">
+                      Foto de fondo
+                    </label>
+                    <div className="flex items-center gap-4">
+                      {content[section.fotoKey] ? (
+                        <div className="relative flex-shrink-0">
+                          <img
+                            src={content[section.fotoKey]}
+                            alt="preview"
+                            className="w-32 h-20 object-cover border border-white/10"
+                          />
+                          <button
+                            onClick={() => set(section.fotoKey!, "")}
+                            className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-red-500/80 hover:bg-red-500 text-white flex items-center justify-center transition-colors"
+                          >
+                            <X size={10} />
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="w-32 h-20 border border-white/10 bg-white/4 flex items-center justify-center flex-shrink-0">
+                          <ImageIcon size={20} className="text-white/20" />
+                        </div>
+                      )}
+                      <div className="flex flex-col gap-2">
+                        <label className="flex items-center gap-2 cursor-pointer bg-white/4 border border-white/10 hover:border-white/25 text-white/60 hover:text-white font-display font-bold text-xs uppercase tracking-widest px-4 py-2.5 transition-colors">
+                          {uploading === section.fotoKey ? (
+                            <span className="text-[#F5C200]">Subiendo...</span>
+                          ) : (
+                            <>
+                              <Upload size={13} />
+                              {content[section.fotoKey] ? "Cambiar foto" : "Subir foto"}
+                            </>
+                          )}
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            disabled={!!uploading}
+                            ref={(el) => { fileRefs.current[section.fotoKey!] = el; }}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) handleFotoUpload(section.fotoKey!, file);
+                              e.target.value = "";
+                            }}
+                          />
+                        </label>
+                        <p className="font-body text-white/25 text-xs">
+                          Se superpone al fondo de color del slide
+                        </p>
                       </div>
-                    ) : (
-                      <div className="w-32 h-20 border border-white/10 bg-white/4 flex items-center justify-center flex-shrink-0">
-                        <ImageIcon size={20} className="text-white/20" />
-                      </div>
-                    )}
-                    <div className="flex flex-col gap-2">
-                      <label className="flex items-center gap-2 cursor-pointer bg-white/4 border border-white/10 hover:border-white/25 text-white/60 hover:text-white font-display font-bold text-xs uppercase tracking-widest px-4 py-2.5 transition-colors">
-                        {uploading === section.fotoKey ? (
-                          <span className="text-[#F5C200]">Subiendo...</span>
-                        ) : (
-                          <>
-                            <Upload size={13} />
-                            {content[section.fotoKey] ? "Cambiar foto" : "Subir foto"}
-                          </>
-                        )}
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          disabled={!!uploading}
-                          ref={(el) => { fileRefs.current[section.fotoKey!] = el; }}
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) handleFotoUpload(section.fotoKey!, file);
-                            e.target.value = "";
-                          }}
-                        />
-                      </label>
-                      <p className="font-body text-white/25 text-xs">
-                        Se superpone al fondo de color del slide
-                      </p>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Text fields */}
-              {section.fields.map(({ key, label, multiline }) => (
-                <div key={key}>
-                  <label className="block font-display font-bold text-white/40 text-xs uppercase tracking-widest mb-2">
-                    {label}
-                  </label>
-                  {multiline ? (
-                    <textarea
-                      value={content[key] ?? ""}
-                      onChange={(e) => set(key, e.target.value)}
-                      rows={3}
-                      className="w-full bg-white/4 border border-white/10 text-white font-body text-sm px-3 py-2.5 outline-none focus:border-[#F5C200]/40 transition-colors resize-none"
-                    />
-                  ) : (
-                    <input
-                      type="text"
-                      value={content[key] ?? ""}
-                      onChange={(e) => set(key, e.target.value)}
-                      className="w-full bg-white/4 border border-white/10 text-white font-body text-sm px-3 py-2.5 outline-none focus:border-[#F5C200]/40 transition-colors"
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
+                {/* Text fields */}
+                {section.fields.map(({ key, label, multiline }) => (
+                  <div key={key}>
+                    <label className="block font-display font-bold text-white/40 text-xs uppercase tracking-widest mb-2">
+                      {label}
+                    </label>
+                    {multiline ? (
+                      <textarea
+                        value={content[key] ?? ""}
+                        onChange={(e) => set(key, e.target.value)}
+                        rows={3}
+                        className="w-full bg-white/4 border border-white/10 text-white font-body text-sm px-3 py-2.5 outline-none focus:border-[#F5C200]/40 transition-colors resize-none"
+                      />
+                    ) : (
+                      <input
+                        type="text"
+                        value={content[key] ?? ""}
+                        onChange={(e) => set(key, e.target.value)}
+                        className="w-full bg-white/4 border border-white/10 text-white font-body text-sm px-3 py-2.5 outline-none focus:border-[#F5C200]/40 transition-colors"
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         ))}
       </div>

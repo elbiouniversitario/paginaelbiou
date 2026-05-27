@@ -93,11 +93,16 @@ export default function Historia() {
         if (map.historia_subtag)        setSubtag(map.historia_subtag);
         if (map.historia_titulo_linea1) setTitulo1(map.historia_titulo_linea1);
         if (map.historia_titulo_linea2) setTitulo2(map.historia_titulo_linea2);
-        const built: Hito[] = [1, 2, 3, 4].map((n) => ({
-          year:        map[`hito_${n}_year`]   || DEFAULT_HITOS[n - 1].year,
-          title:       map[`hito_${n}_titulo`] || DEFAULT_HITOS[n - 1].title,
-          description: map[`hito_${n}_desc`]   || DEFAULT_HITOS[n - 1].description,
-        }));
+        const count = parseInt(map["hito_count"] || "") || DEFAULT_HITOS.length;
+        const built: Hito[] = Array.from({ length: count }, (_, i) => {
+          const n   = i + 1;
+          const def = DEFAULT_HITOS[i] ?? { year: "", title: "", description: "" };
+          return {
+            year:        map[`hito_${n}_year`]   || def.year,
+            title:       map[`hito_${n}_titulo`] || def.title,
+            description: map[`hito_${n}_desc`]   || def.description,
+          };
+        }).filter((h) => h.year || h.title);
         setHitos(built);
       })
       .catch(() => {});
