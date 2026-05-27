@@ -97,6 +97,52 @@ const SECTIONS: Section[] = [
       { key: "slide_4_sub",    label: "Subtítulo" },
     ],
   },
+  {
+    title: "Historia — Encabezado",
+    fields: [
+      { key: "historia_subtag",        label: "Etiqueta pequeña" },
+      { key: "historia_titulo_linea1", label: "Título — Línea 1 (azul)" },
+      { key: "historia_titulo_linea2", label: "Título — Línea 2 (negro)" },
+    ],
+  },
+  {
+    title: "Palmarés — Títulos",
+    fields: [
+      { key: "palmares_titulo",    label: "Título de la sección" },
+      { key: "titulo_1_letra",     label: "Título 1 — Letra" },
+      { key: "titulo_1_anio",      label: "Título 1 — Año" },
+      { key: "titulo_1_division",  label: "Título 1 — División" },
+      { key: "titulo_2_letra",     label: "Título 2 — Letra" },
+      { key: "titulo_2_anio",      label: "Título 2 — Año" },
+      { key: "titulo_2_division",  label: "Título 2 — División" },
+      { key: "titulo_3_letra",     label: "Título 3 — Letra" },
+      { key: "titulo_3_anio",      label: "Título 3 — Año" },
+      { key: "titulo_3_division",  label: "Título 3 — División" },
+      { key: "titulo_4_letra",     label: "Título 4 — Letra" },
+      { key: "titulo_4_anio",      label: "Título 4 — Año" },
+      { key: "titulo_4_division",  label: "Título 4 — División" },
+    ],
+  },
+  {
+    title: "Hero — Estadísticas",
+    fields: [
+      { key: "hero_stat_campeonatos", label: "Campeonatos (número)" },
+      { key: "hero_stat_fundacion",   label: "Año de fundación" },
+      { key: "hero_stat_socios",      label: "Cantidad de socios" },
+      { key: "hero_stat_division",    label: "División actual" },
+    ],
+  },
+  {
+    title: "Footer — Contacto y Redes",
+    fields: [
+      { key: "footer_descripcion", label: "Texto descripción del club", multiline: true },
+      { key: "footer_direccion",   label: "Dirección" },
+      { key: "footer_telefono",    label: "Teléfono" },
+      { key: "footer_email",       label: "Email de contacto" },
+      { key: "footer_instagram",   label: "URL Instagram" },
+      { key: "footer_whatsapp",    label: "URL WhatsApp" },
+    ],
+  },
 ];
 
 export default function ContenidoAdmin() {

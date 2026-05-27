@@ -1,16 +1,18 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 
-const trophies = [
+type Trophy = { letter: string; year: string; division: string };
+
+const DEFAULT_TROPHIES: Trophy[] = [
   { letter: "B", year: "2014", division: "Divisional B" },
   { letter: "C", year: "2013", division: "Divisional C" },
   { letter: "D", year: "2012", division: "Divisional D" },
   { letter: "F", year: "2008", division: "Divisional F" },
 ];
 
-function TrophyCard({ letter, year, division, index }: (typeof trophies)[0] & { index: number }) {
+function TrophyCard({ letter, year, division, index }: Trophy & { index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
@@ -39,10 +41,8 @@ function TrophyCard({ letter, year, division, index }: (typeof trophies)[0] & { 
       className="relative overflow-hidden cursor-default select-none"
       style={{ aspectRatio: "0.72" }}
     >
-      {/* Base background */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0D1B2E] via-[#0A1622] to-[#060D16]" />
 
-      {/* Subtle radial glow from center */}
       <motion.div
         className="absolute inset-0 pointer-events-none"
         animate={{ opacity: hovered ? 1 : 0 }}
@@ -50,7 +50,6 @@ function TrophyCard({ letter, year, division, index }: (typeof trophies)[0] & { 
         style={{ background: "radial-gradient(ellipse at center 60%, rgba(245,194,0,0.07) 0%, transparent 65%)" }}
       />
 
-      {/* ── Layer 1 (back): Trophy image ── */}
       <motion.div
         className="absolute inset-0 flex items-center justify-center"
         animate={{
@@ -60,7 +59,6 @@ function TrophyCard({ letter, year, division, index }: (typeof trophies)[0] & { 
         }}
         transition={spring}
       >
-        {/* Replace /trophy.png with your real trophy image */}
         <img
           src="/trophy.png"
           alt=""
@@ -72,7 +70,6 @@ function TrophyCard({ letter, year, division, index }: (typeof trophies)[0] & { 
         />
       </motion.div>
 
-      {/* ── Layer 2 (mid): Giant division letter ── */}
       <motion.div
         className="absolute inset-0 flex items-center justify-center"
         animate={{
@@ -89,7 +86,6 @@ function TrophyCard({ letter, year, division, index }: (typeof trophies)[0] & { 
         </span>
       </motion.div>
 
-      {/* ── Layer 3 (front): Year + label ── */}
       <motion.div
         className="absolute bottom-0 left-0 right-0 p-5"
         animate={{
@@ -109,14 +105,12 @@ function TrophyCard({ letter, year, division, index }: (typeof trophies)[0] & { 
         </span>
       </motion.div>
 
-      {/* Border */}
       <motion.div
         className="absolute inset-0 border pointer-events-none"
         animate={{ borderColor: hovered ? "rgba(245,194,0,0.35)" : "rgba(255,255,255,0.05)" }}
         transition={{ duration: 0.35 }}
       />
 
-      {/* Bottom edge accent */}
       <motion.div
         className="absolute bottom-0 left-0 right-0 h-px"
         animate={{ background: hovered ? "rgba(245,194,0,0.6)" : "rgba(245,194,0,0.15)" }}
@@ -129,11 +123,31 @@ function TrophyCard({ letter, year, division, index }: (typeof trophies)[0] & { 
 export default function TrophyBlock() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true });
+  const [trophies, setTrophies] = useState<Trophy[]>(DEFAULT_TROPHIES);
+  const [titulo, setTitulo] = useState("4 Títulos de Mayores");
+
+  useEffect(() => {
+    fetch("/api/site-content")
+      .then((r) => r.json())
+      .then((rows: { clave: string; valor: string | null }[]) => {
+        if (!rows?.length) return;
+        const map: Record<string, string> = {};
+        for (const row of rows) map[row.clave] = row.valor ?? "";
+        if (map.palmares_titulo) setTitulo(map.palmares_titulo);
+        setTrophies(
+          DEFAULT_TROPHIES.map((t, i) => ({
+            letter:   map[`titulo_${i + 1}_letra`]    || t.letter,
+            year:     map[`titulo_${i + 1}_anio`]     || t.year,
+            division: map[`titulo_${i + 1}_division`] || t.division,
+          }))
+        );
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <div className="bg-[#060D16] py-16 lg:py-20">
       <div className="max-w-5xl mx-auto px-4 lg:px-8">
-        {/* Stars header */}
         <div ref={ref} className="text-center mb-10">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
@@ -169,14 +183,13 @@ export default function TrophyBlock() {
             className="font-display font-black text-white uppercase"
             style={{ fontSize: "clamp(1.4rem, 4vw, 2.2rem)", letterSpacing: "0.05em" }}
           >
-            4 Títulos de Mayores
+            {titulo}
           </motion.div>
         </div>
 
-        {/* Trophy grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {trophies.map((t, i) => (
-            <TrophyCard key={t.year} {...t} index={i} />
+            <TrophyCard key={i} {...t} index={i} />
           ))}
         </div>
       </div>

@@ -4,13 +4,12 @@ import { useEffect, useState } from "react";
 import { motion, type Variants } from "framer-motion";
 import { Trophy, Users, Calendar, Star } from "lucide-react";
 import Image from "next/image";
-import { supabase } from "@/lib/supabase";
 
-const stats = [
-  { icon: Trophy,   value: "12",     label: "Campeonatos" },
-  { icon: Calendar, value: "1952",   label: "Fundación" },
-  { icon: Users,    value: "3.400+", label: "Socios" },
-  { icon: Star,     value: "1ra",    label: "División" },
+const DEFAULT_STATS = [
+  { icon: Trophy,   clave: "hero_stat_campeonatos", value: "12",     label: "Campeonatos" },
+  { icon: Calendar, clave: "hero_stat_fundacion",   value: "1952",   label: "Fundación" },
+  { icon: Users,    clave: "hero_stat_socios",       value: "3.400+", label: "Socios" },
+  { icon: Star,     clave: "hero_stat_division",     value: "1ra",    label: "División" },
 ];
 
 const marqueeItems = [
@@ -34,25 +33,31 @@ const DEFAULT_DESC = "Más que un club. Una comunidad forjada en la cancha, en l
 export default function Hero() {
   const [visible, setVisible] = useState(false);
   const [descripcion, setDescripcion] = useState(DEFAULT_DESC);
+  const [stats, setStats] = useState(DEFAULT_STATS.map((s) => ({ ...s })));
+
   useEffect(() => { const t = setTimeout(() => setVisible(true), 80); return () => clearTimeout(t); }, []);
+
   useEffect(() => {
-    if (!supabase) return;
-    supabase.from("site_content").select("valor").eq("clave", "hero_descripcion").single().then(({ data }) => {
-      const row = data as { valor: string | null } | null;
-      if (row?.valor) setDescripcion(row.valor);
-    });
+    fetch("/api/site-content")
+      .then((r) => r.json())
+      .then((rows: { clave: string; valor: string | null }[]) => {
+        if (!rows?.length) return;
+        const map: Record<string, string> = {};
+        for (const row of rows) map[row.clave] = row.valor ?? "";
+        if (map.hero_descripcion) setDescripcion(map.hero_descripcion);
+        setStats(DEFAULT_STATS.map((s) => ({ ...s, value: map[s.clave] || s.value })));
+      })
+      .catch(() => {});
   }, []);
 
   return (
     <section id="inicio" className="relative overflow-hidden bg-white pt-20">
 
-      {/* Top decorative bar — navy + yellow */}
       <div className="flex h-1.5">
         <div className="flex-1 bg-[#1A2F5E]" />
         <div className="w-16 bg-[#F5C200]" />
       </div>
 
-      {/* Hero body */}
       <div className="max-w-7xl mx-auto px-4 lg:px-8 py-16 lg:py-24">
         <motion.div
           variants={container}
@@ -60,7 +65,6 @@ export default function Hero() {
           animate={visible ? "visible" : "hidden"}
           className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20"
         >
-          {/* Left — text */}
           <div className="flex-1 text-center lg:text-left">
             <motion.div variants={fadeUp} className="section-tag mb-5">
               Club Atlético · Est. 1952
@@ -79,7 +83,6 @@ export default function Hero() {
               Universitario
             </motion.h1>
 
-            {/* Yellow underline */}
             <motion.div
               variants={{
                 hidden:  { scaleX: 0, originX: "left" },
@@ -108,7 +111,6 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          {/* Right — logo + decorative ring */}
           <motion.div
             variants={fadeUp}
             className="relative flex-shrink-0 flex items-center justify-center"
@@ -129,7 +131,6 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Stats bar */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -151,7 +152,6 @@ export default function Hero() {
         </div>
       </motion.div>
 
-      {/* Marquee */}
       <div className="overflow-hidden bg-[#1A2F5E] py-2.5">
         <div className="flex whitespace-nowrap animate-marquee">
           {[...marqueeItems, ...marqueeItems].map((item, i) => (

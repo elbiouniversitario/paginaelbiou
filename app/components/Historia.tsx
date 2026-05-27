@@ -3,7 +3,6 @@
 import { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import TrophyBlock from "./TrophyBlock";
-import { supabase } from "@/lib/supabase";
 
 type Hito = { year: string; title: string; description: string };
 
@@ -40,7 +39,6 @@ function HitoItem({ year, title, description, index, total }: Hito & { index: nu
       ref={ref}
       className={`flex gap-6 lg:gap-0 ${isEven ? "lg:flex-row" : "lg:flex-row-reverse"}`}
     >
-      {/* Content */}
       <motion.div
         initial={{ opacity: 0, x: isEven ? -30 : 30 }}
         animate={inView ? { opacity: 1, x: 0 } : {}}
@@ -60,7 +58,6 @@ function HitoItem({ year, title, description, index, total }: Hito & { index: nu
         </div>
       </motion.div>
 
-      {/* Center line + dot */}
       <div className="hidden lg:flex flex-col items-center flex-shrink-0 w-8">
         <motion.div
           initial={{ scale: 0 }}
@@ -73,7 +70,6 @@ function HitoItem({ year, title, description, index, total }: Hito & { index: nu
         )}
       </div>
 
-      {/* Empty side */}
       <div className="hidden lg:block flex-1" />
     </div>
   );
@@ -83,29 +79,34 @@ export default function Historia() {
   const titleRef = useRef<HTMLDivElement>(null);
   const titleInView = useInView(titleRef, { once: true });
   const [hitos, setHitos] = useState<Hito[]>(DEFAULT_HITOS);
+  const [subtag, setSubtag] = useState("Nuestra trayectoria");
+  const [titulo1, setTitulo1] = useState("Más de 24 años");
+  const [titulo2, setTitulo2] = useState("de historia");
 
   useEffect(() => {
-    if (!supabase) return;
-    supabase.from("site_content").select("clave,valor").then(({ data }) => {
-      const rows = data as { clave: string; valor: string | null }[] | null;
-      if (!rows?.length) return;
-      const map: Record<string, string> = {};
-      for (const row of rows) map[row.clave] = row.valor ?? "";
-      const built: Hito[] = [1, 2, 3, 4].map((n) => ({
-        year:        map[`hito_${n}_year`]   || DEFAULT_HITOS[n - 1].year,
-        title:       map[`hito_${n}_titulo`] || DEFAULT_HITOS[n - 1].title,
-        description: map[`hito_${n}_desc`]   || DEFAULT_HITOS[n - 1].description,
-      }));
-      setHitos(built);
-    });
+    fetch("/api/site-content")
+      .then((r) => r.json())
+      .then((rows: { clave: string; valor: string | null }[]) => {
+        if (!rows?.length) return;
+        const map: Record<string, string> = {};
+        for (const row of rows) map[row.clave] = row.valor ?? "";
+        if (map.historia_subtag)        setSubtag(map.historia_subtag);
+        if (map.historia_titulo_linea1) setTitulo1(map.historia_titulo_linea1);
+        if (map.historia_titulo_linea2) setTitulo2(map.historia_titulo_linea2);
+        const built: Hito[] = [1, 2, 3, 4].map((n) => ({
+          year:        map[`hito_${n}_year`]   || DEFAULT_HITOS[n - 1].year,
+          title:       map[`hito_${n}_titulo`] || DEFAULT_HITOS[n - 1].title,
+          description: map[`hito_${n}_desc`]   || DEFAULT_HITOS[n - 1].description,
+        }));
+        setHitos(built);
+      })
+      .catch(() => {});
   }, []);
 
   return (
     <section id="historia">
-      {/* Timeline section — light bg */}
       <div className="py-20 lg:py-28 bg-[#F7F9FC]">
         <div className="max-w-4xl mx-auto px-4 lg:px-8">
-          {/* Header */}
           <div ref={titleRef} className="text-center mb-16">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
@@ -113,7 +114,7 @@ export default function Historia() {
               transition={{ duration: 0.5 }}
               className="section-tag justify-center mb-4"
             >
-              Nuestra trayectoria
+              {subtag}
             </motion.div>
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
@@ -121,7 +122,7 @@ export default function Historia() {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="font-display font-black uppercase text-[clamp(2.5rem,7vw,5.5rem)] leading-none text-[#1A2F5E]"
             >
-              Más de 24 años
+              {titulo1}
             </motion.h2>
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
@@ -129,7 +130,7 @@ export default function Historia() {
               transition={{ duration: 0.6, delay: 0.15 }}
               className="font-display font-black uppercase text-[clamp(2.5rem,7vw,5.5rem)] leading-none text-[#111827]"
             >
-              de historia
+              {titulo2}
             </motion.h2>
             <motion.div
               initial={{ scaleX: 0 }}
@@ -140,7 +141,6 @@ export default function Historia() {
             />
           </div>
 
-          {/* Timeline */}
           <div className="relative">
             <div className="hidden lg:block absolute left-1/2 -translate-x-px top-0 bottom-0 w-px bg-[#D8E1EF]" />
             {hitos.map((h, i) => (
@@ -150,7 +150,6 @@ export default function Historia() {
         </div>
       </div>
 
-      {/* Trophy block — dark bg */}
       <TrophyBlock />
     </section>
   );
