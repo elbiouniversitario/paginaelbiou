@@ -35,14 +35,14 @@ function PreviewCard({ producto, index }: { producto: Producto; index: number })
       className="group block bg-white border border-[#D8E1EF] hover:border-[#1A2F5E]/40 hover:shadow-lg transition-all duration-250 cursor-pointer"
     >
       {/* Image area */}
-      <div className="relative aspect-square bg-[#EEF3FB] flex items-center justify-center overflow-hidden">
+      <div className={`relative aspect-square flex items-center justify-center overflow-hidden ${!producto.foto_url ? "bg-[#EEF3FB]" : ""}`}>
         {producto.destacado && (
           <span className="absolute top-2.5 left-2.5 bg-[#F5C200] text-[#1A2F5E] font-display font-black text-[8px] uppercase tracking-widest px-2 py-0.5 z-10">
             Destacado
           </span>
         )}
         {producto.foto_url
-          ? <img src={producto.foto_url} alt={producto.nombre} className="absolute inset-0 w-full h-full object-cover" />
+          ? <img src={producto.foto_url} alt={producto.nombre} className="absolute inset-0 w-full h-full object-contain p-2" />
           : (
             <div className="flex flex-col items-center gap-2 text-[#1A2F5E]/20 group-hover:text-[#1A2F5E]/35 transition-colors duration-250">
               <ShoppingBag size={40} strokeWidth={1} />
