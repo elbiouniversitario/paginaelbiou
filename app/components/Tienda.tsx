@@ -48,7 +48,7 @@ function ProductCard({ producto, index }: { producto: Producto; index: number })
       className="bg-white border border-[#D8E1EF] hover:border-[#1A2F5E]/30 hover:shadow-md transition-all duration-200 flex flex-col group"
     >
       {/* Image area */}
-      <div className={`relative aspect-square flex items-center justify-center overflow-hidden ${!currentPhoto ? "bg-[#EEF3FB]" : ""}`}>
+      <div className={`relative aspect-square flex items-center justify-center overflow-hidden ${currentPhoto ? "bg-white" : "bg-[#EEF3FB]"}`}>
         {producto.destacado && (
           <span className="absolute top-3 left-3 bg-[#F5C200] text-[#1A2F5E] font-display font-black text-xs uppercase tracking-widest px-2 py-0.5 z-10">
             Destacado

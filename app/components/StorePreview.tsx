@@ -35,7 +35,7 @@ function PreviewCard({ producto, index }: { producto: Producto; index: number })
       className="group block bg-white border border-[#D8E1EF] hover:border-[#1A2F5E]/40 hover:shadow-lg transition-all duration-250 cursor-pointer"
     >
       {/* Image area */}
-      <div className={`relative aspect-square flex items-center justify-center overflow-hidden ${!producto.foto_url ? "bg-[#EEF3FB]" : ""}`}>
+      <div className={`relative aspect-square flex items-center justify-center overflow-hidden ${producto.foto_url ? "bg-white" : "bg-[#EEF3FB]"}`}>
         {producto.destacado && (
           <span className="absolute top-2.5 left-2.5 bg-[#F5C200] text-[#1A2F5E] font-display font-black text-[8px] uppercase tracking-widest px-2 py-0.5 z-10">
             Destacado
