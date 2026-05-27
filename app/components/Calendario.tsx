@@ -41,12 +41,12 @@ function ProximoCard({ partido, index }: { partido: Partido; index: number }) {
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-2 flex-wrap">
-          <span className={`font-display font-bold text-xs uppercase tracking-widest px-2 py-0.5 ${
+          <span className={`font-display font-semibold text-[11px] uppercase tracking-[0.1em] px-2 py-0.5 ${
             suspendido ? "bg-orange-100 text-orange-700" : "bg-[#EEF3FB] text-[#1A2F5E]"
           }`}>
             {suspendido ? "Suspendido" : partido.competencia}
           </span>
-          <span className="font-display font-semibold text-xs uppercase tracking-widest text-[#6B7A99]">
+          <span className="font-display font-medium text-[11px] uppercase tracking-[0.08em] text-[#6B7A99]">
             {partido.es_local ? "Local" : "Visitante"}
           </span>
         </div>
@@ -108,7 +108,7 @@ function ResultadoCard({ partido, index }: { partido: Partido; index: number }) 
         </div>
       </div>
       <div className="flex-1 min-w-0">
-        <div className="font-display font-semibold text-xs uppercase tracking-widest text-[#6B7A99] mb-2">
+        <div className="font-display font-medium text-[11px] uppercase tracking-[0.08em] text-[#6B7A99] mb-2">
           {partido.competencia}
         </div>
         <div className="flex items-center gap-2">
@@ -126,7 +126,7 @@ function ResultadoCard({ partido, index }: { partido: Partido; index: number }) 
         </div>
       </div>
       <div
-        className="flex-shrink-0 font-display font-black text-[10px] uppercase tracking-widest px-3 py-1.5 border-l-2"
+        className="flex-shrink-0 font-display font-bold text-[11px] uppercase tracking-[0.1em] px-3 py-1.5 border-l-2"
         style={{ color, borderColor: color, backgroundColor: `${color}12` }}
       >
         {resultado}
@@ -170,13 +170,13 @@ function GoleadoresPanel({ categoria }: { categoria: Categoria }) {
           transition={{ duration: 0.3, delay: i * 0.06 }}
           className="flex items-center gap-3 bg-white border border-[#D8E1EF] px-4 py-3"
         >
-          <span className={`font-display font-black text-sm w-5 text-center flex-shrink-0 ${
+          <span className={`font-display font-bold text-sm w-5 text-center flex-shrink-0 ${
             i === 0 ? "text-[#F5C200]" : i === 1 ? "text-[#9CA3AF]" : i === 2 ? "text-[#B45309]" : "text-[#D8E1EF]"
           }`}>
             {i + 1}
           </span>
           {i === 0 && <Trophy size={12} className="text-[#F5C200] flex-shrink-0" />}
-          <span className="font-display font-black text-xs uppercase text-[#1A2F5E] flex-1 truncate">
+          <span className="font-display font-semibold text-[12px] uppercase tracking-[0.06em] text-[#1A2F5E] flex-1 truncate">
             {nombre}
           </span>
           <span className="font-display font-black text-xl text-[#1A2F5E] leading-none">{goles}</span>
@@ -231,7 +231,7 @@ export default function Calendario() {
               <button
                 key={cat}
                 onClick={() => setCategoria(cat)}
-                className={`flex-shrink-0 lg:w-full text-left font-display font-bold text-xs uppercase tracking-wider px-4 py-2.5 transition-all duration-150 whitespace-nowrap border-b-2 lg:border-b-0 lg:border-l-2 ${
+                className={`flex-shrink-0 lg:w-full text-left font-display font-semibold text-[12px] uppercase tracking-[0.08em] px-4 py-3 transition-all duration-150 whitespace-nowrap border-b-2 lg:border-b-0 lg:border-l-2 ${
                   categoria === cat
                     ? "border-[#F5C200] text-[#1A2F5E] bg-white"
                     : "border-transparent text-[#6B7A99] hover:text-[#1A2F5E] hover:bg-white/60"
@@ -255,7 +255,7 @@ export default function Calendario() {
                   <button
                     key={t}
                     onClick={() => setTab(t)}
-                    className={`font-display font-black text-xs uppercase tracking-wider px-5 py-2.5 border-b-2 -mb-px transition-all duration-200 ${
+                    className={`font-display font-semibold text-[12px] uppercase tracking-[0.08em] px-5 py-2.5 border-b-2 -mb-px transition-all duration-200 ${
                       tab === t
                         ? "border-[#F5C200] text-[#1A2F5E]"
                         : "border-transparent text-[#6B7A99] hover:text-[#1A2F5E]"

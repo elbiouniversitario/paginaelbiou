@@ -100,7 +100,7 @@ function TrophyCard({ letter, year, division, index }: Trophy & { index: number 
         >
           {year}
         </span>
-        <span className="block font-display font-bold text-white/60 text-[10px] uppercase tracking-[0.22em]">
+        <span className="block font-display font-medium text-white/65 text-[11px] uppercase tracking-[0.18em] mt-0.5">
           {division}
         </span>
       </motion.div>
@@ -172,7 +172,7 @@ export default function TrophyBlock() {
             initial={{ opacity: 0, y: 16 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="font-display font-black text-white/20 text-[10px] uppercase tracking-[0.3em] mb-1"
+            className="font-display font-medium text-white/45 text-[11px] uppercase tracking-[0.2em] mb-1"
           >
             Palmarés del Club
           </motion.div>
@@ -181,7 +181,7 @@ export default function TrophyBlock() {
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, delay: 0.28 }}
             className="font-display font-black text-white uppercase"
-            style={{ fontSize: "clamp(1.4rem, 4vw, 2.2rem)", letterSpacing: "0.05em" }}
+            style={{ fontSize: "clamp(1.5rem, 4vw, 2.4rem)", letterSpacing: "0.04em" }}
           >
             {titulo}
           </motion.div>

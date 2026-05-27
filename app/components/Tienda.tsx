@@ -92,13 +92,13 @@ function ProductCard({ producto, index }: { producto: Producto; index: number })
 
       {/* Info */}
       <div className="p-4 flex flex-col flex-1">
-        <span className="font-display font-semibold text-xs uppercase tracking-widest text-[#6B7A99] mb-1">{producto.categoria}</span>
-        <h3 className="font-display font-black text-sm uppercase text-[#1A2F5E] leading-tight mb-1">{producto.nombre}</h3>
-        <p className="font-body text-sm text-[#6B7A99] leading-relaxed mb-4 flex-1">{producto.descripcion}</p>
+        <span className="font-display font-medium text-[11px] uppercase tracking-[0.12em] text-[#6B7A99] mb-1">{producto.categoria}</span>
+        <h3 className="font-display font-bold text-[13px] uppercase text-[#1A2F5E] leading-tight mb-1.5">{producto.nombre}</h3>
+        <p className="font-body text-sm text-[#374151] leading-relaxed mb-4 flex-1">{producto.descripcion}</p>
 
         {needsTalle && (
           <div className="mb-3">
-            <p className="font-display font-semibold text-xs uppercase tracking-widest text-[#6B7A99] mb-1.5">
+            <p className="font-display font-medium text-[11px] uppercase tracking-[0.1em] text-[#6B7A99] mb-1.5">
               Talle {!talle && <span className="text-red-400">*</span>}
             </p>
             <div className="flex flex-wrap gap-1">
@@ -108,8 +108,8 @@ function ProductCard({ producto, index }: { producto: Producto; index: number })
                   onClick={() => setTalle(talle === t ? null : t)}
                   className={`font-display font-bold text-xs px-2 py-1 border transition-all duration-150 ${
                     talle === t
-                      ? "bg-[#1A2F5E] border-[#1A2F5E] text-white"
-                      : "border-[#D8E1EF] text-[#6B7A99] hover:border-[#1A2F5E] hover:text-[#1A2F5E]"
+                      ? "bg-[#1A2F5E] border-[#1A2F5E] text-white font-semibold"
+                      : "border-[#D8E1EF] text-[#6B7A99] hover:border-[#1A2F5E] hover:text-[#1A2F5E] font-medium"
                   }`}
                 >
                   {t}
@@ -120,19 +120,19 @@ function ProductCard({ producto, index }: { producto: Producto; index: number })
         )}
 
         <div className="flex items-center justify-between gap-2 pt-3 border-t border-[#D8E1EF]">
-          <span className="font-display font-black text-lg text-[#1A2F5E]">{formatPrecio(producto.precio)}</span>
+          <span className="font-display font-black text-xl text-[#1A2F5E]">{formatPrecio(producto.precio)}</span>
           <button
             onClick={handleAdd}
             disabled={needsTalle && !talle}
-            className={`flex items-center gap-1.5 font-display font-black text-xs uppercase tracking-widest px-3 py-2 transition-all duration-200 ${
+            className={`flex items-center gap-1.5 font-display font-bold text-[12px] uppercase tracking-[0.08em] px-4 py-2.5 transition-all duration-200 ${
               added
                 ? "bg-green-600 text-white"
                 : needsTalle && !talle
-                ? "bg-[#F7F9FC] text-[#6B7A99] border border-[#D8E1EF] cursor-not-allowed"
+                ? "bg-[#F7F9FC] text-[#9CA3AF] border border-[#D8E1EF] cursor-not-allowed opacity-60"
                 : "bg-[#1A2F5E] hover:bg-[#152549] text-white"
             }`}
           >
-            {added ? "¡Listo!" : <><Plus size={11} />Agregar</>}
+            {added ? "¡Listo!" : <><Plus size={12} />Agregar</>}
           </button>
         </div>
       </div>
@@ -172,7 +172,7 @@ export default function Tienda() {
 
           <button
             onClick={toggleOpen}
-            className="relative self-start flex items-center gap-2 border border-[#1A2F5E] text-[#1A2F5E] hover:bg-[#1A2F5E] hover:text-white font-display font-black text-xs uppercase tracking-widest px-5 py-3 transition-colors duration-200"
+            className="relative self-start flex items-center gap-2 border border-[#1A2F5E] text-[#1A2F5E] hover:bg-[#1A2F5E] hover:text-white font-display font-bold text-[12px] uppercase tracking-[0.08em] px-5 py-3 transition-colors duration-200"
           >
             <ShoppingBag size={15} />
             Mi carrito
@@ -190,7 +190,7 @@ export default function Tienda() {
             <button
               key={value}
               onClick={() => setCategoria(value)}
-              className={`font-display font-bold text-xs uppercase tracking-wider px-4 py-2 border transition-all duration-150 ${
+              className={`font-display font-semibold text-[12px] uppercase tracking-[0.08em] px-4 py-2.5 border transition-all duration-150 ${
                 categoria === value
                   ? "bg-[#1A2F5E] border-[#1A2F5E] text-white"
                   : "border-[#D8E1EF] text-[#6B7A99] hover:border-[#1A2F5E] hover:text-[#1A2F5E]"

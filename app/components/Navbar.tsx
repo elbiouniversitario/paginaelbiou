@@ -41,11 +41,11 @@ export default function Navbar() {
   return (
     <header
       className={clsx(
-        "fixed top-0 left-0 right-0 z-50 bg-white transition-shadow duration-300",
-        scrolled ? "shadow-md" : ""
+        "fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm transition-shadow duration-300",
+        scrolled ? "shadow-sm" : ""
       )}
     >
-      <div className="max-w-7xl mx-auto px-4 lg:px-10 flex items-center justify-between h-16">
+      <div className="max-w-7xl mx-auto px-4 lg:px-8 flex items-center justify-between h-16">
 
         {/* Logo — sin marco, escudo directo */}
         <a href="#inicio" className="flex items-center gap-3 group flex-shrink-0">
@@ -73,7 +73,7 @@ export default function Navbar() {
             <a
               key={l.href}
               href={l.href}
-              className="font-display font-black text-[12px] uppercase tracking-[0.12em] text-[#1A2F5E] hover:text-[#F5C200] transition-colors duration-200"
+              className="font-display font-semibold text-[13px] uppercase tracking-[0.08em] text-[#1A2F5E] hover:text-[#F5C200] transition-colors duration-200"
             >
               {l.label}
             </a>
@@ -86,28 +86,28 @@ export default function Navbar() {
           <div ref={loginRef} className="hidden lg:block relative">
             <button
               onClick={() => setLoginOpen((v) => !v)}
-              className="flex items-center gap-1.5 font-display font-bold text-[11px] uppercase tracking-[0.12em] text-[#1A2F5E] hover:text-[#F5C200] transition-colors duration-200 px-3 py-2"
+              className="flex items-center gap-1.5 font-display font-semibold text-[12px] uppercase tracking-[0.08em] text-[#1A2F5E] hover:text-[#F5C200] transition-colors duration-200 px-3 py-2"
             >
-              <User size={13} />
+              <User size={15} />
               Iniciar Sesión
-              <ChevronDown size={11} className={clsx("transition-transform duration-200", loginOpen && "rotate-180")} />
+              <ChevronDown size={13} className={clsx("transition-transform duration-200", loginOpen && "rotate-180")} />
             </button>
             {loginOpen && (
               <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-[#D8E1EF] shadow-lg z-50">
                 <a
                   href="/portal"
                   onClick={() => setLoginOpen(false)}
-                  className="flex items-center gap-2.5 px-4 py-3 font-display font-bold text-[11px] uppercase tracking-wider text-[#1A2F5E] hover:bg-[#F5C200]/10 hover:text-[#F5C200] transition-colors border-b border-[#D8E1EF]"
+                  className="flex items-center gap-2.5 px-4 py-3 font-display font-semibold text-[12px] uppercase tracking-[0.08em] text-[#1A2F5E] hover:bg-[#F5C200]/10 hover:text-[#F5C200] transition-colors border-b border-[#D8E1EF]"
                 >
-                  <User size={12} />
+                  <User size={14} />
                   Portal Jugadores
                 </a>
                 <a
                   href="/tienda/cuenta"
                   onClick={() => setLoginOpen(false)}
-                  className="flex items-center gap-2.5 px-4 py-3 font-display font-bold text-[11px] uppercase tracking-wider text-[#1A2F5E] hover:bg-[#F5C200]/10 hover:text-[#F5C200] transition-colors"
+                  className="flex items-center gap-2.5 px-4 py-3 font-display font-semibold text-[12px] uppercase tracking-[0.08em] text-[#1A2F5E] hover:bg-[#F5C200]/10 hover:text-[#F5C200] transition-colors"
                 >
-                  <ShoppingBag size={12} />
+                  <ShoppingBag size={14} />
                   {storeUser ? `Mis compras · ${storeUser.nombre.split(" ")[0]}` : "Tienda / Compras"}
                 </a>
               </div>
@@ -153,7 +153,7 @@ export default function Navbar() {
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className="font-display font-black text-xs uppercase tracking-wider text-[#1A2F5E] py-3 border-b border-[#D8E1EF] last:border-0"
+              className="font-display font-semibold text-[13px] uppercase tracking-[0.08em] text-[#1A2F5E] py-3.5 border-b border-[#D8E1EF] last:border-0"
             >
               {l.label}
             </a>
@@ -161,16 +161,16 @@ export default function Navbar() {
           <a
             href="/portal"
             onClick={() => setOpen(false)}
-            className="mt-3 flex items-center gap-2 border border-[#1A2F5E] text-[#1A2F5E] font-display font-bold text-xs uppercase tracking-widest py-3 px-4"
+            className="mt-3 flex items-center gap-2.5 bg-[#1A2F5E] text-white font-display font-bold text-[12px] uppercase tracking-[0.08em] py-3.5 px-4"
           >
-            <User size={12} /> Portal Jugadores
+            <User size={14} /> Portal Jugadores
           </a>
           <a
             href="/tienda/cuenta"
             onClick={() => setOpen(false)}
-            className="mt-2 flex items-center gap-2 border border-[#D8E1EF] text-[#6B7A99] font-display font-bold text-xs uppercase tracking-widest py-3 px-4"
+            className="mt-2 flex items-center gap-2.5 border border-[#1A2F5E] text-[#1A2F5E] font-display font-semibold text-[12px] uppercase tracking-[0.08em] py-3.5 px-4"
           >
-            <ShoppingBag size={12} /> {storeUser ? `Mis compras · ${storeUser.nombre.split(" ")[0]}` : "Tienda / Compras"}
+            <ShoppingBag size={14} /> {storeUser ? `Mis compras · ${storeUser.nombre.split(" ")[0]}` : "Tienda / Compras"}
           </a>
         </nav>
       </div>

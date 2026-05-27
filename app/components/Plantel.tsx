@@ -37,31 +37,30 @@ function JugadorCard({ jugador, index }: { jugador: Jugador; index: number }) {
       className="bg-white border border-[#D8E1EF] hover:border-[#1A2F5E]/30 hover:shadow-md transition-all duration-200 group"
     >
       {/* Avatar */}
-      <div className="relative h-32 bg-[#EEF3FB] flex items-center justify-center overflow-hidden">
-        <span className="absolute top-2 right-3 font-display font-black text-3xl text-[#1A2F5E]/10 leading-none select-none">
+      <div className="relative h-36 bg-[#EEF3FB] flex items-center justify-center overflow-hidden">
+        <span className="absolute top-2 right-3 font-display font-black text-4xl text-[#1A2F5E]/8 leading-none select-none">
           {jugador.numero}
         </span>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={jugador.foto_url || avatarUrl(jugador.nombre, jugador.apellido)}
           alt={`${jugador.nombre} ${jugador.apellido}`}
-          className="w-16 h-16 rounded-full border-2 border-white shadow-sm object-cover"
+          className="w-20 h-20 rounded-full border-2 border-white shadow-md object-cover"
         />
       </div>
 
       {/* Info */}
       <div className="p-4">
         <div
-          className="inline-block font-display font-bold text-[9px] uppercase tracking-widest px-2 py-0.5 mb-2 border-l-2"
-          style={{ color: posicionColor[jugador.posicion], borderColor: posicionColor[jugador.posicion], backgroundColor: `${posicionColor[jugador.posicion]}12` }}
+          className="inline-block font-display font-semibold text-[11px] uppercase tracking-[0.1em] px-2 py-0.5 mb-2.5 bg-[#EEF3FB] text-[#1A2F5E]"
         >
           {jugador.posicion}
         </div>
-        <p className="font-display font-black text-sm uppercase text-[#1A2F5E] leading-tight">{jugador.nombre}</p>
-        <p className="font-display font-black text-sm uppercase text-[#111827] leading-tight">{jugador.apellido}</p>
-        <div className="flex justify-between mt-2 pt-2 border-t border-[#D8E1EF]">
-          <span className="font-display text-[10px] font-semibold uppercase tracking-wide text-[#6B7A99]">#{jugador.numero}</span>
-          <span className="font-display text-[10px] font-semibold uppercase tracking-wide text-[#6B7A99]">{jugador.edad} años</span>
+        <p className="font-display font-bold text-[13px] uppercase text-[#1A2F5E] leading-tight">{jugador.nombre}</p>
+        <p className="font-display font-bold text-[13px] uppercase text-[#374151] leading-tight">{jugador.apellido}</p>
+        <div className="flex justify-between mt-2.5 pt-2.5 border-t border-[#D8E1EF]">
+          <span className="font-display text-[11px] font-medium uppercase tracking-wide text-[#6B7A99]">#{jugador.numero}</span>
+          <span className="font-display text-[11px] font-medium uppercase tracking-wide text-[#6B7A99]">{jugador.edad} años</span>
         </div>
       </div>
     </motion.div>
@@ -94,7 +93,7 @@ export default function Plantel() {
             <button
               key={value}
               onClick={() => setFiltro(value)}
-              className={`font-display font-bold text-xs uppercase tracking-wider px-4 py-2 border transition-all duration-150 ${
+              className={`font-display font-semibold text-[12px] uppercase tracking-[0.08em] px-4 py-2.5 border transition-all duration-150 ${
                 filtro === value
                   ? "bg-[#1A2F5E] border-[#1A2F5E] text-white"
                   : "border-[#D8E1EF] text-[#6B7A99] hover:border-[#1A2F5E] hover:text-[#1A2F5E]"
@@ -106,10 +105,10 @@ export default function Plantel() {
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {filtered.map((j, i) => <JugadorCard key={j.id} jugador={j} index={i} />)}
         </div>
-        <p className="mt-5 font-display font-semibold text-xs uppercase tracking-widest text-[#6B7A99]">
+        <p className="mt-6 font-display font-medium text-[12px] uppercase tracking-[0.12em] text-[#6B7A99]">
           {filtered.length} jugador{filtered.length !== 1 ? "es" : ""}
         </p>
       </div>

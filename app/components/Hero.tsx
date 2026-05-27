@@ -53,11 +53,6 @@ export default function Hero() {
   return (
     <section id="inicio" className="relative overflow-hidden bg-white pt-20">
 
-      <div className="flex h-1.5">
-        <div className="flex-1 bg-[#1A2F5E]" />
-        <div className="w-16 bg-[#F5C200]" />
-      </div>
-
       <div className="max-w-7xl mx-auto px-4 lg:px-8 py-16 lg:py-24">
         <motion.div
           variants={container}
@@ -72,16 +67,16 @@ export default function Hero() {
 
             <motion.h1
               variants={fadeUp}
-              className="font-display font-black uppercase leading-[0.9] text-[clamp(3.5rem,9vw,8rem)] text-[#1A2F5E]"
+              className="font-display font-black uppercase leading-[0.88] text-[clamp(3.5rem,8.5vw,7.5rem)] text-[#1A2F5E]"
             >
               Elbio
             </motion.h1>
-            <motion.h1
+            <motion.h2
               variants={fadeUp}
-              className="font-display font-black uppercase leading-[0.9] text-[clamp(2rem,5vw,4.5rem)] text-[#111827]"
+              className="font-display font-black uppercase leading-[0.88] text-[clamp(2.8rem,7vw,6rem)] text-[#111827]"
             >
               Universitario
-            </motion.h1>
+            </motion.h2>
 
             <motion.div
               variants={{
@@ -98,13 +93,13 @@ export default function Hero() {
             <motion.div variants={fadeUp} className="flex flex-wrap gap-3 justify-center lg:justify-start">
               <a
                 href="#historia"
-                className="bg-[#1A2F5E] hover:bg-[#152549] text-white font-display font-black text-xs uppercase tracking-widest px-7 py-3.5 transition-colors duration-200"
+                className="bg-[#1A2F5E] hover:bg-[#152549] text-white font-display font-bold text-sm uppercase tracking-[0.08em] px-8 py-4 transition-colors duration-200"
               >
                 Conocé el Club
               </a>
               <a
                 href="#plantel"
-                className="border border-[#1A2F5E] text-[#1A2F5E] hover:bg-[#EEF3FB] font-display font-black text-xs uppercase tracking-widest px-7 py-3.5 transition-colors duration-200"
+                className="border border-[#1A2F5E] text-[#1A2F5E] hover:bg-[#EEF3FB] font-display font-bold text-sm uppercase tracking-[0.08em] px-8 py-4 transition-colors duration-200"
               >
                 Ver Plantel
               </a>
@@ -140,11 +135,11 @@ export default function Hero() {
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-[#D8E1EF]">
             {stats.map(({ icon: Icon, value, label }) => (
-              <div key={label} className="flex items-center gap-3 px-6 py-5 group">
-                <Icon size={18} className="text-[#F5C200] flex-shrink-0" />
-                <div>
-                  <div className="font-display font-black text-xl text-[#1A2F5E] leading-none">{value}</div>
-                  <div className="font-display font-semibold text-xs uppercase tracking-widest text-[#6B7A99] mt-0.5">{label}</div>
+              <div key={label} className="flex flex-col gap-1 px-6 py-5 group">
+                <div className="font-display font-black text-3xl text-[#1A2F5E] leading-none">{value}</div>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <Icon size={12} className="text-[#F5C200] flex-shrink-0" />
+                  <div className="font-display font-medium text-[11px] uppercase tracking-[0.12em] text-[#6B7A99]">{label}</div>
                 </div>
               </div>
             ))}
@@ -155,7 +150,7 @@ export default function Hero() {
       <div className="overflow-hidden bg-[#1A2F5E] py-2.5">
         <div className="flex whitespace-nowrap animate-marquee">
           {[...marqueeItems, ...marqueeItems].map((item, i) => (
-            <span key={i} className="font-display font-bold text-xs uppercase tracking-widest text-white/70 mx-5">
+            <span key={i} className="font-display font-semibold text-[12px] uppercase tracking-[0.15em] text-white/80 mx-5">
               {item}
             </span>
           ))}

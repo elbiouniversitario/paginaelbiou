@@ -13,14 +13,32 @@ const navLinks = [
   { label: "Portal Encargados", href: "/encargado" },
 ];
 
-function SocialBtn({ href, label, symbol }: { href: string; label: string; symbol: string }) {
+function InstagramIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+      <circle cx="12" cy="12" r="4"/>
+      <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none"/>
+    </svg>
+  );
+}
+
+function WhatsAppIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+    </svg>
+  );
+}
+
+function SocialBtn({ href, label, children }: { href: string; label: string; children: React.ReactNode }) {
   return (
     <a
       href={href}
       aria-label={label}
-      className="w-9 h-9 border border-white/20 hover:border-[#F5C200] hover:text-[#F5C200] text-white/60 flex items-center justify-center transition-all duration-200 font-display font-bold text-xs"
+      className="w-9 h-9 border border-white/20 hover:border-[#F5C200] hover:text-[#F5C200] text-white/55 flex items-center justify-center transition-all duration-200"
     >
-      {symbol}
+      {children}
     </a>
   );
 }
@@ -68,17 +86,17 @@ export default function Footer() {
                 unoptimized
               />
               <div className="font-display leading-tight">
-                <span className="block font-bold text-white/50 text-[10px] uppercase tracking-wider">Elbio Fernández</span>
-                <span className="block font-black text-white text-sm uppercase tracking-tight">Fútbol Universitario</span>
+                <span className="block font-black text-white text-sm uppercase tracking-tight">Elbio Fernández</span>
+                <span className="block font-medium text-white/50 text-[11px] uppercase tracking-wider mt-0.5">Fútbol Universitario</span>
               </div>
             </div>
             <p className="font-body text-sm text-white/55 leading-relaxed mb-6 max-w-xs">
               {descripcion}
             </p>
             <div className="flex items-center gap-2">
-              <SocialBtn href={instagram} label="Instagram" symbol="@" />
-              <SocialBtn href={whatsapp}  label="WhatsApp"  symbol="W" />
-              <SocialBtn href={`mailto:${email}`} label="Email" symbol="✉" />
+              <SocialBtn href={instagram} label="Instagram"><InstagramIcon /></SocialBtn>
+              <SocialBtn href={whatsapp}  label="WhatsApp"><WhatsAppIcon /></SocialBtn>
+              <SocialBtn href={`mailto:${email}`} label="Email"><Mail size={16} /></SocialBtn>
             </div>
           </div>
 
@@ -89,7 +107,7 @@ export default function Footer() {
                 <li key={l.href}>
                   <a
                     href={l.href}
-                    className="font-display font-semibold text-sm uppercase tracking-wider text-white/55 hover:text-white transition-colors flex items-center gap-2 group"
+                    className="font-display font-medium text-[13px] uppercase tracking-[0.08em] text-white/55 hover:text-white transition-colors flex items-center gap-2 group"
                   >
                     <span className="w-3 h-px bg-[#F5C200] group-hover:w-5 transition-all duration-200" />
                     {l.label}

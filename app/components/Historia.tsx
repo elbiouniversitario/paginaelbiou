@@ -46,13 +46,13 @@ function HitoItem({ year, title, description, index, total }: Hito & { index: nu
         className="flex-1 lg:px-12 pb-12"
       >
         <div className={`${isEven ? "lg:text-right" : "lg:text-left"}`}>
-          <span className="font-display font-black text-5xl lg:text-6xl text-[#F5C200] leading-none block mb-2">
+          <span className="font-display font-black text-5xl lg:text-6xl text-[#C99A00] leading-none block mb-2">
             {year}
           </span>
-          <h3 className="font-display font-black text-xl uppercase text-[#1A2F5E] mb-2">
+          <h3 className="font-display font-bold text-xl uppercase text-[#1A2F5E] mb-2">
             {title}
           </h3>
-          <p className="font-body text-sm text-[#6B7A99] leading-relaxed max-w-xs inline-block">
+          <p className="font-body text-sm text-[#374151] leading-relaxed max-w-xs inline-block">
             {description}
           </p>
         </div>
