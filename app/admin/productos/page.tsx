@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { supabase } from "@/lib/supabase";
 import type { Producto, CategoriaProducto } from "@/lib/types";
-import { Plus, Trash2, Eye, EyeOff, ImagePlus, ZoomIn, ZoomOut, Check, X } from "lucide-react";
+import { Plus, Trash2, Eye, EyeOff, ImagePlus, ZoomIn, ZoomOut, Check, X, Pencil, RotateCcw } from "lucide-react";
 
 const categorias: CategoriaProducto[] = ["Camisetas", "Shorts", "Abrigos", "Accesorios", "Calzado"];
 
@@ -99,14 +99,21 @@ function ImageCropper({
   );
 }
 
-/* ── Multi-photo picker ──────────────────────────────────────── */
+/* ── Multi-photo picker (existing URLs + pending blobs) ──────── */
 interface PendingPhoto { blob: Blob; preview: string }
 
 function PhotoGrid({
-  photos, onAdd, onRemove,
-}: { photos: PendingPhoto[]; onAdd: (blob: Blob) => void; onRemove: (i: number) => void }) {
+  existing, onRemoveExisting, photos, onAdd, onRemove,
+}: {
+  existing: string[];
+  onRemoveExisting: (i: number) => void;
+  photos: PendingPhoto[];
+  onAdd: (blob: Blob) => void;
+  onRemove: (i: number) => void;
+}) {
   const [cropSrc, setCropSrc] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
+  const total = existing.length + photos.length;
 
   function pickImage(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -125,15 +132,12 @@ function PhotoGrid({
         />
       )}
       <div className="grid grid-cols-3 gap-2">
-        {photos.map((p, i) => (
-          <div key={i} className="relative aspect-square bg-white/5 overflow-hidden group">
+        {existing.map((url, i) => (
+          <div key={`ex-${i}`} className="relative aspect-square bg-white/5 overflow-hidden group">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={p.preview} alt="" className="w-full h-full object-cover" />
-            <button
-              type="button"
-              onClick={() => onRemove(i)}
-              className="absolute top-1 right-1 w-5 h-5 bg-black/70 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
-            >
+            <img src={url} alt="" className="w-full h-full object-contain" />
+            <button type="button" onClick={() => onRemoveExisting(i)}
+              className="absolute top-1 right-1 w-5 h-5 bg-black/70 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600">
               <X size={10} />
             </button>
             {i === 0 && (
@@ -143,12 +147,24 @@ function PhotoGrid({
             )}
           </div>
         ))}
-        {photos.length < 6 && (
-          <button
-            type="button"
-            onClick={() => fileRef.current?.click()}
-            className="aspect-square bg-white/4 border border-dashed border-white/15 flex flex-col items-center justify-center gap-1 text-white/25 hover:border-[#F5C200]/40 hover:text-white/50 transition-colors"
-          >
+        {photos.map((p, i) => (
+          <div key={`new-${i}`} className="relative aspect-square bg-white/5 overflow-hidden group">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={p.preview} alt="" className="w-full h-full object-cover" />
+            <button type="button" onClick={() => onRemove(i)}
+              className="absolute top-1 right-1 w-5 h-5 bg-black/70 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600">
+              <X size={10} />
+            </button>
+            {existing.length === 0 && i === 0 && (
+              <span className="absolute bottom-1 left-1 bg-[#F5C200] text-[#060D16] font-display font-black text-[9px] px-1.5 py-0.5 uppercase tracking-wider">
+                Principal
+              </span>
+            )}
+          </div>
+        ))}
+        {total < 6 && (
+          <button type="button" onClick={() => fileRef.current?.click()}
+            className="aspect-square bg-white/4 border border-dashed border-white/15 flex flex-col items-center justify-center gap-1 text-white/25 hover:border-[#F5C200]/40 hover:text-white/50 transition-colors">
             <ImagePlus size={20} />
             <span className="font-body text-[10px]">Agregar</span>
           </button>
@@ -161,12 +177,14 @@ function PhotoGrid({
 
 /* ── Main page ───────────────────────────────────────────────── */
 export default function ProductosAdmin() {
-  const [productos, setProductos] = useState<Producto[]>([]);
-  const [loading,   setLoading]   = useState(true);
-  const [form,      setForm]      = useState(empty);
-  const [photos,    setPhotos]    = useState<{ blob: Blob; preview: string }[]>([]);
-  const [saving,    setSaving]    = useState(false);
-  const [savErr,    setSavErr]    = useState("");
+  const [productos,      setProductos]      = useState<Producto[]>([]);
+  const [loading,        setLoading]        = useState(true);
+  const [form,           setForm]           = useState(empty);
+  const [photos,         setPhotos]         = useState<PendingPhoto[]>([]);
+  const [existingPhotos, setExistingPhotos] = useState<string[]>([]);
+  const [editId,         setEditId]         = useState<string | null>(null);
+  const [saving,         setSaving]         = useState(false);
+  const [savErr,         setSavErr]         = useState("");
 
   async function getToken() {
     const { data } = await supabase!.auth.getSession();
@@ -185,11 +203,39 @@ export default function ProductosAdmin() {
 
   useEffect(() => { load(); }, []);
 
+  function startEdit(p: Producto) {
+    setEditId(p.id);
+    setForm({
+      nombre:      p.nombre,
+      descripcion: p.descripcion ?? "",
+      precio:      String(p.precio),
+      categoria:   p.categoria,
+      talles:      (p.talles ?? []).join(", "),
+      stock:       String(p.stock ?? 0),
+    });
+    const all = p.fotos?.length ? p.fotos : p.foto_url ? [p.foto_url] : [];
+    setExistingPhotos(all);
+    setPhotos([]);
+    setSavErr("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function cancelEdit() {
+    setEditId(null);
+    setForm(empty);
+    setPhotos([]);
+    setExistingPhotos([]);
+    setSavErr("");
+  }
+
   function addPhoto(blob: Blob) {
     setPhotos((prev) => [...prev, { blob, preview: URL.createObjectURL(blob) }]);
   }
   function removePhoto(i: number) {
     setPhotos((prev) => prev.filter((_, idx) => idx !== i));
+  }
+  function removeExisting(i: number) {
+    setExistingPhotos((prev) => prev.filter((_, idx) => idx !== i));
   }
 
   async function uploadPhoto(blob: Blob, token: string): Promise<string> {
@@ -214,29 +260,50 @@ export default function ProductosAdmin() {
 
     try {
       const token = await getToken();
-      const urls: string[] = [];
+
+      const newUrls: string[] = [];
       for (const p of photos) {
-        urls.push(await uploadPhoto(p.blob, token));
+        newUrls.push(await uploadPhoto(p.blob, token));
       }
 
-      const tallesArr = form.talles ? form.talles.split(",").map((t) => t.trim()).filter(Boolean) : [];
-      const token2 = await getToken();
-      const insertRes = await fetch("/api/admin/productos", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token2}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nombre: form.nombre, descripcion: form.descripcion,
-          precio: parseFloat(form.precio), categoria: form.categoria,
-          talles: tallesArr, stock: parseInt(form.stock),
-          foto_url: urls[0] ?? "",
-          fotos: urls,
-          destacado: false, activo: true,
-        }),
-      });
-      const insertJson = await insertRes.json() as { ok?: boolean; error?: string };
-      if (!insertRes.ok) throw new Error(insertJson.error ?? "Error al guardar");
+      const allPhotos = [...existingPhotos, ...newUrls];
+      const tallesArr = form.talles
+        ? form.talles.split(",").map((t) => t.trim()).filter(Boolean)
+        : [];
+
+      const payload = {
+        nombre:      form.nombre,
+        descripcion: form.descripcion,
+        precio:      parseFloat(form.precio),
+        categoria:   form.categoria,
+        talles:      tallesArr,
+        stock:       parseInt(form.stock),
+        foto_url:    allPhotos[0] ?? "",
+        fotos:       allPhotos,
+      };
+
+      if (editId) {
+        const res = await fetch("/api/admin/productos", {
+          method: "PATCH",
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ id: editId, ...payload }),
+        });
+        const json = await res.json() as { ok?: boolean; error?: string };
+        if (!res.ok) throw new Error(json.error ?? "Error al guardar");
+        setEditId(null);
+      } else {
+        const res = await fetch("/api/admin/productos", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ ...payload, destacado: false, activo: true }),
+        });
+        const json = await res.json() as { ok?: boolean; error?: string };
+        if (!res.ok) throw new Error(json.error ?? "Error al guardar");
+      }
+
       setForm(empty);
       setPhotos([]);
+      setExistingPhotos([]);
       load();
     } catch (err) {
       setSavErr(err instanceof Error ? err.message : "Error desconocido");
@@ -271,8 +338,11 @@ export default function ProductosAdmin() {
       headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
       body: JSON.stringify({ id }),
     });
+    if (editId === id) cancelEdit();
     load();
   }
+
+  const isEditing = editId !== null;
 
   return (
     <div>
@@ -283,14 +353,31 @@ export default function ProductosAdmin() {
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
         {/* Form */}
-        <div className="lg:col-span-2 border border-white/8 bg-white/2 p-6">
-          <h2 className="font-display font-black text-white text-base uppercase tracking-wide mb-5">+ Nuevo producto</h2>
+        <div className={`lg:col-span-2 border p-6 transition-colors ${isEditing ? "border-[#F5C200]/30 bg-[#F5C200]/3" : "border-white/8 bg-white/2"}`}>
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="font-display font-black text-white text-base uppercase tracking-wide">
+              {isEditing ? "✎ Editar producto" : "+ Nuevo producto"}
+            </h2>
+            {isEditing && (
+              <button onClick={cancelEdit}
+                className="flex items-center gap-1.5 font-display font-bold text-xs uppercase tracking-widest text-white/40 hover:text-white/70 transition-colors">
+                <RotateCcw size={12} /> Cancelar
+              </button>
+            )}
+          </div>
+
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>
               <label className="block font-display font-bold text-white/40 text-xs uppercase tracking-widest mb-2">
                 Fotos (hasta 6 — la primera es la principal)
               </label>
-              <PhotoGrid photos={photos} onAdd={addPhoto} onRemove={removePhoto} />
+              <PhotoGrid
+                existing={existingPhotos}
+                onRemoveExisting={removeExisting}
+                photos={photos}
+                onAdd={addPhoto}
+                onRemove={removePhoto}
+              />
             </div>
 
             <AF label="Nombre" value={form.nombre} onChange={(v) => setForm({ ...form, nombre: v })} required />
@@ -307,10 +394,13 @@ export default function ProductosAdmin() {
               </select>
             </div>
             <AF label="Talles (separados por coma)" value={form.talles} onChange={(v) => setForm({ ...form, talles: v })} placeholder="S, M, L, XL" />
+
             {savErr && <p className="font-body text-red-400 text-xs">{savErr}</p>}
+
             <button type="submit" disabled={saving}
               className="flex items-center gap-2 justify-center bg-[#F5C200] text-[#060D16] font-display font-black text-xs uppercase tracking-widest py-3 hover:bg-[#F5C200]/90 disabled:opacity-50 transition-colors">
-              <Plus size={15} /> {saving ? "Guardando..." : "Guardar producto"}
+              {isEditing ? <Check size={15} /> : <Plus size={15} />}
+              {saving ? "Guardando..." : isEditing ? "Guardar cambios" : "Guardar producto"}
             </button>
           </form>
         </div>
@@ -325,12 +415,21 @@ export default function ProductosAdmin() {
                 <div className="flex flex-col gap-2">
                   {productos.map((p) => {
                     const allPhotos = p.fotos?.length ? p.fotos : (p.foto_url ? [p.foto_url] : []);
+                    const isSelected = editId === p.id;
                     return (
-                      <div key={p.id} className={`flex items-center gap-3 border bg-white/2 px-4 py-3 transition-all ${p.activo ? "border-white/8" : "border-white/4 opacity-50"}`}>
+                      <div key={p.id}
+                        className={`flex items-center gap-3 border px-4 py-3 transition-all ${
+                          isSelected
+                            ? "border-[#F5C200]/40 bg-[#F5C200]/5"
+                            : p.activo
+                              ? "border-white/8 bg-white/2"
+                              : "border-white/4 opacity-50"
+                        }`}
+                      >
                         <div className="flex gap-1 flex-shrink-0">
                           {allPhotos.slice(0, 3).map((url, i) => (
                             // eslint-disable-next-line @next/next/no-img-element
-                            <img key={i} src={url} alt="" className="w-10 h-10 object-cover bg-white/5" />
+                            <img key={i} src={url} alt="" className="w-10 h-10 object-contain bg-white/5" />
                           ))}
                           {allPhotos.length === 0 && <div className="w-10 h-10 bg-white/5" />}
                           {allPhotos.length > 3 && (
@@ -339,11 +438,21 @@ export default function ProductosAdmin() {
                             </div>
                           )}
                         </div>
+
                         <div className="flex-1 min-w-0">
                           <p className="font-display font-black text-white text-sm uppercase tracking-wide truncate">{p.nombre}</p>
-                          <p className="font-body text-white/40 text-xs">${p.precio.toLocaleString("es-UY")} · {p.categoria} · {allPhotos.length} foto{allPhotos.length !== 1 ? "s" : ""}</p>
+                          <p className="font-body text-white/40 text-xs">
+                            ${p.precio.toLocaleString("es-UY")} · {p.categoria} · {allPhotos.length} foto{allPhotos.length !== 1 ? "s" : ""}
+                          </p>
                         </div>
+
                         <div className="flex items-center gap-1 flex-shrink-0">
+                          <ActionBtn
+                            onClick={() => isSelected ? cancelEdit() : startEdit(p)}
+                            title={isSelected ? "Cancelar edición" : "Editar"}
+                            className={isSelected ? "text-[#F5C200]" : "text-white/25 hover:text-[#F5C200]"}>
+                            <Pencil size={14} />
+                          </ActionBtn>
                           <ActionBtn onClick={() => toggleDestacado(p.id, p.destacado ?? false)}
                             title={p.destacado ? "Quitar destacado" : "Destacar"}
                             className={p.destacado ? "text-[#F5C200]" : "text-white/25 hover:text-white/60"}>★</ActionBtn>
