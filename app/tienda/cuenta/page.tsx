@@ -110,10 +110,10 @@ export default function CuentaPage() {
   const [pedidos,  setPedidos]  = useState<Pedido[]>([]);
   const [loading,  setLoading]  = useState(false);
 
-  async function fetchPedidos(mail: string) {
+  async function fetchPedidos(mail: string, tel: string) {
     setLoading(true);
     try {
-      const res = await fetch(`/api/tienda/pedidos?email=${encodeURIComponent(mail)}`);
+      const res = await fetch(`/api/tienda/pedidos?email=${encodeURIComponent(mail)}&telefono=${encodeURIComponent(tel)}`);
       const data = await res.json() as Pedido[];
       setPedidos(Array.isArray(data) ? data : []);
     } catch {
@@ -124,7 +124,7 @@ export default function CuentaPage() {
   }
 
   useEffect(() => {
-    if (storeUser) fetchPedidos(storeUser.email);
+    if (storeUser) fetchPedidos(storeUser.email, storeUser.telefono);
   }, [storeUser]);
 
   function handleLogin(e: React.FormEvent) {
